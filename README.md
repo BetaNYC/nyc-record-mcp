@@ -272,6 +272,12 @@ All data comes from the [NYC City Record Online dataset](https://data.cityofnewy
 
 ---
 
+## Related projects
+
+If you're looking for broader access to NYC Open Data — or Socrata-powered portals in other cities — check out Nathan Storey's **[socrata-mcp-server](https://github.com/npstorey/socrata-mcp-server)**. It connects AI assistants to any Socrata portal with tools for dataset discovery and SoQL queries, including NYC, Chicago, San Francisco, and [New York State's open data portal](https://data.ny.gov) (data.ny.gov), among hundreds more. The SODA API pattern in this project was informed by Nathan's work.
+
+---
+
 ## Contributing
 
 Issues and pull requests welcome at [github.com/BetaNYC/nyc-record-mcp](https://github.com/BetaNYC/nyc-record-mcp).
