@@ -8,6 +8,18 @@ Vibe coded with [Claude](https://claude.ai) by [BetaNYC](https://beta.nyc).
 
 ---
 
+## API key
+
+**No API key is required.** The City Record dataset is public and this server works out of the box — no signup, no token.
+
+Optionally, you can set a free [NYC Open Data (Socrata) app token](https://data.cityofnewyork.us/profile/app_tokens) to get higher rate limits under heavy use. It is not needed for normal use. To use one, set it as the `SOCRATA_APP_TOKEN` environment variable:
+
+```bash
+export SOCRATA_APP_TOKEN="your-app-token"
+```
+
+---
+
 ## What it does
 
 Exposes 7 tools over MCP:
@@ -283,6 +295,10 @@ If you're looking for broader access to NYC Open Data — or Socrata-powered por
 Issues and pull requests welcome at [github.com/BetaNYC/nyc-record-mcp](https://github.com/BetaNYC/nyc-record-mcp).
 
 ---
+
+## Support our work
+
+Freedom isn't free. [Support BetaNYC](https://beta.nyc/donate/).
 
 ## License
 
