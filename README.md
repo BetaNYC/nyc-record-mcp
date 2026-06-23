@@ -296,6 +296,10 @@ Issues and pull requests welcome at [github.com/BetaNYC/nyc-record-mcp](https://
 
 ---
 
+## Support our work
+
+Freedom isn't free. [Support BetaNYC](https://beta.nyc/donate/).
+
 ## License
 
 MIT License
