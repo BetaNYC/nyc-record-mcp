@@ -1,0 +1,61 @@
+# Continuous integration for @betanyc/nyc-record-mcp.
+#
+# Enforces that the TypeScript still compiles (`npm run build` -> `tsc`) on a
+# clean, locked install across the ends of the supported Node range. This is
+# the build-only gate: the package has no test script yet, so there is nothing
+# to run beyond the compile. When a `test` script is added, add a `npm test`
+# step here so regressions are caught before merge.
+#
+# Node matrix: 20.x and 22.x. package.json declares `engines.node ">=18"`, and
+# the matrix stays within that floor while using only actively-maintained LTS
+# releases. Node 18 reached End-of-Life on 2025-04-30 and is excluded on
+# purpose. This mirrors the convention already established in the sibling
+# nyc-charter-laws-rules repo, keeping CI consistent across BetaNYC's MCP repos.
+# If the engines floor is raised to ">=20" later, drop this note.
+#
+# Owned by the software-engineer agent per BetaNYC engineering standards.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "**/*.ts"
+      - "package.json"
+      - "package-lock.json"
+  push:
+    branches: [main]
+    paths:
+      - "**/*.ts"
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - "20.x"
+          - "22.x"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
