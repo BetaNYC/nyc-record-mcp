@@ -1,0 +1,66 @@
+# Release automation for @betanyc/nyc-record-mcp.
+#
+# Trigger: pushing a tag matching `v*` (e.g. `v1.0.2`). The workflow verifies
+# the tag matches the version in package.json, runs the test suite, publishes
+# to npm with provenance, and creates a GitHub Release with auto-generated
+# notes.
+#
+# Prerequisite: an `NPM_TOKEN` repository secret (npm automation token with
+# publish rights on @betanyc/nyc-record-mcp). Provenance requires the
+# id-token: write permission and publishing from GitHub Actions.
+#
+# Release procedure: bump `version` in package.json (+ lockfile) on main,
+# then `git tag vX.Y.Z && git push origin vX.Y.Z`. Nothing publishes without
+# a tag push.
+#
+# Owned by the software-engineer agent per BetaNYC engineering standards.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write # create the GitHub Release
+  id-token: write # npm provenance attestation
+
+jobs:
+  release:
+    name: Publish to npm + GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: "npm"
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test --if-present
+
+      - name: Verify tag matches package.json version
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          if [ "${GITHUB_REF_NAME}" != "${PKG_VERSION}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package.json version ${PKG_VERSION}" >&2
+            exit 1
+          fi
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        run: gh release create "${GITHUB_REF_NAME}" --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
