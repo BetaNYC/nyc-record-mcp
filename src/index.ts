@@ -5,6 +5,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { createRequire } from "node:module";
 import { z } from "zod";
 import {
   searchNotices,
@@ -21,8 +22,11 @@ const isoDate = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "must be a date in YYYY-MM-DD format");
 
+const require = createRequire(import.meta.url);
+const { version } = require("../package.json") as { version: string };
+
 const server = new Server(
-  { name: "nyc-record-mcp", version: "1.0.0" },
+  { name: "nyc-record-mcp", version },
   { capabilities: { tools: {} } }
 );
 
