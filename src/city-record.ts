@@ -1,41 +1,22 @@
 const BASE_URL = "https://data.cityofnewyork.us";
 const DATASET_ID = "dg92-zbpx";
 
-export type CityRecordNotice = {
-  request_id?: string;
-  start_date?: string;
-  end_date?: string;
-  agency_name?: string;
-  type_of_notice_description?: string;
-  category_description?: string;
-  short_title?: string;
-  selection_method_description?: string;
-  section_name?: string;
-  special_case_reason_description?: string;
-  pin?: string;
-  due_date?: string;
-  address_to_request?: string;
-  contact_name?: string;
-  contact_phone?: string;
-  email?: string;
-  contract_amount?: string;
-  contact_fax?: string;
-  additional_description_1?: string;
-  additional_description_2?: string;
-  additional_description_3?: string;
-  vendor_name?: string;
-  vendor_address?: string;
-  document_links?: string;
-  event_date?: string;
-  building_name?: string;
-  street_address_1?: string;
-  street_address_2?: string;
-  city?: string;
-  state?: string;
-  zip_code?: string;
-};
+/**
+ * Notices come from the NYC Open Data "City Record Online" dataset
+ * (dg92-zbpx). Rows are passed through to clients as JSON without
+ * field-level access; known fields for reference:
+ * request_id, start_date, end_date, agency_name,
+ * type_of_notice_description, category_description, short_title,
+ * selection_method_description, section_name,
+ * special_case_reason_description, pin, due_date, address_to_request,
+ * contact_name, contact_phone, email, contract_amount, contact_fax,
+ * additional_description_1..3, vendor_name, vendor_address,
+ * document_links, event_date, building_name, street_address_1,
+ * street_address_2, city, state, zip_code.
+ */
+export type CityRecordNotice = Record<string, string>;
 
-function buildUrl(params: Record<string, string>): string {
+async function sodaFetch(params: Record<string, string>): Promise<CityRecordNotice[]> {
   const url = new URL(`${BASE_URL}/resource/${DATASET_ID}.json`);
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
@@ -44,11 +25,7 @@ function buildUrl(params: Record<string, string>): string {
   if (appToken) {
     url.searchParams.set("$$app_token", appToken);
   }
-  return url.toString();
-}
-
-async function sodaFetch(params: Record<string, string>): Promise<CityRecordNotice[]> {
-  const res = await fetch(buildUrl(params));
+  const res = await fetch(url.toString());
   if (!res.ok) {
     throw new Error(`NYC Open Data API error ${res.status}: ${res.statusText}`);
   }
