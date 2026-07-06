@@ -47,8 +47,12 @@ export async function getNoticesByAgency(
   agencyName: string,
   limit = 25
 ): Promise<CityRecordNotice[]> {
+  // SoQL `like` uses a literal `%` wildcard (https://dev.socrata.com/docs/functions/like.html).
+  // Build the SoQL value unencoded; URLSearchParams performs the single
+  // URL-encoding pass. Single quotes are escaped by doubling per SQL rules.
+  const escaped = agencyName.replace(/'/g, "''");
   return sodaFetch({
-    $where: `upper(agency_name) like upper('%25${encodeURIComponent(agencyName)}%25')`,
+    $where: `upper(agency_name) like upper('%${escaped}%')`,
     $limit: String(limit),
     $order: "start_date DESC",
   });
