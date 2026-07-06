@@ -21,6 +21,10 @@
   "license": "MIT",
   "author": "BetaNYC",
   "homepage": "https://github.com/BetaNYC/nyc-record-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BetaNYC/nyc-record-mcp.git"
+  },
   "bugs": {
     "url": "https://github.com/BetaNYC/nyc-record-mcp/issues"
   },
