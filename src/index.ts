@@ -5,6 +5,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { createRequire } from "node:module";
 import { z } from "zod";
 import {
   searchNotices,
@@ -14,10 +15,18 @@ import {
   getPublicHearings,
   getOpenSolicitations,
   getNoticesByDateRange,
+  NOTICE_TYPES,
 } from "./city-record.js";
 
+const isoDate = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "must be a date in YYYY-MM-DD format");
+
+const require = createRequire(import.meta.url);
+const { version } = require("../package.json") as { version: string };
+
 const server = new Server(
-  { name: "nyc-record-mcp", version: "1.0.0" },
+  { name: "nyc-record-mcp", version },
   { capabilities: { tools: {} } }
 );
 
@@ -58,18 +67,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         properties: {
           notice_type: {
             type: "string",
-            enum: [
-              "Solicitation",
-              "Award",
-              "Intent to Award",
-              "Intent to Negotiate",
-              "Public Hearings",
-              "Public Comment",
-              "Meeting",
-              "Notice",
-              "Vendor List",
-              "Sale",
-            ],
+            enum: [...NOTICE_TYPES],
             description: "Notice type",
           },
           limit: { type: "number", description: "Max results (default 25, max 100)" },
@@ -150,7 +148,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case "get_notices_by_type": {
         const { notice_type, limit } = z
-          .object({ notice_type: z.string(), limit: z.number().max(100).optional() })
+          .object({ notice_type: z.enum(NOTICE_TYPES), limit: z.number().max(100).optional() })
           .parse(args);
         const results = await getNoticesByType(notice_type, limit ?? 25);
         return { content: [{ type: "text", text: JSON.stringify(results, null, 2) }] };
@@ -183,8 +181,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "get_notices_by_date_range": {
         const { start_date, end_date, limit } = z
           .object({
-            start_date: z.string(),
-            end_date: z.string(),
+            start_date: isoDate,
+            end_date: isoDate,
             limit: z.number().max(200).optional(),
           })
           .parse(args);

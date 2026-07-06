@@ -214,6 +214,12 @@ npm run build
 npm start
 ```
 
+Run the test suite (builds first, then runs the Node test runner against `test/*.test.mjs`):
+
+```bash
+npm test
+```
+
 ---
 
 ## Configuration
@@ -251,7 +257,13 @@ With an optional app token:
 
 ### Claude Code
 
-Add to your project's `.claude/settings.json`:
+Add it with the CLI:
+
+```bash
+claude mcp add nyc-record -- npx -y @betanyc/nyc-record-mcp
+```
+
+Or add to your project's `.mcp.json` (checked in, shared with your team):
 
 ```json
 {

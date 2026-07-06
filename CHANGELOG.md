@@ -7,10 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-07-06
+
 ### Fixed
 
 - Stop double-encoding the SoQL `like` pattern in `get_notices_by_agency` —
   agency queries with special characters now match correctly ([#6])
+- Escape all string values embedded in SoQL `$where` clauses via a shared
+  `soqlString()` helper (quote-doubling), covering `get_notices_by_type`,
+  `get_notices_by_agency`, and `get_notices_by_date_range` ([#7])
+- Enforce `notice_type` with a `zod` enum derived from a single
+  `NOTICE_TYPES` constant (live-verified against the dataset), and validate
+  date params as `YYYY-MM-DD` ([#7])
+- `get_open_solicitations` computes "today" in America/New_York instead of
+  UTC, which dropped same-day deadlines after 8pm ET ([#7])
+- Include the (truncated, 300-char) Socrata error body in thrown errors for
+  actionable diagnostics ([#7])
+- Server now reports its version from package.json instead of a hardcoded
+  string ([#7])
 
 ### Security
 
@@ -42,10 +56,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and date range, and retrieving procurement notices, public hearings, and
   open solicitations
 
-[Unreleased]: https://github.com/BetaNYC/nyc-record-mcp/compare/cf5a4da...HEAD
+[Unreleased]: https://github.com/BetaNYC/nyc-record-mcp/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/BetaNYC/nyc-record-mcp/compare/cf5a4da...v1.0.2
 [1.0.1]: https://github.com/BetaNYC/nyc-record-mcp/compare/65deb20...cf5a4da
 [1.0.0]: https://github.com/BetaNYC/nyc-record-mcp/releases
 [#2]: https://github.com/BetaNYC/nyc-record-mcp/pull/2
 [#3]: https://github.com/BetaNYC/nyc-record-mcp/pull/3
 [#4]: https://github.com/BetaNYC/nyc-record-mcp/pull/4
 [#6]: https://github.com/BetaNYC/nyc-record-mcp/pull/6
+[#7]: https://github.com/BetaNYC/nyc-record-mcp/pull/7
