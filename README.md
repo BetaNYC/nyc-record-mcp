@@ -300,6 +300,32 @@ All data comes from the [NYC City Record Online dataset](https://data.cityofnewy
 
 If you're looking for broader access to NYC Open Data — or Socrata-powered portals in other cities — check out Nathan Storey's **[socrata-mcp-server](https://github.com/npstorey/socrata-mcp-server)**. It connects AI assistants to any Socrata portal with tools for dataset discovery and SoQL queries, including NYC, Chicago, San Francisco, and [New York State's open data portal](https://data.ny.gov) (data.ny.gov), among hundreds more. The SODA API pattern in this project was informed by Nathan's work.
 
+## About BetaNYC
+
+This project is built and maintained by [BetaNYC](https://beta.nyc), New York's
+civic technology and open-data community. We work to improve lives in New York
+through civic design, technology, data, and public-interest technology.
+
+**Come do civic tech with us.** We run public events, meetups, and hands-on
+data classes throughout the year — including [NYC School of Data](https://www.schoolofdata.nyc/)
+and [CityCamp NYC](https://citycamp.nyc), and we host frequent civic-tech gatherings. See what's coming up on our
+[events calendar](https://www.beta.nyc/events/).
+
+**Sustain this work.** These MCP servers are free and open source. To help keep this work going and find BetaNYC's
+tools, please consider [donating and becoming a Beta
+Builder](https://beta.nyc/donate).
+
+## Building on this? Tell us!
+
+If you build something with this project, we'd love to hear about it. We can help other New Yorkers find it. BetaNYC publishes a weekly newsletter,
+*This Week in NYC's Civic Technology and Open Data*.
+
+- **[Subscribe to the newsletter](https://beta.nyc/newsletter)** to keep up with
+  NYC civic tech, open data, and public-interest technology.
+- **Built something, or found a story worth sharing?** [Submit a link for the
+  newsletter](https://www.beta.nyc/newsletter-inbox/) and we'll consider it for
+  an upcoming issue.
+
 ---
 
 ## Contributing
