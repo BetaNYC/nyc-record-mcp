@@ -326,6 +326,22 @@ If you build something with this project, we'd love to hear about it. We can hel
   newsletter](https://www.beta.nyc/newsletter-inbox/) and we'll consider it for
   an upcoming issue.
 
+## Related BetaNYC MCP servers
+
+BetaNYC maintains a suite of open-source MCP servers for NYC and NYS civic data.
+See the full directory, with install details for each, at
+**[beta.nyc/ai-tools](https://beta.nyc/ai-tools)**.
+
+This server pairs directly with:
+
+- **[nyc-checkbook-mcp](https://github.com/BetaNYC/nyc-checkbook-mcp)**: move from a procurement solicitation or award notice to the resulting registered contract, payments, and agency spending in Checkbook.
+
+> **Working with the wider NYC Open Data portal?** This server reads the City Record
+> dataset on NYC Open Data. To search the full catalog or run ad-hoc SoQL queries
+> across other datasets, pair it with
+> [socrata-mcp-server](https://github.com/npstorey/socrata-mcp-server)
+> (`socrata-mcp-server` on npm), a third-party MCP by [Nathan Storey](https://github.com/npstorey).
+
 ---
 
 ## Contributing
