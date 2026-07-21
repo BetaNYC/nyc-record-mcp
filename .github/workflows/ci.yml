@@ -4,9 +4,16 @@
 # clean, locked install across the ends of the supported Node range.
 #
 # There is deliberately no separate build step: `npm test` is
-# `npm run build && node --test "test/*.test.mjs"`, so it compiles first and a
+# `npm run build && node --test test/*.test.mjs`, so it compiles first and a
 # standalone `npm run build` step would only run tsc a second time. A compile
 # error still fails the job, with tsc's output at the top of the test step's log.
+#
+# That glob is deliberately UNQUOTED so the shell expands it and node receives
+# literal file paths. Quoting it makes node do the matching, and node's own
+# handling differs by version: Node 20 does not accept glob patterns at all
+# (added in 22) and fails with "Could not find 'test/*.test.mjs'", while a bare
+# directory argument stopped working in later versions. Shell expansion is the
+# one form that works across the whole supported range. Do not re-add the quotes.
 #
 # The tests are offline — every one of them mocks `globalThis.fetch`, so no
 # Socrata API key and no network access are required in CI.
