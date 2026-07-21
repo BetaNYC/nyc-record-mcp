@@ -19,6 +19,7 @@ export const TOOLS: Tool[] = [
         limit: { type: "number", description: "Max results (default 25, max 100)" },
       },
       required: ["query"],
+      additionalProperties: false,
     },
   },
   {
@@ -32,6 +33,7 @@ export const TOOLS: Tool[] = [
         limit: { type: "number", description: "Max results (default 25, max 100)" },
       },
       required: ["agency_name"],
+      additionalProperties: false,
     },
   },
   {
@@ -49,6 +51,7 @@ export const TOOLS: Tool[] = [
         limit: { type: "number", description: "Max results (default 25, max 100)" },
       },
       required: ["notice_type"],
+      additionalProperties: false,
     },
   },
   {
@@ -60,6 +63,7 @@ export const TOOLS: Tool[] = [
       properties: {
         limit: { type: "number", description: "Max results (default 25, max 100)" },
       },
+      additionalProperties: false,
     },
   },
   {
@@ -71,6 +75,7 @@ export const TOOLS: Tool[] = [
       properties: {
         limit: { type: "number", description: "Max results (default 25, max 100)" },
       },
+      additionalProperties: false,
     },
   },
   {
@@ -82,6 +87,7 @@ export const TOOLS: Tool[] = [
       properties: {
         limit: { type: "number", description: "Max results (default 25, max 100)" },
       },
+      additionalProperties: false,
     },
   },
   {
@@ -95,39 +101,71 @@ export const TOOLS: Tool[] = [
         limit: { type: "number", description: "Max results (default 50, max 200)" },
       },
       required: ["start_date", "end_date"],
+      additionalProperties: false,
     },
   },
 ];
 
-/** Argument schemas, one per tool name in TOOLS. */
+/**
+ * Argument schemas, one per tool name in TOOLS.
+ *
+ * Every schema is `.strict()`. zod strips unknown keys by default, which meant
+ * an invented filter (`council_district`, `vendor`, …) was silently discarded
+ * and the tool answered a different question with real, plausible data — see
+ * issue #10. Strict turns that into a loud failure.
+ */
 export const SCHEMAS = {
-  search_notices: z.object({
-    query: z.string(),
-    limit: z.number().max(100).optional(),
-  }),
-  get_notices_by_agency: z.object({
-    agency_name: z.string(),
-    limit: z.number().max(100).optional(),
-  }),
-  get_notices_by_type: z.object({
-    notice_type: z.enum(NOTICE_TYPES),
-    limit: z.number().max(100).optional(),
-  }),
-  get_procurement_notices: z.object({ limit: z.number().max(100).optional() }),
-  get_public_hearings: z.object({ limit: z.number().max(100).optional() }),
-  get_open_solicitations: z.object({ limit: z.number().max(100).optional() }),
-  get_notices_by_date_range: z.object({
-    start_date: isoDate,
-    end_date: isoDate,
-    limit: z.number().max(200).optional(),
-  }),
+  search_notices: z
+    .object({ query: z.string(), limit: z.number().max(100).optional() })
+    .strict(),
+  get_notices_by_agency: z
+    .object({ agency_name: z.string(), limit: z.number().max(100).optional() })
+    .strict(),
+  get_notices_by_type: z
+    .object({
+      notice_type: z.enum(NOTICE_TYPES),
+      limit: z.number().max(100).optional(),
+    })
+    .strict(),
+  get_procurement_notices: z
+    .object({ limit: z.number().max(100).optional() })
+    .strict(),
+  get_public_hearings: z.object({ limit: z.number().max(100).optional() }).strict(),
+  get_open_solicitations: z
+    .object({ limit: z.number().max(100).optional() })
+    .strict(),
+  get_notices_by_date_range: z
+    .object({
+      start_date: isoDate,
+      end_date: isoDate,
+      limit: z.number().max(200).optional(),
+    })
+    .strict(),
 } satisfies Record<string, z.ZodTypeAny>;
 
 export type ToolName = keyof typeof SCHEMAS;
 
+/**
+ * Parse a tool call's arguments, rejecting any parameter the tool does not
+ * declare. zod's own strict message names the offending key but offers no
+ * alternative, so the accepted names are read back off the advertised schema.
+ */
 export function parseToolArgs<K extends ToolName>(
   name: K,
   args: unknown
 ): z.infer<(typeof SCHEMAS)[K]> {
-  return SCHEMAS[name].parse(args ?? {});
+  const result = SCHEMAS[name].safeParse(args ?? {});
+  if (result.success) return result.data;
+
+  const unknown = result.error.issues.find((i) => i.code === "unrecognized_keys");
+  if (unknown) {
+    const accepted = Object.keys(TOOLS.find((t) => t.name === name)?.inputSchema.properties ?? {});
+    throw new Error(
+      `${name} received unrecognized parameter(s): ${unknown.keys.join(", ")}. ` +
+        `It accepts only: ${accepted.join(", ")}. The call was rejected rather ` +
+        `than run without that filter, because dropping it silently would ` +
+        `return results for a different question.`
+    );
+  }
+  throw result.error;
 }

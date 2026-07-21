@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Reject unknown tool parameters instead of silently dropping them. Every
+  tool's advertised `inputSchema` now sets `additionalProperties: false`, and
+  every argument schema is `zod.strict()`, so an invented filter raises an
+  error naming the bad key and the tool's accepted parameters rather than
+  returning unfiltered results for a different question ([#10])
+
 ## [1.0.2] - 2026-07-06
 
 ### Fixed
@@ -65,3 +73,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#4]: https://github.com/BetaNYC/nyc-record-mcp/pull/4
 [#6]: https://github.com/BetaNYC/nyc-record-mcp/pull/6
 [#7]: https://github.com/BetaNYC/nyc-record-mcp/pull/7
+[#10]: https://github.com/BetaNYC/nyc-record-mcp/issues/10
