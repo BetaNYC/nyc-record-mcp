@@ -1,10 +1,22 @@
 # Continuous integration for @betanyc/nyc-record-mcp.
 #
-# Enforces that the TypeScript still compiles (`npm run build` -> `tsc`) on a
-# clean, locked install across the ends of the supported Node range. This is
-# the build-only gate: the package has no test script yet, so there is nothing
-# to run beyond the compile. When a `test` script is added, add a `npm test`
-# step here so regressions are caught before merge.
+# Enforces that the TypeScript still compiles and the test suite passes on a
+# clean, locked install across the ends of the supported Node range.
+#
+# There is deliberately no separate build step: `npm test` is
+# `npm run build && node --test test/*.test.mjs`, so it compiles first and a
+# standalone `npm run build` step would only run tsc a second time. A compile
+# error still fails the job, with tsc's output at the top of the test step's log.
+#
+# That glob is deliberately UNQUOTED so the shell expands it and node receives
+# literal file paths. Quoting it makes node do the matching, and node's own
+# handling differs by version: Node 20 does not accept glob patterns at all
+# (added in 22) and fails with "Could not find 'test/*.test.mjs'", while a bare
+# directory argument stopped working in later versions. Shell expansion is the
+# one form that works across the whole supported range. Do not re-add the quotes.
+#
+# The tests are offline — every one of them mocks `globalThis.fetch`, so no
+# Socrata API key and no network access are required in CI.
 #
 # Node matrix: 20.x and 22.x. package.json declares `engines.node ">=18"`, and
 # the matrix stays within that floor while using only actively-maintained LTS
@@ -18,10 +30,14 @@
 name: CI
 
 on:
+  # `test/**` matters: the tests are `.mjs`, so `**/*.ts` does not match them and
+  # a test-only change would otherwise skip this gate entirely — silently, which
+  # is the failure mode this workflow exists to prevent.
   pull_request:
     branches: [main]
     paths:
       - "**/*.ts"
+      - "test/**"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/**"
@@ -29,6 +45,7 @@ on:
     branches: [main]
     paths:
       - "**/*.ts"
+      - "test/**"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/**"
@@ -44,8 +61,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build (Node ${{ matrix.node-version }})
+  test:
+    name: Build & test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -66,5 +83,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build and test
+        run: npm test
