@@ -191,6 +191,8 @@ get_notices_by_date_range("2026-05-01", "2026-05-31")   → by month
 
 ## Installation
 
+From v1.1.1 the server is also published to the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.BetaNYC/nyc-record-mcp`.
+
 ### Option 1 — npx (no install required)
 
 ```bash
