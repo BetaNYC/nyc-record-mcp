@@ -1,7 +1,8 @@
 {
   "name": "@betanyc/nyc-record-mcp",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MCP server for NYC City Record notices via NYC Open Data",
+  "mcpName": "io.github.BetaNYC/nyc-record-mcp",
   "keywords": [
     "mcp",
     "model-context-protocol",

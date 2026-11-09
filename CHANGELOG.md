@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - unreleased
+## [1.1.1] - unreleased
+
+### Added
+
+- `server.json` and `mcpName` in package.json, so the server can be listed in
+  the official MCP Registry as `io.github.BetaNYC/nyc-record-mcp`. A new
+  `Publish to MCP Registry` workflow lists each release after the Release
+  workflow publishes it to npm, and the Release workflow now checks that
+  `server.json` matches package.json before publishing.
+- `glama.json`, to claim the server on Glama.
+
+## [1.1.0] - 2026-07-22
 
 ### Fixed
 
