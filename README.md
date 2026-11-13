@@ -6,6 +6,8 @@ The City Record is the official publication of the City of New York — procurem
 
 Vibe coded with [Claude](https://claude.ai) by [BetaNYC](https://beta.nyc).
 
+**[What's changed](WHATS-CHANGED.md)**: new tools, changes to what the tools return, and corrections, newest first.
+
 ---
 
 ## API key
@@ -22,7 +24,7 @@ export SOCRATA_APP_TOKEN="your-app-token"
 
 ## What it does
 
-Exposes 7 tools over MCP:
+Exposes 9 tools over MCP:
 
 | Tool | Description |
 |---|---|
@@ -33,6 +35,8 @@ Exposes 7 tools over MCP:
 | `get_public_hearings` | Recent public hearings, comment periods, and meetings |
 | `get_open_solicitations` | Active RFPs/RFQs where the deadline has not passed |
 | `get_notices_by_date_range` | All notices published within a date window |
+| `whats_changed` | What changed in this server, newest first, from [WHATS-CHANGED.md](WHATS-CHANGED.md) (filter by date or tag) |
+| `about_betanyc` | Who built this server, where to report a problem, and BetaNYC's links |
 
 ---
 
@@ -146,6 +150,27 @@ Get all City Record notices published within a date range.
 get_notices_by_date_range("2026-05-01", "2026-05-19")
 get_notices_by_date_range("2026-01-01", "2026-03-31", limit=200)
 ```
+
+---
+
+### `whats_changed` and `about_betanyc`
+
+Every BetaNYC MCP server carries these two tools, with the same inputs and output. `whats_changed` reads [WHATS-CHANGED.md](WHATS-CHANGED.md), which ships in the package, and never touches the network.
+
+| Parameter | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `since` | string | no | — | Changes on or after this date, YYYY-MM-DD |
+| `tag` | string | no | — | Site, Data, MCP or Correction |
+| `limit` | number | no | 10 | Max results (max 50) |
+
+`about_betanyc` takes no parameters. It names the server and its version, who built it, where to report a problem, and BetaNYC's links.
+
+```
+whats_changed(tag="Correction")
+about_betanyc()
+```
+
+`src/betanyc-tools.ts` and `scripts/whats_changed.py` are copies of shared files in BetaNYC's workspace: never edit them here.
 
 ---
 
@@ -354,7 +379,16 @@ Issues and pull requests welcome at [github.com/BetaNYC/nyc-record-mcp](https://
 
 ## Releases
 
-Releases are automated. Pushing a tag matching `v*` (e.g. `v1.0.2`) runs tests, verifies the tag matches the `package.json` version, publishes to npm with provenance, and creates a GitHub Release with generated notes. See [CHANGELOG.md](CHANGELOG.md) for version history. Requires the `NPM_TOKEN` repository secret.
+Releases are automated. Pushing a tag matching `v*` (e.g. `v1.0.2`) runs tests, verifies the tag matches the `package.json` version, publishes to npm with provenance, and creates a GitHub Release with generated notes. See [CHANGELOG.md](CHANGELOG.md) for version history, and [WHATS-CHANGED.md](WHATS-CHANGED.md) for the record written for everyone else. Requires the `NPM_TOKEN` repository secret.
+
+**Release day.** A version bump merges with its `WHATS-CHANGED.md` entry headed `## Unreleased: Title` and its `CHANGELOG.md` heading undated (`## [X.Y.Z] - Unreleased`), the entry's MCP version linking to `CHANGELOG.md` with no anchor. On the day the tag goes on, make one commit that:
+
+1. changes `## Unreleased: Title` to `## YYYY-MM-DD: Title` (same title, today's date in New York; `check` rejects a future date);
+2. gives the `CHANGELOG.md` heading the same date (`## [X.Y.Z] - YYYY-MM-DD`);
+3. adds the dated anchor to the MCP version link, computed with the script, never by hand: `python3 -c "import sys; sys.path.insert(0,'scripts'); import whats_changed as w; print(w.github_slug('[X.Y.Z] - YYYY-MM-DD'))"`;
+4. runs `python3 scripts/whats_changed.py check WHATS-CHANGED.md --release`.
+
+Then tag that commit `vX.Y.Z` and push the tag. The Release workflow runs the same `check --release` before `npm publish` and stops while an Unreleased entry is left. A release that changes nothing a reader would notice (metadata only) gets no entry; its commit carries a `No-whats-changed: <reason>` trailer instead.
 
 ---
 

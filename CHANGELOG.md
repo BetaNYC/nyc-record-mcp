@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - Unreleased
+
+Adds the two tools every BetaNYC MCP server carries, and `WHATS-CHANGED.md`, the
+reader-facing record of changes. Tracking: BetaNYC/betanyc-ai-workspace#1645 (epic #1637).
+
+### Added
+
+- `whats_changed`: what changed in this server, newest first, from `WHATS-CHANGED.md`
+  (filters: `since`, `tag`, `limit`). Answers with readable text and `structuredContent`
+  matching a declared `outputSchema`. Reads the file shipped in the package; no network.
+- `about_betanyc`: who built the server, the repository, where to report a problem, and
+  BetaNYC's links.
+- `src/betanyc-tools.ts`, copied unchanged from the workspace's
+  `scripts/mcp_shared/betanyc-tools.ts` (v1.1.1). Never edit the copy; change the canonical
+  file and copy it again. Its two tools are appended to `TOOLS` and answered first in the
+  `CallTool` handler. They validate their own arguments (unknown keys rejected by name), so
+  they have no entry in `SCHEMAS`.
+- `src/version.ts`: the package version, read from package.json, shared by the server and
+  `about_betanyc`.
+- `WHATS-CHANGED.md`, backfilled to 1.0.0, shipped in the npm package (`files`). No site:
+  GitHub's rendering of the file is the page, linked near the top of the README.
+- `scripts/whats_changed.py`, copied unchanged from the workspace (v1.1.1). CI runs a
+  `whats-changed` job with `check --base-ref` (old entries are append-only, and a version
+  bump needs an entry). The release workflow runs `check --release` before `npm publish`,
+  so a release cannot ship while the `WHATS-CHANGED.md` entry still says `Unreleased`.
+
+### Changed
+
+- 9 tools instead of 7 (README, with a reference section for the two new ones).
+- README "Releases" has the release-day steps for dating the `WHATS-CHANGED.md` entry.
+
+### Tests
+
+- `test/betanyc-tools.test.mjs`: both tools listed with output schemas and read-only
+  annotations; `whats_changed` answers from this repo's file with every entry valid, and its
+  filters and argument errors; `about_betanyc`; both answers pass the SDK client's own
+  `outputSchema` validation over stdio, and an existing tool still rejects an unknown key
+  there; `npm pack --dry-run` lists `WHATS-CHANGED.md`.
+
 ## [1.1.1] - unreleased
 
 ### Added

@@ -5,7 +5,6 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { createRequire } from "node:module";
 import {
   searchNotices,
   getNoticesByAgency,
@@ -15,10 +14,8 @@ import {
   getOpenSolicitations,
   getNoticesByDateRange,
 } from "./city-record.js";
-import { TOOLS, parseToolArgs } from "./tools.js";
-
-const require = createRequire(import.meta.url);
-const { version } = require("../package.json") as { version: string };
+import { TOOLS, parseToolArgs, betanyc } from "./tools.js";
+import { PACKAGE_VERSION as version } from "./version.js";
 
 const server = new Server(
   { name: "nyc-record-mcp", version },
@@ -29,6 +26,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }))
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
+
+  // whats_changed and about_betanyc: the shared module validates its own arguments and
+  // answers with text plus structuredContent matching its outputSchema (src/tools.ts).
+  if (betanyc.handles(name)) return betanyc.call(name, args);
 
   try {
     switch (name) {
