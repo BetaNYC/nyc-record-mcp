@@ -36,7 +36,7 @@ Exposes 9 tools over MCP:
 | `get_open_solicitations` | Active RFPs/RFQs where the deadline has not passed |
 | `get_notices_by_date_range` | All notices published within a date window |
 | `whats_changed` | What changed in this server, newest first, from [WHATS-CHANGED.md](WHATS-CHANGED.md) (filter by date or tag) |
-| `about_betanyc` | Who built this server, where to report a problem, and BetaNYC's links |
+| `about_betanyc` | Who built this server, where to report a bug in this server or ask for a new feature, and BetaNYC's links |
 
 ---
 
@@ -163,7 +163,7 @@ BetaNYC is adding these two tools to each of its MCP servers, with the same inpu
 | `tag` | string | no | — | Site, Data, MCP or Correction |
 | `limit` | number | no | 10 | Max results (max 50) |
 
-`about_betanyc` takes no parameters. It names the server and its version, who built it, where to report a problem, and BetaNYC's links.
+`about_betanyc` takes no parameters. It names the server and its version, who built it, where to report a bug in this server or ask for a new feature, and BetaNYC's links.
 
 ```
 whats_changed(tag="Correction")
@@ -388,7 +388,7 @@ Releases are automated. Pushing a tag matching `v*` (e.g. `v1.0.2`) runs tests, 
 3. adds the dated anchor to the MCP version link, computed with the script, never by hand: `python3 -c "import sys; sys.path.insert(0,'scripts'); import whats_changed as w; print(w.github_slug('[X.Y.Z] - YYYY-MM-DD'))"`;
 4. runs `python3 scripts/whats_changed.py check WHATS-CHANGED.md --release`.
 
-Then tag that commit `vX.Y.Z` and push the tag. The Release workflow runs the same `check --release` before `npm publish` and stops while an Unreleased entry is left. A release that changes nothing a reader would notice (metadata only) gets no entry; its commit carries a `No-whats-changed: <reason>` trailer instead.
+That commit may also reword the entry's text: an entry counts as published only once it has a date, so no `Whats-changed-edit:` trailer is needed. Then tag that commit `vX.Y.Z` and push the tag. The Release workflow runs the same `check --release` before `npm publish` and stops while an Unreleased entry is left. A release that changes nothing a reader would notice (metadata only) gets no entry; its commit carries a `No-whats-changed: <reason>` trailer instead.
 
 ---
 
