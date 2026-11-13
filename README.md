@@ -155,7 +155,7 @@ get_notices_by_date_range("2026-01-01", "2026-03-31", limit=200)
 
 ### `whats_changed` and `about_betanyc`
 
-Every BetaNYC MCP server carries these two tools, with the same inputs and output. `whats_changed` reads [WHATS-CHANGED.md](WHATS-CHANGED.md), which ships in the package, and never touches the network.
+BetaNYC is adding these two tools to each of its MCP servers, with the same inputs and output. `whats_changed` reads [WHATS-CHANGED.md](WHATS-CHANGED.md), which ships in the package, and never touches the network.
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|

@@ -25,7 +25,7 @@ To report a problem with this server or ask for a feature, [open an issue on Git
 ## 2026-07-06: Searches by agency name came back empty
 
 - **Tags:** MCP, Correction
-- **What changed:** From May 21 to July 6, 2026, searching City Record notices by agency name often found nothing, because the server garbled the search pattern before sending it to NYC Open Data. It failed especially for agency names with spaces or special characters, such as Parks and Recreation. Version 1.0.2 sends the pattern correctly.
+- **What changed:** From May 21 to July 6, 2026, searching City Record notices by agency name almost always found nothing, because the server garbled the search pattern before sending it to NYC Open Data. It failed especially for agency names with spaces or special characters, such as Parks and Recreation. Version 1.0.2 sends the pattern correctly.
 - **If you used the old numbers:** If a search by agency name in that period found no notices, or fewer than you expected, search again with the current version or on City Record Online. Searches by notice type, date or keyword were not affected by this problem.
 - **MCP version:** [nyc-record-mcp 1.0.2](CHANGELOG.md#102---2026-07-06)
 - **More detail:** [The fix](https://github.com/BetaNYC/nyc-record-mcp/pull/6)
