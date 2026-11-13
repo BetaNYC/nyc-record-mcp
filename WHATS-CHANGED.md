@@ -7,11 +7,11 @@ This page lists the changes to nyc-record-mcp that a reader would notice: new to
 
 To report a bug in this server or ask for a new feature, [open an issue on GitHub](https://github.com/BetaNYC/nyc-record-mcp/issues).
 
-## Unreleased: Two tools that explain the server, and this page
+## 2026-11-13: Two tools that explain the server, and this page
 
 - **Tags:** MCP
 - **What changed:** This page is new and lists every change to the server that a reader would notice. Two new tools let your AI assistant answer "what's new in this server?" from this page, and "who built this?" with links to BetaNYC and to the place to report a bug in this server or ask for a new feature.
-- **MCP version:** [nyc-record-mcp 1.2.0](CHANGELOG.md)
+- **MCP version:** [nyc-record-mcp 1.2.0](CHANGELOG.md#120---2026-11-13)
 - **More detail:** [Release notes](CHANGELOG.md)
 
 ## 2026-07-21: Tools ignored settings they did not have, without saying so
