@@ -1,0 +1,87 @@
+{
+  "format": "betanyc-data-sources/1",
+  "server": {
+    "name": "nyc-record-mcp",
+    "title": "NYC City Record MCP server",
+    "description": "An MCP server for notices published in The City Record, New York City's official newspaper: procurement solicitations and awards, public hearings and meetings, sales and agency rules. Every answer asks the City Record Online dataset on NYC Open Data at the time of the question.",
+    "kind": "mcp",
+    "repository": "https://github.com/BetaNYC/nyc-record-mcp",
+    "documentation_url": "https://github.com/BetaNYC/nyc-record-mcp#readme",
+    "package_url": "https://www.npmjs.com/package/@betanyc/nyc-record-mcp",
+    "license": {
+      "name": "MIT",
+      "url": "https://spdx.org/licenses/MIT.html"
+    },
+    "contact_email": "lab@beta.nyc",
+    "keywords": [
+      "nyc",
+      "city record",
+      "procurement",
+      "solicitations",
+      "contract awards",
+      "public hearings",
+      "nyc open data"
+    ]
+  },
+  "sources": [
+    {
+      "id": "city-record",
+      "title": "City Record notices",
+      "what": "Notices published in The City Record: solicitations, awards and intents to award or negotiate, public hearings, comment periods and meetings, sales, vendor lists and other notices, each with its agency, dates, title, description, contact and document links, and Changes in Personnel listings.",
+      "source_name": "City Record Online, NYC Open Data dataset dg92-zbpx",
+      "publisher": {
+        "name": "NYC Department of Citywide Administrative Services (DCAS)",
+        "url": "https://www.nyc.gov/site/dcas/index.page"
+      },
+      "source_url": "https://data.cityofnewyork.us/d/dg92-zbpx",
+      "official": true,
+      "how_gathered": "Read-only requests to the dataset's Socrata API on NYC Open Data (https://data.cityofnewyork.us/resource/dg92-zbpx.json) at the moment you ask, with an app token when SOCRATA_APP_TOKEN is set. Each tool sends one query, such as a keyword search, an agency name, a notice type or a date range, and returns the newest matching notices.",
+      "changes": {
+        "changed": false,
+        "steps": []
+      },
+      "verify_at": "https://a856-cityrecord.nyc.gov/",
+      "freshness": {
+        "kind": "live"
+      },
+      "update_frequency": "daily",
+      "coverage": {
+        "start": "2003-01-02",
+        "end": null,
+        "geography": "New York City agencies",
+        "known_gaps": [
+          "About 88% of the notices in the dataset are 'Changes in Personnel' listings (City staff appointments, departures and pay changes, from July 2013 on). They have no notice type, so get_notices_by_type, get_procurement_notices, get_public_hearings and get_open_solicitations never return them. search_notices, get_notices_by_agency and get_notices_by_date_range do, and personnel listings can fill most of those results.",
+          "Personnel listings start in July 2013. Other kinds of notice go back to 2003 at a steady 3,500 to 8,000 a year."
+        ]
+      },
+      "terms": {
+        "license_name": "Public Domain, as the dataset's NYC Open Data page lists it",
+        "terms_url": "https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-216807",
+        "credit_line": "Source: NYC Department of Citywide Administrative Services, City Record Online (NYC Open Data dg92-zbpx)."
+      },
+      "report_errors": {
+        "upstream_url": "https://www.nyc.gov/opendata/contact-us",
+        "upstream_name": "NYC Open Data"
+      },
+      "tools": [
+        "search_notices",
+        "get_notices_by_agency",
+        "get_notices_by_type",
+        "get_procurement_notices",
+        "get_public_hearings",
+        "get_open_solicitations",
+        "get_notices_by_date_range"
+      ],
+      "caveats": [
+        "Each tool returns at most 100 notices (200 for a date range), newest first (open solicitations: soonest deadline first), so a long list is cut short at that limit.",
+        "An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it.",
+        "City Record Online says questions about the content of a notice go to the agency or contact person named in the notice."
+      ],
+      "corrections": [
+        "2026-07-21-tools-ignored-settings-they-did-not-have-without-saying-so",
+        "2026-07-06-searches-by-agency-name-came-back-empty",
+        "2026-07-06-open-solicitations-due-that-day-were-left-out-in-the-evening"
+      ]
+    }
+  ]
+}
