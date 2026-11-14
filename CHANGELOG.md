@@ -5,6 +5,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - unreleased
+
+Adds `about_data`, the third tool BetaNYC adds to each of its MCP servers, and
+`DATA-SOURCES.json`, the file it answers from. Moves to BetaNYC's shared module 1.3.6.
+Part of BetaNYC/betanyc-ai-workspace#1655 (epic #1652).
+
+### Added
+
+- `about_data`: where the data comes from (publisher, link, official or not, how it is
+  gathered, what BetaNYC changes, how current it is, coverage and gaps, terms and credit
+  line, where to check a notice and where to report an error, which tools use it), and
+  BetaNYC's contact address for data questions, lab@beta.nyc. `topic` takes the source id or
+  a tool name, in any case. Reads the file shipped in the package; no network.
+- `DATA-SOURCES.json`: one source, City Record Online (NYC Open Data `dg92-zbpx`), published
+  by DCAS, an official record passed on unchanged and fetched live. Publisher, license
+  (Public Domain), update frequency (daily) and the City Record Online link come from the
+  dataset's own NYC Open Data metadata. Coverage and the share of notices with no notice type
+  come from two read-only queries to the dataset on 2026-11-13. The three Correction entries
+  in `WHATS-CHANGED.md` are linked to it.
+- `data.json`, the DCAT-US 3.0 catalog generated from `DATA-SOURCES.json` with
+  `whats_changed.py about-data catalog` (never edited by hand). No `croissant.json`: the
+  server publishes no data files of its own.
+- Server instructions: one sentence on what the server covers, then the shared module's
+  `BETANYC_INSTRUCTIONS` (call `about_data` for questions about sources, freshness and
+  accuracy).
+- The validator kit, copied unchanged from the workspace: `scripts/tests/catalog_validate.py`,
+  `scripts/mcp_shared/data-sources.schema.json` and `scripts/mcp_shared/vendor/dcat-us-3.0.0/`.
+
+### Changed
+
+- `src/betanyc-tools.ts` is the workspace's shared module 1.3.6 (was 1.2.4) and
+  `scripts/whats_changed.py` is 1.3.5, both copied in unchanged. Never edit the copies.
+- The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
+- `package.json` `files` adds `DATA-SOURCES.json` and `data.json`.
+- README: `about_data` in the tool table and the shared tools section. The "Data source"
+  section no longer says the dataset holds notices "since 2015" (2015 is when the dataset was
+  made public; its earliest notices date from 2003), and it notes that most notices have no
+  notice type.
+- CI: a new `about-data` job (the tool list from the built server, `about-data check
+  --tools-file`, `about-data catalog --check`, and the JSON Schema and DCAT-US 3.0 validators
+  with pinned `jsonschema` 4.26.0, `referencing` 0.37.0 and `rfc3987` 1.3.8). The release
+  workflow runs `about-data check --release` before `npm publish`.
+
+### Tests
+
+- `test/about-data.test.mjs`: every listed tool has a source (`assertEveryToolExplained`,
+  which also fails on an unknown tool); the topic in the description; the source's publisher,
+  link, official and live status, unchanged figures, error route and corrections; every tool
+  name as a topic; a bad topic and an unknown key; the server instructions; module 1.3.6.
+- `test/betanyc-tools.test.mjs`: three shared tools, read-only with an output schema;
+  `about_data` over stdio answers with lab@beta.nyc and passes the SDK client's output-schema
+  check, and the server's instructions name `about_data`; `npm pack --dry-run` lists
+  `DATA-SOURCES.json` and `data.json`.
+- `test/strict-schema.test.mjs` and `test/tools.test.mjs`: `about_data` among the shared tools.
+
 ## [1.2.0] - 2026-11-13
 
 Adds `whats_changed` and `about_betanyc`, the two tools BetaNYC is adding to each of its MCP
