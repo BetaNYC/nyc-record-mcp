@@ -1,7 +1,8 @@
 {
   "name": "@betanyc/nyc-record-mcp",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "MCP server for NYC City Record notices via NYC Open Data",
+  "mcpName": "io.github.BetaNYC/nyc-record-mcp",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -21,6 +22,10 @@
   "license": "MIT",
   "author": "BetaNYC",
   "homepage": "https://github.com/BetaNYC/nyc-record-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BetaNYC/nyc-record-mcp.git"
+  },
   "bugs": {
     "url": "https://github.com/BetaNYC/nyc-record-mcp/issues"
   },
@@ -30,13 +35,14 @@
     "nyc-record-mcp": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "WHATS-CHANGED.md"
   ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
-    "test": "npm run build && node --test \"test/*.test.mjs\"",
+    "test": "npm run build && node --test test/*.test.mjs",
     "prepare": "npm run build"
   },
   "dependencies": {

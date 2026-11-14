@@ -6,6 +6,8 @@ The City Record is the official publication of the City of New York — procurem
 
 Vibe coded with [Claude](https://claude.ai) by [BetaNYC](https://beta.nyc).
 
+**[What's changed](WHATS-CHANGED.md)**: new tools, changes to what the tools return, and corrections, newest first.
+
 ---
 
 ## API key
@@ -22,7 +24,7 @@ export SOCRATA_APP_TOKEN="your-app-token"
 
 ## What it does
 
-Exposes 7 tools over MCP:
+Exposes 9 tools over MCP:
 
 | Tool | Description |
 |---|---|
@@ -33,6 +35,8 @@ Exposes 7 tools over MCP:
 | `get_public_hearings` | Recent public hearings, comment periods, and meetings |
 | `get_open_solicitations` | Active RFPs/RFQs where the deadline has not passed |
 | `get_notices_by_date_range` | All notices published within a date window |
+| `whats_changed` | What changed in this server, newest first, from [WHATS-CHANGED.md](WHATS-CHANGED.md) (filter by date or tag) |
+| `about_betanyc` | Who built this server, where to report a bug in this server or ask for a new feature, and BetaNYC's links |
 
 ---
 
@@ -149,6 +153,27 @@ get_notices_by_date_range("2026-01-01", "2026-03-31", limit=200)
 
 ---
 
+### `whats_changed` and `about_betanyc`
+
+BetaNYC is adding these two tools to each of its MCP servers, with the same inputs and output. `whats_changed` reads [WHATS-CHANGED.md](WHATS-CHANGED.md), which ships in the package, and never touches the network.
+
+| Parameter | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `since` | string | no | — | Changes on or after this date, YYYY-MM-DD |
+| `tag` | string | no | — | Site, Data, MCP or Correction |
+| `limit` | number | no | 10 | Max results (max 50) |
+
+`about_betanyc` takes no parameters. It names the server and its version, who built it, where to report a bug in this server or ask for a new feature, and BetaNYC's links.
+
+```
+whats_changed(tag="Correction")
+about_betanyc()
+```
+
+`src/betanyc-tools.ts` and `scripts/whats_changed.py` are copies of shared files in BetaNYC's workspace: never edit them here.
+
+---
+
 ## Common workflows
 
 ### Track open RFPs before they close
@@ -191,6 +216,8 @@ get_notices_by_date_range("2026-05-01", "2026-05-31")   → by month
 
 ## Installation
 
+From v1.1.1 the server is also published to the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.BetaNYC/nyc-record-mcp`.
+
 ### Option 1 — npx (no install required)
 
 ```bash
@@ -212,6 +239,12 @@ cd nyc-record-mcp
 npm install
 npm run build
 npm start
+```
+
+Run the test suite (builds first, then runs the Node test runner against `test/*.test.mjs`):
+
+```bash
+npm test
 ```
 
 ---
@@ -251,7 +284,13 @@ With an optional app token:
 
 ### Claude Code
 
-Add to your project's `.claude/settings.json`:
+Add it with the CLI:
+
+```bash
+claude mcp add nyc-record -- npx -y @betanyc/nyc-record-mcp
+```
+
+Or add to your project's `.mcp.json` (checked in, shared with your team):
 
 ```json
 {
@@ -288,11 +327,68 @@ All data comes from the [NYC City Record Online dataset](https://data.cityofnewy
 
 If you're looking for broader access to NYC Open Data — or Socrata-powered portals in other cities — check out Nathan Storey's **[socrata-mcp-server](https://github.com/npstorey/socrata-mcp-server)**. It connects AI assistants to any Socrata portal with tools for dataset discovery and SoQL queries, including NYC, Chicago, San Francisco, and [New York State's open data portal](https://data.ny.gov) (data.ny.gov), among hundreds more. The SODA API pattern in this project was informed by Nathan's work.
 
+## About BetaNYC
+
+This project is built and maintained by [BetaNYC](https://beta.nyc), New York's
+civic technology and open-data community. We work to improve lives in New York
+through civic design, technology, data, and public-interest technology.
+
+**Come do civic tech with us.** We run public events, meetups, and hands-on
+data classes throughout the year — including [NYC School of Data](https://www.schoolofdata.nyc/)
+and [CityCamp NYC](https://citycamp.nyc), and we host frequent civic-tech gatherings. See what's coming up on our
+[events calendar](https://www.beta.nyc/events/).
+
+**Sustain this work.** These MCP servers are free and open source. To help keep this work going and find BetaNYC's
+tools, please consider [donating and becoming a Beta
+Builder](https://beta.nyc/donate).
+
+## Building on this? Tell us!
+
+If you build something with this project, we'd love to hear about it. We can help other New Yorkers find it. BetaNYC publishes a weekly newsletter,
+*This Week in NYC's Civic Technology and Open Data*.
+
+- **[Subscribe to the newsletter](https://beta.nyc/newsletter)** to keep up with
+  NYC civic tech, open data, and public-interest technology.
+- **Built something, or found a story worth sharing?** [Submit a link for the
+  newsletter](https://www.beta.nyc/newsletter-inbox/) and we'll consider it for
+  an upcoming issue.
+
+## Related BetaNYC MCP servers
+
+BetaNYC maintains a suite of open-source MCP servers for NYC and NYS civic data.
+See the full directory, with install details for each, at
+**[beta.nyc/ai-tools](https://beta.nyc/ai-tools)**.
+
+This server pairs directly with:
+
+- **[nyc-checkbook-mcp](https://github.com/BetaNYC/nyc-checkbook-mcp)**: move from a procurement solicitation or award notice to the resulting registered contract, payments, and agency spending in Checkbook.
+
+> **Working with the wider NYC Open Data portal?** This server reads the City Record
+> dataset on NYC Open Data. To search the full catalog or run ad-hoc SoQL queries
+> across other datasets, pair it with
+> [socrata-mcp-server](https://github.com/npstorey/socrata-mcp-server)
+> (`socrata-mcp-server` on npm), a third-party MCP by [Nathan Storey](https://github.com/npstorey).
+
 ---
 
 ## Contributing
 
 Issues and pull requests welcome at [github.com/BetaNYC/nyc-record-mcp](https://github.com/BetaNYC/nyc-record-mcp).
+
+---
+
+## Releases
+
+Releases are automated. Pushing a tag matching `v*` (e.g. `v1.0.2`) runs tests, verifies the tag matches the `package.json` version, publishes to npm with provenance, and creates a GitHub Release with generated notes. See [CHANGELOG.md](CHANGELOG.md) for version history, and [WHATS-CHANGED.md](WHATS-CHANGED.md) for the record written for everyone else. Requires the `NPM_TOKEN` repository secret.
+
+**Release day.** A version bump merges with its `WHATS-CHANGED.md` entry headed `## Unreleased: Title` and its `CHANGELOG.md` heading undated (`## [X.Y.Z] - Unreleased`), the entry's MCP version linking to `CHANGELOG.md` with no anchor. On the day the tag goes on, make one commit that:
+
+1. changes `## Unreleased: Title` to `## YYYY-MM-DD: Title` (same title, today's date in New York; `check` rejects a future date);
+2. gives the `CHANGELOG.md` heading the same date (`## [X.Y.Z] - YYYY-MM-DD`);
+3. adds the dated anchor to the MCP version link, computed with the script, never by hand: `python3 -c "import sys; sys.path.insert(0,'scripts'); import whats_changed as w; print(w.github_slug('[X.Y.Z] - YYYY-MM-DD'))"`;
+4. runs `python3 scripts/whats_changed.py check WHATS-CHANGED.md --release`.
+
+That commit may also reword the entry's body, since an entry counts as published only once it has a date, so no `Whats-changed-edit:` trailer is needed. Its title may never change, while Unreleased or when dated: CI checks it. Then tag that commit `vX.Y.Z` and push the tag. The Release workflow runs the same `check --release` before `npm publish` and stops while an Unreleased entry is left. A release that changes nothing a reader would notice (metadata only) gets no entry; its commit carries a `No-whats-changed: <reason>` trailer instead.
 
 ---
 
@@ -310,4 +406,4 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

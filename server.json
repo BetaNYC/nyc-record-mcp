@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.BetaNYC/nyc-record-mcp",
+  "title": "NYC City Record",
+  "description": "Search NYC City Record notices: procurement, contract awards, open solicitations, public hearings",
+  "repository": {
+    "url": "https://github.com/BetaNYC/nyc-record-mcp",
+    "source": "github"
+  },
+  "version": "1.2.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@betanyc/nyc-record-mcp",
+      "version": "1.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "SOCRATA_APP_TOKEN",
+          "description": "Optional NYC Open Data (Socrata) app token for higher rate limits. Not needed for normal use",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
