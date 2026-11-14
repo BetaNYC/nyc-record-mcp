@@ -24,8 +24,9 @@ Part of BetaNYC/betanyc-ai-workspace#1655 (epic #1652).
   dataset's own NYC Open Data metadata. Coverage, and the finding that about 88% of the
   notices are "Changes in Personnel" listings (from July 2013, with no notice type), come from
   read-only queries to the dataset on 2026-11-13. Terms: NYC Administrative Code § 23-502(d).
-  Errors in the dataset go to NYC Open Data's contact form; a caveat adds that City Record
-  Online sends questions about a notice's content to the agency or contact named in it. The three Correction entries
+  Errors in the dataset go to NYC Open Data's contact form, credited to NYC Open Data with
+  `report_errors.upstream_name` (new in module 1.3.7); a caveat adds that City Record Online
+  sends questions about a notice's content to the agency or contact named in it. The three Correction entries
   in `WHATS-CHANGED.md` are linked to it.
 - `data.json`, the DCAT-US 3.0 catalog generated from `DATA-SOURCES.json` with
   `whats_changed.py about-data catalog` (never edited by hand). No `croissant.json`: the

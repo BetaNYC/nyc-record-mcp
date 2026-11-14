@@ -60,7 +60,8 @@
         "credit_line": "Source: NYC Department of Citywide Administrative Services, City Record Online (NYC Open Data dg92-zbpx)."
       },
       "report_errors": {
-        "upstream_url": "https://www.nyc.gov/opendata/contact-us"
+        "upstream_url": "https://www.nyc.gov/opendata/contact-us",
+        "upstream_name": "NYC Open Data"
       },
       "tools": [
         "search_notices",
@@ -74,7 +75,7 @@
       "caveats": [
         "Each tool returns at most 100 notices (200 for a date range), newest first (open solicitations: soonest deadline first), so a long list is cut short at that limit.",
         "An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it.",
-        "Errors in the dataset go to NYC Open Data's contact form. City Record Online says questions about the content of a notice go to the agency or contact person named in the notice."
+        "City Record Online says questions about the content of a notice go to the agency or contact person named in the notice."
       ],
       "corrections": [
         "2026-07-21-tools-ignored-settings-they-did-not-have-without-saying-so",

@@ -42,8 +42,11 @@ test("the source: DCAS's City Record Online on NYC Open Data, official, live, pa
   assert.equal(s.as_of_status, "live");
   assert.equal(s.update_frequency, "daily");
   assert.equal(s.report_errors.in_the_data, "https://www.nyc.gov/opendata/contact-us");
+  // The form is NYC Open Data's, not the publisher's (upstream_name, module 1.3.7).
+  assert.equal(s.report_errors.in_the_data_name, "NYC Open Data");
   assert.equal(s.corrections.length, 3);
   assert.match(r.content[0].text, /Official record: yes, passed on as NYC Department of Citywide Administrative Services \(DCAS\) publishes it\./);
+  assert.match(r.content[0].text, /Report an error in the data to NYC Open Data: https:\/\/www\.nyc\.gov\/opendata\/contact-us/);
   assert.match(r.content[0].text, /Questions or error reports about this data, to BetaNYC: lab@beta\.nyc/);
 });
 

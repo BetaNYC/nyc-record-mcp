@@ -24,7 +24,7 @@
       "identifier": "https://data.cityofnewyork.us/d/dg92-zbpx",
       "contactPoint": {
         "@type": "Kind",
-        "fn": "BetaNYC (lists this dataset; report errors in the data to NYC Department of Citywide Administrative Services (DCAS): https://www.nyc.gov/opendata/contact-us)",
+        "fn": "BetaNYC (lists this dataset; report errors in the data to NYC Open Data: https://www.nyc.gov/opendata/contact-us)",
         "hasEmail": "mailto:lab@beta.nyc"
       },
       "publisher": {
@@ -58,7 +58,7 @@
       "identifier": "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/DATA-SOURCES.json#city-record",
       "contactPoint": {
         "@type": "Kind",
-        "fn": "BetaNYC (serves this dataset; report errors in the data to NYC Department of Citywide Administrative Services (DCAS): https://www.nyc.gov/opendata/contact-us; errors in this server: https://github.com/BetaNYC/nyc-record-mcp/issues)",
+        "fn": "BetaNYC (serves this dataset; report errors in the data to NYC Open Data: https://www.nyc.gov/opendata/contact-us; errors in this server: https://github.com/BetaNYC/nyc-record-mcp/issues)",
         "hasEmail": "mailto:lab@beta.nyc"
       },
       "publisher": {
@@ -81,7 +81,7 @@
           "identifier": "https://data.cityofnewyork.us/d/dg92-zbpx",
           "contactPoint": {
             "@type": "Kind",
-            "fn": "BetaNYC (lists this dataset; report errors in the data to NYC Department of Citywide Administrative Services (DCAS): https://www.nyc.gov/opendata/contact-us)",
+            "fn": "BetaNYC (lists this dataset; report errors in the data to NYC Open Data: https://www.nyc.gov/opendata/contact-us)",
             "hasEmail": "mailto:lab@beta.nyc"
           },
           "publisher": {
@@ -135,7 +135,7 @@
         "Credit: Source: NYC Department of Citywide Administrative Services, City Record Online (NYC Open Data dg92-zbpx).",
         "Terms of use: https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-216807"
       ],
-      "scopeNote": "Known gap: About 88% of the notices in the dataset are 'Changes in Personnel' listings (City staff appointments, departures and pay changes, from July 2013 on). They have no notice type, so get_notices_by_type, get_procurement_notices, get_public_hearings and get_open_solicitations never return them. search_notices, get_notices_by_agency and get_notices_by_date_range do, and personnel listings can fill most of those results. Known gap: Personnel listings start in July 2013. Other kinds of notice go back to 2003 at a steady 3,500 to 8,000 a year. Caveat: Each tool returns at most 100 notices (200 for a date range), newest first (open solicitations: soonest deadline first), so a long list is cut short at that limit. Caveat: An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it. Caveat: Errors in the dataset go to NYC Open Data's contact form. City Record Online says questions about the content of a notice go to the agency or contact person named in the notice.",
+      "scopeNote": "Known gap: About 88% of the notices in the dataset are 'Changes in Personnel' listings (City staff appointments, departures and pay changes, from July 2013 on). They have no notice type, so get_notices_by_type, get_procurement_notices, get_public_hearings and get_open_solicitations never return them. search_notices, get_notices_by_agency and get_notices_by_date_range do, and personnel listings can fill most of those results. Known gap: Personnel listings start in July 2013. Other kinds of notice go back to 2003 at a steady 3,500 to 8,000 a year. Caveat: Each tool returns at most 100 notices (200 for a date range), newest first (open solicitations: soonest deadline first), so a long list is cut short at that limit. Caveat: An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it. Caveat: City Record Online says questions about the content of a notice go to the agency or contact person named in the notice.",
       "isReferencedBy": [
         "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/WHATS-CHANGED.md#2026-07-21-tools-ignored-settings-they-did-not-have-without-saying-so",
         "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/WHATS-CHANGED.md#2026-07-06-searches-by-agency-name-came-back-empty",
