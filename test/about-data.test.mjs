@@ -12,8 +12,8 @@ import { assertEveryToolExplained, BETANYC_INSTRUCTIONS, SHARED_MODULE_VERSION }
 const DS_TEXT = readFileSync(new URL("../DATA-SOURCES.json", import.meta.url), "utf8");
 const NAMES = TOOLS.map((t) => t.name);
 
-test("shared module 1.3.6", () => {
-  assert.equal(SHARED_MODULE_VERSION, "1.3.6");
+test("shared module 1.3.7", () => {
+  assert.equal(SHARED_MODULE_VERSION, "1.3.7");
 });
 
 test("every tool says where its data comes from, so a new tool cannot ship unexplained", () => {

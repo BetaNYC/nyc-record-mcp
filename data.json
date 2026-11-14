@@ -47,14 +47,14 @@
       "accrualPeriodicity": "daily",
       "rights": [
         "License: Public Domain, as the dataset's NYC Open Data page lists it",
-        "Terms of use: https://www.nyc.gov/main/terms-of-use"
+        "Terms of use: https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-216807"
       ]
     },
     {
       "@id": "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/DATA-SOURCES.json#city-record",
       "@type": "Dataset",
       "title": "City Record notices (NYC City Record MCP server)",
-      "description": "Notices published in The City Record: solicitations, awards and intents to award or negotiate, public hearings, comment periods and meetings, sales, vendor lists and other notices, each with its agency, dates, title, description, contact and document links.",
+      "description": "Notices published in The City Record: solicitations, awards and intents to award or negotiate, public hearings, comment periods and meetings, sales, vendor lists and other notices, each with its agency, dates, title, description, contact and document links, and Changes in Personnel listings.",
       "identifier": "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/DATA-SOURCES.json#city-record",
       "contactPoint": {
         "@type": "Kind",
@@ -104,7 +104,7 @@
           "accrualPeriodicity": "daily",
           "rights": [
             "License: Public Domain, as the dataset's NYC Open Data page lists it",
-            "Terms of use: https://www.nyc.gov/main/terms-of-use"
+            "Terms of use: https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-216807"
           ]
         }
       ],
@@ -133,9 +133,9 @@
       "rights": [
         "License: Public Domain, as the dataset's NYC Open Data page lists it",
         "Credit: Source: NYC Department of Citywide Administrative Services, City Record Online (NYC Open Data dg92-zbpx).",
-        "Terms of use: https://www.nyc.gov/main/terms-of-use"
+        "Terms of use: https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-216807"
       ],
-      "scopeNote": "Known gap: Most notices in the dataset have no notice type (about 88% when checked on 2026-11-13). get_notices_by_type, get_procurement_notices, get_public_hearings and get_open_solicitations select by notice type, so they never return those notices; search_notices, get_notices_by_agency and get_notices_by_date_range do. Known gap: Before 2013 the dataset holds far fewer notices a year: about 3,500 to 5,500, against 70,000 to 110,000 a year from 2014 on, when checked on 2026-11-13. Caveat: Each tool returns at most 100 notices (200 for a date range), newest first (open solicitations: soonest deadline first), so a long list is cut short at that limit. Caveat: An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it.",
+      "scopeNote": "Known gap: About 88% of the notices in the dataset are 'Changes in Personnel' listings (City staff appointments, departures and pay changes, from July 2013 on). They have no notice type, so get_notices_by_type, get_procurement_notices, get_public_hearings and get_open_solicitations never return them. search_notices, get_notices_by_agency and get_notices_by_date_range do, and personnel listings can fill most of those results. Known gap: Personnel listings start in July 2013. Other kinds of notice go back to 2003 at a steady 3,500 to 8,000 a year. Caveat: Each tool returns at most 100 notices (200 for a date range), newest first (open solicitations: soonest deadline first), so a long list is cut short at that limit. Caveat: An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it. Caveat: Errors in the dataset go to NYC Open Data's contact form. City Record Online says questions about the content of a notice go to the agency or contact person named in the notice.",
       "isReferencedBy": [
         "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/WHATS-CHANGED.md#2026-07-21-tools-ignored-settings-they-did-not-have-without-saying-so",
         "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/WHATS-CHANGED.md#2026-07-06-searches-by-agency-name-came-back-empty",

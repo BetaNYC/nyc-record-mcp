@@ -325,7 +325,7 @@ Once connected, you can ask your AI assistant things like:
 
 ## Data source
 
-All data comes from the [NYC City Record Online dataset](https://data.cityofnewyork.us/City-Government/City-Record-Online/dg92-zbpx) on NYC Open Data, published by the NYC Department of Citywide Administrative Services (DCAS). The dataset is updated daily. Its earliest notices date from 2003, though it holds far fewer notices a year before 2013. Most notices have no notice type, so the tools that pick notices by type never return them; [DATA-SOURCES.json](DATA-SOURCES.json) has the details.
+All data comes from the [NYC City Record Online dataset](https://data.cityofnewyork.us/City-Government/City-Record-Online/dg92-zbpx) on NYC Open Data, published by the NYC Department of Citywide Administrative Services (DCAS). The dataset is updated daily. Its notices go back to 2003. About 88% of them are "Changes in Personnel" listings (City staff appointments, departures and pay changes), which start in July 2013 and have no notice type, so the tools that pick notices by type never return them, while keyword, agency and date searches can be mostly personnel listings. [DATA-SOURCES.json](DATA-SOURCES.json) has the details.
 
 ---
 
