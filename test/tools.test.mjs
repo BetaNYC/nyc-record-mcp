@@ -17,6 +17,7 @@ test("the advertised tool names are unchanged", () => {
       "get_notices_by_date_range",
       "whats_changed",
       "about_betanyc",
+      "about_data",
     ]
   );
   for (const tool of TOOLS) {

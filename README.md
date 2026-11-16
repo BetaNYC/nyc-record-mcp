@@ -8,6 +8,8 @@ Vibe coded with [Claude](https://claude.ai) by [BetaNYC](https://beta.nyc).
 
 **[What's changed](WHATS-CHANGED.md)**: new tools, changes to what the tools return, and corrections, newest first.
 
+**[Where the data comes from](DATA-SOURCES.json)**: the source, its publisher, how current it is, its terms, and where to report an error. Also published as a DCAT-US 3.0 catalog, [data.json](data.json).
+
 ---
 
 ## API key
@@ -24,7 +26,7 @@ export SOCRATA_APP_TOKEN="your-app-token"
 
 ## What it does
 
-Exposes 9 tools over MCP:
+Exposes 10 tools over MCP:
 
 | Tool | Description |
 |---|---|
@@ -37,6 +39,7 @@ Exposes 9 tools over MCP:
 | `get_notices_by_date_range` | All notices published within a date window |
 | `whats_changed` | What changed in this server, newest first, from [WHATS-CHANGED.md](WHATS-CHANGED.md) (filter by date or tag) |
 | `about_betanyc` | Who built this server, where to report a bug in this server or ask for a new feature, and BetaNYC's links |
+| `about_data` | Where the data comes from, from [DATA-SOURCES.json](DATA-SOURCES.json): the publisher, whether it is an official record, how current it is, terms and credit line, where to check a notice and where to report an error |
 
 ---
 
@@ -153,9 +156,9 @@ get_notices_by_date_range("2026-01-01", "2026-03-31", limit=200)
 
 ---
 
-### `whats_changed` and `about_betanyc`
+### `whats_changed`, `about_betanyc` and `about_data`
 
-BetaNYC is adding these two tools to each of its MCP servers, with the same inputs and output. `whats_changed` reads [WHATS-CHANGED.md](WHATS-CHANGED.md), which ships in the package, and never touches the network.
+BetaNYC adds these three tools to each of its MCP servers, with the same inputs and output. `whats_changed` reads [WHATS-CHANGED.md](WHATS-CHANGED.md), which ships in the package, and never touches the network.
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
@@ -165,12 +168,15 @@ BetaNYC is adding these two tools to each of its MCP servers, with the same inpu
 
 `about_betanyc` takes no parameters. It names the server and its version, who built it, where to report a bug in this server or ask for a new feature, and BetaNYC's links.
 
+`about_data` answers from [DATA-SOURCES.json](DATA-SOURCES.json), which ships in the package, and never touches the network. Its one optional parameter, `topic`, takes the source's name (`city-record`) or a tool name. It says who publishes the data, whether it is an official record, how it reaches the server, how current it is, what it covers and leaves out, the terms of use and credit line, where to check a notice and where to report an error, and BetaNYC's address for questions about the data, lab@beta.nyc. The same facts are published as a DCAT-US 3.0 catalog, [data.json](data.json), generated from `DATA-SOURCES.json` with `python3 scripts/whats_changed.py about-data catalog DATA-SOURCES.json` (never edit it by hand).
+
 ```
 whats_changed(tag="Correction")
 about_betanyc()
+about_data(topic="get_open_solicitations")
 ```
 
-`src/betanyc-tools.ts` and `scripts/whats_changed.py` are copies of shared files in BetaNYC's workspace: never edit them here.
+`src/betanyc-tools.ts`, `scripts/whats_changed.py`, `scripts/tests/catalog_validate.py` and `scripts/mcp_shared/` are copies of shared files in BetaNYC's workspace: never edit them here.
 
 ---
 
@@ -319,7 +325,7 @@ Once connected, you can ask your AI assistant things like:
 
 ## Data source
 
-All data comes from the [NYC City Record Online dataset](https://data.cityofnewyork.us/City-Government/City-Record-Online/dg92-zbpx) on NYC Open Data, published by the NYC Department of Citywide Administrative Services (DCAS). The dataset is updated daily and includes notices published in the official City Record since 2015.
+All data comes from the [NYC City Record Online dataset](https://data.cityofnewyork.us/City-Government/City-Record-Online/dg92-zbpx) on NYC Open Data, published by the NYC Department of Citywide Administrative Services (DCAS). The dataset is updated daily. Its notices go back to 2003. About 88% of them are "Changes in Personnel" listings (City staff appointments, departures and pay changes), which start in July 2013 and have no notice type, so the tools that pick notices by type never return them, while keyword, agency and date searches can be mostly personnel listings. [DATA-SOURCES.json](DATA-SOURCES.json) has the details.
 
 ---
 

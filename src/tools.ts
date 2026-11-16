@@ -1,23 +1,34 @@
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { NOTICE_TYPES } from "./city-record.js";
-import { createBetanycTools } from "./betanyc-tools.js";
+import { BETANYC_INSTRUCTIONS, createBetanycTools } from "./betanyc-tools.js";
 import { PACKAGE_VERSION } from "./version.js";
 
 /**
- * whats_changed and about_betanyc, the two tools BetaNYC is adding to each of its MCP servers
- * (betanyc-ai-workspace platform/system/whats-changed-standard.md § 7). betanyc-tools.ts is a
- * copy of the workspace's canonical file: never edit it here. The tools validate their own
- * arguments (unknown keys are rejected by name, as this server's own tools do), so they have
- * no entry in SCHEMAS. WHATS-CHANGED.md ships in the npm package (package.json `files`), one
- * level above dist/; the tools read it locally and never touch the network.
+ * whats_changed, about_betanyc and about_data, the three tools BetaNYC adds to each of its MCP
+ * servers (betanyc-ai-workspace platform/system/whats-changed-standard.md § 7 and
+ * about-data-standard.md § 3). betanyc-tools.ts is a copy of the workspace's canonical file:
+ * never edit it here. The tools validate their own arguments (unknown keys are rejected by
+ * name, as this server's own tools do), so they have no entry in SCHEMAS. WHATS-CHANGED.md,
+ * DATA-SOURCES.json and data.json ship in the npm package (package.json `files`), one level
+ * above dist/; the tools read them locally and never touch the network. The one source is
+ * fetched live, so no freshness hook is needed. Throws at startup if DATA-SOURCES.json does
+ * not describe this server.
  */
 export const betanyc = createBetanycTools({
   serverName: "nyc-record-mcp",
   version: PACKAGE_VERSION,
   repoUrl: "https://github.com/BetaNYC/nyc-record-mcp",
   whatsChangedPath: new URL("../WHATS-CHANGED.md", import.meta.url),
+  dataSourcesPath: new URL("../DATA-SOURCES.json", import.meta.url),
 });
+
+/** The server's MCP instructions: what it covers, then the shared module's own instructions
+ * (call about_data, about_betanyc and whats_changed). */
+export const SERVER_INSTRUCTIONS =
+  "Notices published in The City Record, New York City's official newspaper, from the City Record Online " +
+  "dataset on NYC Open Data, by BetaNYC. " +
+  BETANYC_INSTRUCTIONS;
 
 const isoDate = z
   .string()
@@ -121,8 +132,9 @@ export const TOOLS: Tool[] = [
       additionalProperties: false,
     },
   },
-  // What's changed in this server, and who built it (BetaNYC standard tools). Their
-  // definitions are plain JSON Schema with an outputSchema; the cast is only for the type.
+  // What's changed in this server, who built it, and where its data comes from (BetaNYC
+  // standard tools). Their definitions are plain JSON Schema with an outputSchema; the cast is
+  // only for the type. about_data's description lists this server's topics.
   ...(betanyc.tools as unknown as Tool[]),
 ];
 

@@ -7,6 +7,13 @@ This page lists the changes to nyc-record-mcp that a reader would notice: new to
 
 To report a bug in this server or ask for a new feature, [open an issue on GitHub](https://github.com/BetaNYC/nyc-record-mcp/issues).
 
+## Unreleased: Ask the server where its data comes from
+
+- **Tags:** MCP
+- **What changed:** A new tool answers "where does this notice come from?", "is this official?", "how current is it?" and "how do I check it?". It names the source, the City Record Online dataset on NYC Open Data, and its publisher, the NYC Department of Citywide Administrative Services. It says that the notices are passed on exactly as the City publishes them, that every answer asks NYC Open Data at the time of the question, where to check a notice on City Record Online, and where to report an error in the data. It also says what to expect from the data: about 88% of the notices are Changes in Personnel listings, which have no notice type, so the tools that pick notices by type never return them, while keyword, agency and date searches can be mostly personnel listings. It gives BetaNYC's email address for questions about the data, lab@beta.nyc. The same information is published as a data catalog.
+- **MCP version:** [nyc-record-mcp 1.3.0](CHANGELOG.md)
+- **More detail:** [Where the data comes from](DATA-SOURCES.json) · [Data catalog](data.json) · [Release notes](CHANGELOG.md)
+
 ## 2026-11-13: Two tools that explain the server, and this page
 
 - **Tags:** MCP

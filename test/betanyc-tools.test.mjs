@@ -1,6 +1,7 @@
-// whats_changed and about_betanyc, the two tools BetaNYC is adding to each of its MCP servers
-// (betanyc-ai-workspace platform/system/whats-changed-standard.md § 7). They read this repo's
-// WHATS-CHANGED.md and never touch the network. The server's CallTool handler lives in
+// whats_changed, about_betanyc and about_data, the three tools BetaNYC adds to each of its MCP
+// servers (betanyc-ai-workspace platform/system/whats-changed-standard.md § 7 and
+// about-data-standard.md § 3). They read this repo's WHATS-CHANGED.md and DATA-SOURCES.json and
+// never touch the network. about_data has its own tests in test/about-data.test.mjs. The server's CallTool handler lives in
 // src/index.ts, which connects to stdio on import, so the end-to-end tests run the built
 // server over stdio with the SDK client; the rest call the same `betanyc` object the handler
 // calls.
@@ -23,10 +24,10 @@ const unreleased = (whatsChanged.match(/^## Unreleased: /gm) ?? []).length;
 
 const textOf = (r) => r.content[0].text;
 
-test("both shared tools are advertised, read-only, with an output schema", () => {
-  assert.equal(TOOLS.length, 9);
+test("the three shared tools are advertised, read-only, with an output schema", () => {
+  assert.equal(TOOLS.length, 10);
   assert.equal(new Set(TOOLS.map((t) => t.name)).size, TOOLS.length, "tool names are unique");
-  for (const name of ["whats_changed", "about_betanyc"]) {
+  for (const name of ["whats_changed", "about_betanyc", "about_data"]) {
     const t = TOOLS.find((x) => x.name === name);
     assert.ok(t, name);
     assert.equal(t.outputSchema.type, "object", name);
@@ -104,7 +105,7 @@ test("about_betanyc names the server, its version, and where to report a bug or 
   assert.match(textOf(bad), /takes no parameters/);
 });
 
-test("over stdio, the server answers both tools through its CallTool handler, and the SDK client accepts them", async () => {
+test("over stdio, the server answers the shared tools through its CallTool handler, and the SDK client accepts them", async () => {
   // Client.callTool validates structuredContent against the outputSchema from tools/list
   // and throws when it does not match, so this is the MCP contract checked end to end.
   const transport = new StdioClientTransport({ command: process.execPath, args: ["dist/index.js"], stderr: "ignore" });
@@ -113,11 +114,15 @@ test("over stdio, the server answers both tools through its CallTool handler, an
   try {
     assert.equal(client.getServerVersion().version, pkg.version, "server reports package.json's version");
     const { tools } = await client.listTools();
-    assert.equal(tools.length, 9);
+    assert.equal(tools.length, 10);
     const wc = await client.callTool({ name: "whats_changed", arguments: { limit: 3 } });
     assert.equal(wc.structuredContent.returned, 3);
     const about = await client.callTool({ name: "about_betanyc", arguments: {} });
     assert.equal(about.structuredContent.server.version, pkg.version);
+    const data = await client.callTool({ name: "about_data", arguments: {} });
+    assert.notEqual(data.isError, true, textOf(data));
+    assert.equal(data.structuredContent.contact_email, "lab@beta.nyc");
+    assert.match(client.getInstructions() ?? "", /about_data/, "the server's instructions name about_data");
     const badArg = await client.callTool({ name: "whats_changed", arguments: { bogus: 1 } });
     assert.equal(badArg.isError, true);
     assert.match(textOf(badArg), /does not accept 'bogus'/);
@@ -130,9 +135,9 @@ test("over stdio, the server answers both tools through its CallTool handler, an
   }
 });
 
-test("WHATS-CHANGED.md ships in the npm package", () => {
+test("WHATS-CHANGED.md, DATA-SOURCES.json and data.json ship in the npm package", () => {
   const out = execFileSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], { encoding: "utf8" });
   const files = JSON.parse(out)[0].files.map((f) => f.path);
-  assert.ok(files.includes("WHATS-CHANGED.md"), files.join(", "));
+  for (const f of ["WHATS-CHANGED.md", "DATA-SOURCES.json", "data.json"]) assert.ok(files.includes(f), `${f}: ${files.join(", ")}`);
   assert.ok(files.includes("dist/betanyc-tools.js"));
 });

@@ -14,12 +14,14 @@ import {
   getOpenSolicitations,
   getNoticesByDateRange,
 } from "./city-record.js";
-import { TOOLS, parseToolArgs, betanyc } from "./tools.js";
+import { TOOLS, parseToolArgs, betanyc, SERVER_INSTRUCTIONS } from "./tools.js";
 import { PACKAGE_VERSION as version } from "./version.js";
 
 const server = new Server(
   { name: "nyc-record-mcp", version },
-  { capabilities: { tools: {} } }
+  // The instructions tell the AI app to call about_data for questions about where the data
+  // comes from (betanyc-ai-workspace platform/system/about-data-standard.md § 3).
+  { capabilities: { tools: {} }, instructions: SERVER_INSTRUCTIONS }
 );
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }));
@@ -27,7 +29,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }))
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
-  // whats_changed and about_betanyc: the shared module validates its own arguments and
+  // whats_changed, about_betanyc and about_data: the shared module validates its own arguments and
   // answers with text plus structuredContent matching its outputSchema (src/tools.ts).
   if (betanyc.handles(name)) return betanyc.call(name, args);
 

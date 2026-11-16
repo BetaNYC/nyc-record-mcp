@@ -19,14 +19,15 @@ test("every advertised tool sets additionalProperties: false", () => {
 });
 
 test("every advertised tool has an argument schema, and vice versa", () => {
-  // whats_changed and about_betanyc come from the shared module, which validates its own
-  // arguments (test/betanyc-tools.test.mjs checks that it rejects unknown keys).
-  const shared = ["whats_changed", "about_betanyc"];
+  // whats_changed, about_betanyc and about_data come from the shared module, which validates
+  // its own arguments (test/betanyc-tools.test.mjs and test/about-data.test.mjs check that it
+  // rejects unknown keys).
+  const shared = ["whats_changed", "about_betanyc", "about_data"];
   assert.deepEqual(
     TOOLS.map((t) => t.name).filter((n) => !shared.includes(n)).sort(),
     Object.keys(SCHEMAS).sort()
   );
-  assert.deepEqual(TOOLS.slice(-2).map((t) => t.name), shared);
+  assert.deepEqual(TOOLS.slice(-3).map((t) => t.name), shared);
 });
 
 // The behavioral test from issue #10: today the call succeeds and returns
