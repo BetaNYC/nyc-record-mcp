@@ -19,8 +19,8 @@
     {
       "@id": "https://data.cityofnewyork.us/d/dg92-zbpx",
       "@type": "Dataset",
-      "title": "City Record Online, NYC Open Data dataset dg92-zbpx",
-      "description": "City Record Online, NYC Open Data dataset dg92-zbpx, published by NYC Department of Citywide Administrative Services (DCAS).",
+      "title": "City Record Online",
+      "description": "City Record Online, published by NYC Department of Citywide Administrative Services.",
       "identifier": "https://data.cityofnewyork.us/d/dg92-zbpx",
       "contactPoint": {
         "@type": "Kind",
@@ -29,12 +29,12 @@
       },
       "publisher": {
         "@type": "Organization",
-        "name": "NYC Department of Citywide Administrative Services (DCAS)",
+        "name": "NYC Department of Citywide Administrative Services",
         "@id": "https://www.nyc.gov/site/dcas/index.page"
       },
       "landingPage": {
         "@type": "Document",
-        "title": "City Record Online, NYC Open Data dataset dg92-zbpx",
+        "title": "City Record Online",
         "accessURL": "https://data.cityofnewyork.us/d/dg92-zbpx"
       },
       "page": [
@@ -76,8 +76,8 @@
         {
           "@id": "https://data.cityofnewyork.us/d/dg92-zbpx",
           "@type": "Dataset",
-          "title": "City Record Online, NYC Open Data dataset dg92-zbpx",
-          "description": "City Record Online, NYC Open Data dataset dg92-zbpx, published by NYC Department of Citywide Administrative Services (DCAS).",
+          "title": "City Record Online",
+          "description": "City Record Online, published by NYC Department of Citywide Administrative Services.",
           "identifier": "https://data.cityofnewyork.us/d/dg92-zbpx",
           "contactPoint": {
             "@type": "Kind",
@@ -86,12 +86,12 @@
           },
           "publisher": {
             "@type": "Organization",
-            "name": "NYC Department of Citywide Administrative Services (DCAS)",
+            "name": "NYC Department of Citywide Administrative Services",
             "@id": "https://www.nyc.gov/site/dcas/index.page"
           },
           "landingPage": {
             "@type": "Document",
-            "title": "City Record Online, NYC Open Data dataset dg92-zbpx",
+            "title": "City Record Online",
             "accessURL": "https://data.cityofnewyork.us/d/dg92-zbpx"
           },
           "page": [
@@ -109,7 +109,7 @@
         }
       ],
       "provenance": [
-        "Official record: yes, passed on as NYC Department of Citywide Administrative Services (DCAS) publishes it.",
+        "Publisher: NYC Department of Citywide Administrative Services. BetaNYC did not modify it. Source: City Record Online, https://data.cityofnewyork.us/d/dg92-zbpx",
         "Read-only requests to the dataset's Socrata API on NYC Open Data (https://data.cityofnewyork.us/resource/dg92-zbpx.json) at the moment you ask, with an app token when SOCRATA_APP_TOKEN is set. Each tool sends one query, such as a keyword search, an agency name, a notice type or a date range, and returns the newest matching notices."
       ],
       "page": [

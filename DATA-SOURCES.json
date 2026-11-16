@@ -28,9 +28,9 @@
       "id": "city-record",
       "title": "City Record notices",
       "what": "Notices published in The City Record: solicitations, awards and intents to award or negotiate, public hearings, comment periods and meetings, sales, vendor lists and other notices, each with its agency, dates, title, description, contact and document links, and Changes in Personnel listings.",
-      "source_name": "City Record Online, NYC Open Data dataset dg92-zbpx",
+      "source_name": "City Record Online",
       "publisher": {
-        "name": "NYC Department of Citywide Administrative Services (DCAS)",
+        "name": "NYC Department of Citywide Administrative Services",
         "url": "https://www.nyc.gov/site/dcas/index.page"
       },
       "source_url": "https://data.cityofnewyork.us/d/dg92-zbpx",

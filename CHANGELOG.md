@@ -8,8 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - unreleased
 
 Adds `about_data`, the third tool BetaNYC adds to each of its MCP servers, and
-`DATA-SOURCES.json`, the file it answers from. Moves to BetaNYC's shared module 1.3.7.
-Part of BetaNYC/betanyc-ai-workspace#1655 (epic #1652).
+`DATA-SOURCES.json`, the file it answers from. Moves to BetaNYC's shared module 1.4.0
+(`src/betanyc-tools.ts`, `scripts/whats_changed.py`, `scripts/mcp_shared/data-sources.schema.json`,
+`scripts/tests/catalog_validate.py`, copied unchanged), whose answer to "is this data official?"
+names the source, its publisher and a link: "Publisher: NYC Department of Citywide
+Administrative Services. BetaNYC did not modify it. Source: City Record Online, …".
+Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 
 ### Added
 
@@ -19,7 +23,8 @@ Part of BetaNYC/betanyc-ai-workspace#1655 (epic #1652).
   BetaNYC's contact address for data questions, lab@beta.nyc. `topic` takes the source id or
   a tool name, in any case. Reads the file shipped in the package; no network.
 - `DATA-SOURCES.json`: one source, City Record Online (NYC Open Data `dg92-zbpx`), published
-  by DCAS, an official record passed on unchanged and fetched live. Publisher, license
+  by the NYC Department of Citywide Administrative Services (named in full, as module 1.4.0
+  requires), an official record passed on unchanged and fetched live. Publisher, license
   (Public Domain), update frequency (daily) and the City Record Online link come from the
   dataset's own NYC Open Data metadata. Coverage, and the finding that about 88% of the
   notices are "Changes in Personnel" listings (from July 2013, with no notice type), come from

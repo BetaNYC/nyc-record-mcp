@@ -12,8 +12,8 @@ import { assertEveryToolExplained, BETANYC_INSTRUCTIONS, SHARED_MODULE_VERSION }
 const DS_TEXT = readFileSync(new URL("../DATA-SOURCES.json", import.meta.url), "utf8");
 const NAMES = TOOLS.map((t) => t.name);
 
-test("shared module 1.3.7", () => {
-  assert.equal(SHARED_MODULE_VERSION, "1.3.7");
+test("shared module 1.4.0", () => {
+  assert.equal(SHARED_MODULE_VERSION, "1.4.0");
 });
 
 test("every tool says where its data comes from, so a new tool cannot ship unexplained", () => {
@@ -34,7 +34,7 @@ test("the source: DCAS's City Record Online on NYC Open Data, official, live, pa
   assert.deepEqual(body.topics, ["city-record"]);
   assert.equal(body.contact_email, "lab@beta.nyc");
   const [s] = body.sources;
-  assert.equal(s.publisher, "NYC Department of Citywide Administrative Services (DCAS)");
+  assert.equal(s.publisher, "NYC Department of Citywide Administrative Services");
   assert.equal(s.source_url, "https://data.cityofnewyork.us/d/dg92-zbpx");
   assert.equal(s.official, true);
   assert.equal(s.figures_official, true);
@@ -45,7 +45,7 @@ test("the source: DCAS's City Record Online on NYC Open Data, official, live, pa
   // The form is NYC Open Data's, not the publisher's (upstream_name, module 1.3.7).
   assert.equal(s.report_errors.in_the_data_name, "NYC Open Data");
   assert.equal(s.corrections.length, 3);
-  assert.match(r.content[0].text, /Official record: yes, passed on as NYC Department of Citywide Administrative Services \(DCAS\) publishes it\./);
+  assert.match(r.content[0].text, /^Publisher: NYC Department of Citywide Administrative Services\. BetaNYC did not modify it\. Source: City Record Online, https:\/\/data\.cityofnewyork\.us\/d\/dg92-zbpx$/m);
   assert.match(r.content[0].text, /Report an error in the data to NYC Open Data: https:\/\/www\.nyc\.gov\/opendata\/contact-us/);
   assert.match(r.content[0].text, /Questions or error reports about this data, to BetaNYC: lab@beta\.nyc/);
 });
