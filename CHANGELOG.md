@@ -24,9 +24,10 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
   a tool name, in any case. Reads the file shipped in the package; no network.
 - `DATA-SOURCES.json`: one source, City Record Online (NYC Open Data `dg92-zbpx`), published
   by the NYC Department of Citywide Administrative Services (named in full, as module 1.4.0
-  requires), an official record passed on unchanged and fetched live. Publisher, license
-  (Public Domain), update frequency (daily) and the City Record Online link come from the
-  dataset's own NYC Open Data metadata. Coverage, and the finding that about 88% of the
+  requires), an official record passed on unchanged and fetched live. Publisher, update
+  frequency (daily) and the City Record Online link come from the dataset's own NYC Open Data
+  metadata. The terms are the ones BetaNYC uses for every NYC Open Data source: "No
+  restrictions on use", NYC Administrative Code § 23-502(d). Coverage, and the finding that about 88% of the
   notices are "Changes in Personnel" listings (from July 2013, with no notice type), come from
   read-only queries to the dataset on 2026-11-13. Terms: NYC Administrative Code § 23-502(d).
   Errors in the dataset go to NYC Open Data's contact form, credited to NYC Open Data with
