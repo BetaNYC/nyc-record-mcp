@@ -1,7 +1,7 @@
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { NOTICE_TYPES } from "./city-record.js";
-import { BETANYC_INSTRUCTIONS, createBetanycTools } from "./betanyc-tools.js";
+import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools } from "./betanyc-tools.js";
 import { PACKAGE_VERSION } from "./version.js";
 
 /**
@@ -34,8 +34,8 @@ const isoDate = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "must be a date in YYYY-MM-DD format");
 
-/** Tool definitions advertised to clients by the ListTools handler. */
-export const TOOLS: Tool[] = [
+/** The server's own tools. Each one sends a live query to NYC Open Data, so openWorldHint is true. */
+const DOMAIN_TOOLS: Tool[] = [
   {
     name: "search_notices",
     description:
@@ -132,11 +132,19 @@ export const TOOLS: Tool[] = [
       additionalProperties: false,
     },
   },
-  // What's changed in this server, who built it, and where its data comes from (BetaNYC
-  // standard tools). Their definitions are plain JSON Schema with an outputSchema; the cast is
-  // only for the type. about_data's description lists this server's topics.
-  ...(betanyc.tools as unknown as Tool[]),
 ];
+
+/**
+ * Tool definitions advertised to clients by the ListTools handler. Every tool only reads, so
+ * annotateTools (shared module 1.5.0) gives each readOnlyHint: true, openWorldHint and a title.
+ * The three shared tools (what's changed, who built it, where the data comes from) declare their
+ * own annotations and pass through. Their definitions are plain JSON Schema with an
+ * outputSchema; the cast is only for the type.
+ */
+export const TOOLS: Tool[] = annotateTools(
+  [...DOMAIN_TOOLS, ...(betanyc.tools as unknown as Tool[])],
+  Object.fromEntries(DOMAIN_TOOLS.map((t) => [t.name, true]))
+);
 
 /**
  * Argument schemas, one per tool name in TOOLS.

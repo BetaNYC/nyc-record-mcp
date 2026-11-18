@@ -45,6 +45,8 @@ Exposes 10 tools over MCP:
 
 ## Tools reference
 
+Every tool only reads, and says so to your AI app with MCP tool annotations (`readOnlyHint: true`). The seven City Record tools query NYC Open Data at the time you ask (`openWorldHint: true`); the three shared tools read files that ship with the package.
+
 ### `search_notices`
 
 Full-text search across notice titles, descriptions, and agency names.

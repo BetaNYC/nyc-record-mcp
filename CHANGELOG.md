@@ -45,8 +45,13 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 
 ### Changed
 
-- `src/betanyc-tools.ts` is the workspace's shared module 1.3.7 (was 1.2.4) and
-  `scripts/whats_changed.py` is 1.3.7, both copied in unchanged. Never edit the copies.
+- `src/betanyc-tools.ts` is the workspace's shared module 1.5.0 (was 1.2.4), and
+  `scripts/whats_changed.py` and `scripts/mcp_shared/data-sources.schema.json` are 1.4.1, all
+  copied in unchanged. Never edit the copies. Module 1.5.0 adds the helpers below for the
+  server's own tools (#21, #28).
+- Every tool carries MCP `annotations`: `readOnlyHint: true`, a `title`, and `openWorldHint`
+  (`true` for the seven City Record tools, which query NYC Open Data live; `false` for the
+  three shared tools, which read files in the package). Set with the shared `annotateTools`.
 - The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
 - `package.json` `files` adds `DATA-SOURCES.json` and `data.json`.
 - README: `about_data` in the tool table and the shared tools section. The "Data source"
@@ -63,12 +68,16 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 - `test/about-data.test.mjs`: every listed tool has a source (`assertEveryToolExplained`,
   which also fails on an unknown tool); the topic in the description; the source's publisher,
   link, official and live status, unchanged figures, error route and corrections; every tool
-  name as a topic; a bad topic and an unknown key; the server instructions; module 1.3.7.
+  name as a topic; a bad topic and an unknown key; the server instructions; module 1.5.0.
 - `test/betanyc-tools.test.mjs`: three shared tools, read-only with an output schema;
   `about_data` over stdio answers with lab@beta.nyc and passes the SDK client's output-schema
   check, and the server's instructions name `about_data`; `npm pack --dry-run` lists
   `DATA-SOURCES.json` and `data.json`.
 - `test/strict-schema.test.mjs` and `test/tools.test.mjs`: `about_data` among the shared tools.
+- `test/tools.test.mjs`: every tool annotated (`assertEveryToolAnnotated`), read-only with a
+  title, and only the seven City Record tools open-world (#21).
+- `test/tool-size.test.mjs`: tools/list JSON plus the instructions stay within 15,500
+  characters (measured 14,836 on 2026-11-18), using the shared `toolListSize` (#28).
 
 ## [1.2.0] - 2026-11-13
 

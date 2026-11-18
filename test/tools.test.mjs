@@ -25,3 +25,17 @@ test("the advertised tool names are unchanged", () => {
     assert.equal(tool.inputSchema.type, "object", tool.name);
   }
 });
+
+// Every tool only reads. Without annotations a client must assume it may write
+// (readOnlyHint defaults to false in the MCP spec). Issue #21.
+test("every tool is annotated read-only, with openWorldHint and a title", async () => {
+  const { assertEveryToolAnnotated } = await import("../dist/betanyc-tools.js");
+  assertEveryToolAnnotated(TOOLS);
+  for (const tool of TOOLS) {
+    assert.equal(tool.annotations.readOnlyHint, true, tool.name);
+    assert.ok(tool.annotations.title, `${tool.name} has a title`);
+  }
+  // The seven City Record tools query NYC Open Data live; the shared tools read local files.
+  const live = TOOLS.filter((t) => t.annotations.openWorldHint).map((t) => t.name);
+  assert.deepEqual(live, TOOLS.slice(0, 7).map((t) => t.name));
+});
