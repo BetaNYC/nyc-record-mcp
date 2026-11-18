@@ -37,9 +37,21 @@ export const betanyc = createBetanycTools({
 
 /** The server's MCP instructions: what it covers, then the shared module's own instructions
  * (call about_data, about_betanyc and whats_changed). */
+/** Guidance shared by all seven City Record tools, said once here rather than in each
+ * description (#32). The size-budget test (test/tool-size.test.mjs) guards the total. */
+export const ANSWER_GUIDE =
+  "Every City Record tool answers with JSON: showing, more_available and, when more notices match, " +
+  "how_to_get_more (call again with that offset), then the notices exactly as NYC Open Data publishes them, " +
+  "and a closing Source line with the dataset link and the time it was fetched; cite that line. " +
+  "An empty answer means no notice in the dataset matched, not that none was published. " +
+  "About 88% of notices are Changes in Personnel listings with no notice type: keyword, agency and date " +
+  "searches can be mostly those, and the type tools never return them. search_notices is a full-text " +
+  "search and can be slow for several words; the agency, type and date tools are faster. ";
+
 export const SERVER_INSTRUCTIONS =
   "Notices published in The City Record, New York City's official newspaper, from the City Record Online " +
   "dataset on NYC Open Data, by BetaNYC. " +
+  ANSWER_GUIDE +
   BETANYC_INSTRUCTIONS;
 
 const isoDate = z
@@ -47,7 +59,7 @@ const isoDate = z
   .regex(/^\d{4}-\d{2}-\d{2}$/, "must be a date in YYYY-MM-DD format");
 
 /** The paging parameter every City Record tool takes (#25). */
-const OFFSET_PROP = { type: "integer", minimum: 0, description: "Skip this many notices, for the next page (default 0)" };
+const OFFSET_PROP = { type: "integer", minimum: 0, description: "Notices to skip, for the next page (default 0)" };
 
 /** The server's own tools. Each one sends a live query to NYC Open Data, so openWorldHint is true. */
 const DOMAIN_TOOLS: Tool[] = [
@@ -84,7 +96,7 @@ const DOMAIN_TOOLS: Tool[] = [
   {
     name: "get_notices_by_type",
     description:
-      "Get notices filtered by type. Valid types: Solicitation, Award, Intent to Award, Intent to Negotiate, Public Hearings, Public Comment, Meeting, Notice, Vendor List, Sale.",
+      "Get notices of one type; notice_type lists the types.",
     inputSchema: {
       type: "object",
       properties: {

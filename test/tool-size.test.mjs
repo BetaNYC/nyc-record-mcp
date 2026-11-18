@@ -7,14 +7,26 @@
 // several tools share in the server instructions rather than in each description.
 // Raised on purpose 2026-11-18 (#25): an `offset` parameter on each of the seven City Record
 // tools, so a list cut at its limit can be continued. Measured 15,606 characters.
+// Raised on purpose 2026-11-18 (#32): the answer guide shared by the seven City Record tools,
+// said once in the instructions (the type list is no longer repeated in a description).
+// Measured 16,104 characters.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { TOOLS, SERVER_INSTRUCTIONS } from "../dist/tools.js";
+import { TOOLS, SERVER_INSTRUCTIONS, ANSWER_GUIDE } from "../dist/tools.js";
 import { toolListSize } from "../dist/betanyc-tools.js";
 
-const BUDGET_CHARS = 16_000;
+const BUDGET_CHARS = 16_500;
 
 test("tool definitions plus server instructions stay within the size budget", () => {
   const size = toolListSize(TOOLS, SERVER_INSTRUCTIONS);
   assert.ok(size <= BUDGET_CHARS, `tools/list JSON + instructions is ${size} characters, over the ${BUDGET_CHARS} budget`);
+});
+
+test("the shared answer guide is said once, in the instructions, not in tool descriptions", () => {
+  assert.ok(SERVER_INSTRUCTIONS.includes(ANSWER_GUIDE));
+  for (const t of TOOLS) {
+    for (const phrase of ["more_available", "how_to_get_more", "Changes in Personnel", "Valid types"]) {
+      assert.ok(!t.description.includes(phrase), `${t.name} repeats "${phrase}"; it belongs in the instructions`);
+    }
+  }
 });

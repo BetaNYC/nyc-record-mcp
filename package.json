@@ -45,7 +45,9 @@
     "dev": "tsc --watch",
     "start": "node dist/index.js",
     "test": "npm run build && node --test test/*.test.mjs",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "test:live": "npm run build && node --test test/live/*.test.mjs",
+    "eval": "npm run build && node eval/run.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",

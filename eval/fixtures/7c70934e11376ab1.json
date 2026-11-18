@@ -1,0 +1,54 @@
+{
+ "key": "$limit=3&$offset=0&$order=due_date ASC,:id&$where=type_of_notice_description='Solicitation' AND due_date >= '<today>'",
+ "status": 200,
+ "body": [
+  {
+   "request_id": "20260929029",
+   "start_date": "2026-10-07T00:00:00.000",
+   "end_date": "2026-10-07T00:00:00.000",
+   "agency_name": "Environmental Protection",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Construction/Construction Services",
+   "short_title": "82627B0004-BEDC OB-144A: Total Residual Chlorine (TRC) Optimization at the Oakwood Beach Wastewater Resource Recovery Facility (WRRF)",
+   "selection_method_description": "Competitive Sealed Bids",
+   "section_name": "Procurement",
+   "pin": "82627B0004",
+   "due_date": "2026-11-18T10:00:00.000",
+   "additional_description_1": "<p>This Competitive Sealed Bid (\u001aRFx') is being released through PASSPort, New York City\u001as online procurement portal. Responses to this RFx should be submitted via PASSPort. To access the solicitation, vendors should visit the PASSPort Public Portal Navigator at https://passport.cityofnewyork.us/page.aspx/en/rfp/request_browse_public. This will take you to the Public Portal of all procurements in the PASSPort system. To quickly locate the RFx, insert the EPIN 82627B0004 into the Keywords search field. If you need assistance submitting a response, please contact MOCS Service Desk: mocssupport.atlassian.net/servicedesk/customer/portal/8</p>",
+   "other_info_1": "Pre bid conference location -Microsoft TEAMS call in (audio only) +1 585-484-8792,,Phone Conference ID: 290451397# To join via Microsoft TEAMS video please go to Passport link and download \u001aNotice to Bidders (E-Bidding)\u001a. Mandatory: noDate/Time - 2026-10-14 10:00:00"
+  },
+  {
+   "request_id": "20260421016",
+   "start_date": "2026-04-28T00:00:00.000",
+   "end_date": "2026-04-28T00:00:00.000",
+   "agency_name": "Citywide Administrative Services",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Construction/Construction Services",
+   "short_title": "Bid Extension: 85624B0012-CSB 25th FL Construction at 1 Centre Street",
+   "selection_method_description": "Competitive Sealed Bids",
+   "section_name": "Procurement",
+   "pin": "85624B0012",
+   "due_date": "2026-11-18T10:30:00.000",
+   "additional_description_1": "<p>Department of Citywide Administration Services is seeking a qualified vendor to complete the renovation on 25th Floor, 1 Centre Street, New York, NY 10007. Estimated term of the contract is three years. This solicitation is being made pursuant to the Competitive Sealed Bidding Method, Section 3-02 of the New York City Procurement Policy Board (PPB) Rules. Site visit is the only date and time available for this CSB as following: Date: May 20, 2026, Start Time: 9:00 A.M. Address: 1 Centre Street, New York, NY 10007</p><p>DCAS project managers will meet interested bidders at 9:00am at South Building, in the lobby. Please send your attendance confirmation to fmai@dcas.nyc.gov. OCP Agency 856 will have bid openings virtually via Teams and in person. Please use the link in the Address Location box in PASSPort. Pre-Bid Conference will be held virtually. Please see the Pre-Bid Conference location box in PASSPort for the link. If you are experiencing any difficulties responding to this RFx, please reach the MOCS service desk at the following link: https://mocssupport.atlassian.net/servicedesk/customer/portal/8</p>",
+   "other_info_1": "Bid opening Location - 1 Centre Street, New York, NY 10007 https://events.gcc.teams.microsoft.com/event/f0f353fb-23f9-4c35-a793-7bfbfbefb951@32f56fc7-5f81-4e22-a95b-15da66513bef Pre bid conference location -https://events.gcc.teams.microsoft.com/event/c1d3d4f0-bf1f-457f-b78d-2ec02c51b99c@32f56fc7-5f81-4e22-a95b-15da66513bef Mandatory: noDate/Time - 2026-05-21 10:00:00As per Addendum 1, the bid due date and bid opening date have been extended to July 15, 2026 at 11:00AM. Please see PASSPort for Addendum 1 in the Document Tab.As per Addendum 2, the bid due date and bid opening date have been extended to August 12, 2026 at 10:00AM. In addition, Pre-Bid Conference Attendance Sheet has been released. Please see PASSPort for Addendum 2 in the Document Tab.As per Addendum 3, the bid due date and bid opening date have been extended to September 10, 2026 at 2:00PM. Please see PASSPort for Addendum 3 in the Document Tab.As per Addendum 4, the bid due date and bid opening date have been extended to October 1, 2026 at 10:00AM. Please see PASSPort for Addendum 4 in the Document Tab.As per Addendum 5, the bid due date and bid opening date have been extended to October 22, 2026 at 11:00AM. Please see PASSPort for Addendum 5 in the Document Tab.As per Addendum 6, the bid due date and bid opening date have been extended to November 18, 2026 at 10:30AM. Please see PASSPort for Addendum 6 in the Document Tab."
+  },
+  {
+   "request_id": "20260625055",
+   "start_date": "2026-07-02T00:00:00.000",
+   "end_date": "2026-07-02T00:00:00.000",
+   "agency_name": "NYC Health + Hospitals",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Construction/Construction Services",
+   "short_title": "Bid Extension: Elmhurst Hospital, Entryway Renovation",
+   "selection_method_description": "Competitive Sealed Bids",
+   "section_name": "Procurement",
+   "pin": "33202207",
+   "due_date": "2026-11-18T11:00:00.000",
+   "address_to_request": "55 Water Street, 25th Floor, New York, NY 10041",
+   "contact_name": "Clifton McLaughlin",
+   "contact_phone": "(212) 442-3658",
+   "email": "clifton.mclaughlin@nychhc.org",
+   "additional_description_1": "<p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><u>MANDATORY PRE-BID MEETING INFORMATION</u></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><u>Only bidders who attend the mandatory pre-bid meeting will be allowed to bid.</u></strong><strong> </strong>The mandatory pre-bid meetings are scheduled for:</span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'>            Tuesday, July 14, 2026 at 12:00 P.M.</span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'>            Wednesday, July 15, 2026 at 12:00 P.M.</span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'>            Location:  Elmhurst Hospital, 79-01 Broadway, Elmhurst, NY,  8th Floor, Room E8-11.</span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:12.0pt'>The Contractor shall not make subcontracts totaling more than 75% of the Contract Price nor Provide Less than 25% of the Labor Requirement of the Project with the Contractor's own employees the Contractor shall not make subcontracts totaling more than 75% of the Contract Price nor Provide Less than 25% of the Labor Requirement of the Project with the Contractor's own employees.</span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:12.0pt'>NYC H+H PLA: All Bids shall be in accordance with the terms of the NYC Health and Hospitals (HHC) Project Labor Agreement. The awarded contractor will be required to execute and submit a Letter of Assent to NYC H+H.</span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:12.0pt'>Certified Payroll: Beginning January 1, 2026, all certified payrolls for contracts bid on or after December 31, 2025 must be submitted electronically through NYC eComply.</span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:12.0pt'>Bidder\u001as List: We encourage sub-contractors to attend the pre-bid meetings in order to obtain access to the potential bidder's list. You are encouraged to arrive at least thirty (30) minutes before mandatory meeting start time, and a grace period of no more than fifteen (15) minutes will be granted to late arrivals. Kindly limit no more than two persons at the meeting (s).</span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:12.0pt'>MWBE: Under Article 15A of The State of New York, the following M/WBE goals apply to this contract: M/WBE 27%. These goals apply to any bid submitted of $500,000 or more. Bidders not complying with these terms will have their bids declared non-responsive.</span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:12.0pt'>Required Trade Licenses where applicable.</span></span></span></p>"
+  }
+ ]
+}

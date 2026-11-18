@@ -1,0 +1,273 @@
+{
+ "key": "$limit=26&$offset=25&$order=start_date DESC,:id&$where=type_of_notice_description in ('Public Hearings','Public Comment','Meeting','Notice')",
+ "status": 200,
+ "body": [
+  {
+   "request_id": "20261109025",
+   "start_date": "2026-11-17T00:00:00.000",
+   "end_date": "2026-12-02T00:00:00.000",
+   "agency_name": "City Planning Commission",
+   "type_of_notice_description": "Public Hearings",
+   "short_title": "City Planning Commission Public Hearing Ad",
+   "section_name": "Public Hearings and Meetings",
+   "event_date": "2026-12-02T10:00:00.000",
+   "street_address_1": "120 Broadway",
+   "street_address_2": "Lower Level",
+   "city": "New York",
+   "state": "NY",
+   "zip_code": "10271"
+  },
+  {
+   "request_id": "20261109018",
+   "start_date": "2026-11-17T00:00:00.000",
+   "end_date": "2026-11-17T00:00:00.000",
+   "agency_name": "Landmarks Preservation Commission",
+   "type_of_notice_description": "Notice",
+   "short_title": "Binding Report for October 2026",
+   "section_name": "Special Materials",
+   "event_date": "2026-11-17T00:00:00.000"
+  },
+  {
+   "request_id": "20261110006",
+   "start_date": "2026-11-17T00:00:00.000",
+   "end_date": "2026-11-17T00:00:00.000",
+   "agency_name": "Transportation",
+   "type_of_notice_description": "Notice",
+   "short_title": "Pure Storage Support",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p>This is a notice that the Department of Transportation is seeking comments from the public about the proposed contract below. <br><br><br><strong>Contract Type:</strong> Purchase Order/Contract<br><strong>Contractor:</strong> High Point Solutions<br><strong>Contractor Address: </strong>5 Gail Court, Sparta, NJ 07871<br><strong>Scope of Services: </strong>Pure Storage Support<br><strong>Maximum Value:</strong> $135,852.34<br><strong>Term: </strong>1/8/2027  through 1/7/2030<br><strong>E-PIN: </strong>84127W0031001<br><strong>Procurement Method: </strong>MWBE Non- Competitive Small Purchase<br><strong>Procurement Policy Board Rule:</strong> Section 3-08 (c)(1)(iv)<br> </p><p><strong>How can I comment on this proposed contract award?</strong><br>Please submit your comment to: https://forms.cloud.microsoft/g/s5cut13XMD. Be sure to include the E-PIN above in your message. <br> <br>Comments must be submitted before 5:00 P.M. on Tuesday, December 1, 2026.</p>"
+  },
+  {
+   "request_id": "20261109017",
+   "start_date": "2026-11-17T00:00:00.000",
+   "end_date": "2026-11-17T00:00:00.000",
+   "agency_name": "Landmarks Preservation Commission",
+   "type_of_notice_description": "Notice",
+   "short_title": "Advisory Report for October 2026",
+   "section_name": "Special Materials",
+   "event_date": "2026-11-17T00:00:00.000"
+  },
+  {
+   "request_id": "20261110002",
+   "start_date": "2026-11-17T00:00:00.000",
+   "end_date": "2026-11-17T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: Department of Transportation</p><p>Description of Services to be Provided: General/Biennial Bridge Inspections and inventory updates for seven (7) pedestrian bridges owned by the City of New York and located within the Boroughs of Queens and Brooklyn</p><p>Anticipated New Start Date:<strong> </strong>01/04/2027</p><p>Anticipated New End Date: 12/26/2027</p><p>Anticipated Procurement Method: Task Order</p><p>Job Titles: None</p><p>Headcounts: 0 </p>"
+  },
+  {
+   "request_id": "20261110003",
+   "start_date": "2026-11-17T00:00:00.000",
+   "end_date": "2026-11-17T00:00:00.000",
+   "agency_name": "Dept. of Social Svcs/Human Resources Administration",
+   "type_of_notice_description": "Notice",
+   "short_title": "REPRESENTATION ON CIVIL LEGAL MATTERS",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p><span style='font-size:12pt'><span style='color:black'>This is a notice that NYC Department of Social Services/HRA is seeking comments from the public about the proposed two (2) contracts listed below.</span></span></p><p> </p><p><span style='font-size:12pt'><span style='color:black'><strong>Contract Type</strong>: General Contract \u001a (CT1)</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Scope of Services: </strong>Representation on civil legal matters</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Term</strong>: 07/01/2026 \u001a 06/30/2029 </span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Renewal Clause</strong>: No Renewal Option </span></span></p><p> </p><p><span style='font-size:12pt'><span style='color:black'><strong>The contractor\u001as name, E-PIN number, contract amount and address are indicated below:</strong></span></span></p><p> </p><p><span style='font-size:12pt'><span style='color:black'><strong>E-PIN</strong>: 06927L0269001</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Contractor</strong>: Community Development Project, Inc. d/b/a TakeRoot Justice</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Contractor Address</strong>: 123 William Street, 16th Floor, New York, NY 10038</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Amount:</strong> $2,824,598.00</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Location: </strong>Citywide</span></span></p><p> </p><p><span style='font-size:12pt'><span style='color:black'><strong>E-PIN</strong>: 06927L0259001</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Contractor</strong>: Asian Americans for Equality, Inc. </span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Contractor Address</strong>: 108 Norfolk Street, Ground Floor, New York, NY 10002</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Amount:</strong> $1,503,000.00</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Location: </strong>Citywide </span></span></p><p> </p><p><span style='font-size:12pt'><span style='color:black'><strong>Procurement Method</strong>: City Council Discretionary Funds/Line-Item Appropriation</span></span></p><p><span style='font-size:12pt'><span style='color:black'><strong>Procurement Policy Board Rule</strong>: Section 1-02 (e) </span></span></p><p> </p><p><span style='font-size:12pt'><span style='color:black'><strong>How can I comment on this proposed contract award</strong>?</span></span></p><p><span style='font-size:12pt'><span style='color:black'>Please submit your comment to PublicComments@dss.nyc.gov. Be sure to include the E-PIN above in your message.</span></span></p><p> </p><p><span style='font-size:12pt'><span style='color:black'>Comments must be submitted before 10:00 A.M. on Monday, November 23, 2026.</span></span></p>"
+  },
+  {
+   "request_id": "20261106024",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/OMB/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: OMB</p><p>Vendor: Marsh USA LLC</p><p>Description of Services to be Provided: Insurance Brokerage Services</p><p>Anticipated Procurement Method: Amendment</p><p>Anticipated Modifications of Scope: None</p><p>New Start Date: 04/01/2022 </p><p>New End Date: 03/31/2027</p><p>Reason for Amendment/Extension- Money Only- to add funding capacity</p><p>Job Titles: None </p><p>Headcount: 0</p><p> </p><p>Agency: OMB</p><p>Vendor: Marsh USA LLC</p><p>Description of Services to be Provided: Insurance Brokerage Services</p><p>Anticipated Procurement Method: Renewal</p><p>Anticipated Modifications of Scope: None</p><p>New Start Date: 04/01/2027 </p><p>New End Date: 03/31/2030</p><p>Reason for Amendment/Extension- Continuation of service</p><p>Job Titles: None </p><p>Headcount: 0</p>"
+  },
+  {
+   "request_id": "20261109002",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Youth and Community Development",
+   "type_of_notice_description": "Notice",
+   "short_title": "MWBE Non Competitive Small Purchase",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p>This is a notice that the NYC Department of Youth and Community Development is seeking comments from the public about the proposed contract below.  </p><p><br><strong>Contract Type</strong>: Contract  </p><p><strong>Contractor:</strong> Watson's Plumbing Heating & Building Services Inc</p><p><strong>Contractor Address:</strong> 855 Saint Nicholas Avenue, New York, NY 10031</p><p><strong>Scope of Services: </strong>Watson's Plumbing Heating & Building Services Inc, a licensed plumbing company, will provide on-call plumbing, sewer and sanitization services Citywide at various community centers within NYCHA facilities.</p><p><strong>Maximum Value:</strong> $500,000.00</p><p><strong>E-PIN:</strong> 26027W0005001</p><p><strong>Term:</strong> August 31, 2026 through June 30, 2027</p><p><strong>Procurement Method:</strong> MWBE Non-Competitive Small Purchase</p><p><strong>Procurement Policy Board Rule:</strong> Section 3-08</p><p> </p><p><strong>How can I comment on this proposed contract award?</strong>  </p><p>Please submit your comment to<strong> </strong>https://forms.office.com/g/4bZPLyJc0z. Be sure to include the E-PIN above in your message. </p><p> </p><p>Comments must be submitted before 3:00 P.M. on November 23, 2026.</p>"
+  },
+  {
+   "request_id": "20261105021",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Environmental Protection",
+   "type_of_notice_description": "Notice",
+   "short_title": "82627Y0903 BWS AEBI Tractor 7010306X",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p>This is a notice that NYC Department of Environmental Protection is seeking comments from the public about the proposed contract below.</p><p> </p><p><strong>Contract Type:</strong> CT1</p><p><strong>Contractor: </strong>ePaul Dynamics Inc</p><p><strong>Contractor Address:</strong> 16 Sintsink Dr E, Port Washington, NY 11050</p><p><strong>Scope of Services: </strong>AEBI Tractors </p><p><strong>Maximum Value:</strong> $462,893.00</p><p><strong>Term:</strong>12/7/2026 through 12/6/2027</p><p><strong>E-PIN:</strong>82627W0025001</p><p><strong>Procurement Method:</strong> MWBE Small Purchase</p><p><strong>Procurement Policy Board Rule:</strong> Section 3-08(c)(1)(iv)</p><p> </p><p><strong>How can I comment on this proposed contract award?</strong></p><p>Please submit your comment to https://forms.cloud.microsoft/g/4jR1d8299Z?origin=lprLink. Be sure to include the E-PIN above in your message. </p><p> </p><p>Comments must be submitted before 2:00 P.M. on Monday, November 23, 2026.</p>"
+  },
+  {
+   "request_id": "20261102015",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-20T00:00:00.000",
+   "agency_name": "Environmental Control Board",
+   "type_of_notice_description": "Meeting",
+   "short_title": "New York City Environmental Control Board Meeting December 3, 2026",
+   "section_name": "Public Hearings and Meetings",
+   "additional_description_1": "<p><span style='font-size:16px'><span style='font-family:Times New Roman,Times,serif'>The New York City Environmental Control Board (\u001aBoard\u001a) meeting scheduled for Thursday, December 3, 2026<u>,</u> at 9:30 A.M., will be accessible both in person and remotely. The meeting will be held in person at the Office of Administrative Trials and Hearings (\u001aOATH\u001a), 100 Church Street, 12th Floor, multipurpose training room.  Members of the public may alternatively view the Board meeting electronically by connecting through Webex with meeting number (access code) 2347 913 6932 and password PYdriTt7t65. Minutes of the Board meeting will be transcribed and posted on the OATH website.</span></span></p>",
+   "event_date": "2026-12-03T09:30:00.000",
+   "street_address_1": "100 Church Street",
+   "street_address_2": "12th Floor",
+   "city": "New York",
+   "state": "NY",
+   "zip_code": "10007"
+  },
+  {
+   "request_id": "20261109001",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Youth and Community Development",
+   "type_of_notice_description": "Notice",
+   "short_title": "Tax Levy/Discretionary",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p>This is a notice that The Department of Youth & Community Development (DYCD) is seeking comments from the public about the two (2) proposed contract(s) below.</p><p> </p><p><strong>Contract Type: </strong>Contract</p><p><strong>Scope of Services: </strong>Contractors listed below are to provide various Youth and Community Development related Services citywide. </p><p>                                                                                                                                                                                                          </p><p><strong>The contractors' name, EPIN, contract amount, contract term, and contractor address are indicated below:</strong></p><p> </p><p><strong>Term:</strong> July 1, 2025 through June 30, 2028</p><p> </p><p><strong>EPIN: </strong>26026L0046001</p><p><strong>Contractor Name: </strong>New York City Parent of Lesbians and Gay Men Inc</p><p><strong>Contractor Address: </strong>154 Christopher Street, Suite 2A, New York, NY 10014  <strong>  </strong></p><p><strong>Contract Amount: </strong>$1,500,000.00</p><p> </p><p><strong>EPIN: </strong>26024L0559001</p><p><strong>Contractor Name: </strong>Morris Park Community Association Inc</p><p><strong>Contractor Address: </strong>1824 Bronxdale Avenue, Bronx, NY 10462</p><p><strong>Contract Amount: </strong>$138,747.00</p><p> </p><p><strong>Procurement Method: </strong>Line-Item Appropriation<strong> </strong></p><p><strong>Procurement Policy Board Rule:</strong> Section 1-02 (e)</p><p> </p><p><strong>How can I comment on this proposed contract award?</strong></p><p>Please submit your comment to https://forms.office.com/g/4bZPLyJc0z. Be sure to include the EPIN above in your message.</p><p> </p><p>Comments must be submitted before 3:00 P.M. on November 23, 2026.</p>"
+  },
+  {
+   "request_id": "20260819014",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Board Meetings",
+   "type_of_notice_description": "Meeting",
+   "short_title": "BOARD MEETINGS",
+   "section_name": "Public Hearings and Meetings",
+   "additional_description_1": "<p>&nbsp;</p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>City Planning Commission</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'><span style='color:black'>Meets in NYC City Planning Commission Hearing Room, Lower Concourse, 120 Broadway, New York, NY 10271, twice monthly on Wednesday, at 10:00 A.M., unless otherwise ordered by the Commission.</span></span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>City Council</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets by Charter twice a month in Councilman</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;Times New Roman&quot;,serif'>&rsquo;</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>s Chamber, City Hall, Manhattan, NY 10007, at 1:30 P.M.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Contract Awards Public Hearing</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets bi-weekly, on Thursday, at 10:00 A.M. In order to access the Public Hearing and testify, please call 1-646-992-2010, Access Code: 715 951 139, no later than 9:55 A.M.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Civilian Complaint Review Board</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Generally meets at 10:00 A.M. on the second Wednesday of each month at 40 Rector Street, 2nd Floor, New York, NY 10006. Visit http://www.nyc.gov/html/ccrb/html/meeting.html for additional information and scheduling changes.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Design Commission</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets at City Hall, Third Floor, New York, NY 10007. For meeting schedule, please visit nyc.gov/designcommission or call (212) 788-3071.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Department of Education</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets in the Hall of the Board for a monthly business meeting on the Third Wednesday, of each month at 6:00 P.M. The Annual Meeting is held on the first Tuesday of July at 10:00 A.M.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Board of Elections</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>32 Broadway, 7th Floor, New York, NY 10004, on Tuesday, at 1:30 P.M. and at the call of the Commissioner.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Environmental Control Board</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets at 100 Church Street, 12th Floor, Training Room #143, New York, NY 10007 at 9:15 A.M. once a month at the call of the Chairman.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Board of Health</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets at Gotham Center, 42-09 28th Street, Long Island City, NY 11101, at 10:00 A.M., quarterly or at the call of the Chairman.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Health Insurance Board</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets in Room 530, Municipal Building, Manhattan, NY 10007, at the call of the Chairman.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Board of Higher Education</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets at 535 East 80th Street, Manhattan, NY 10021, at 5:30 P.M., on fourth Monday in January, February, March, April, June, September, October, November and December. Annual meeting held on fourth Monday in May.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Citywide Administrative Services</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Division of Citywide Personnel Services will hold hearings as needed in Room 2203, 2 Washington Street, New York, NY 10004.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Commission on Human Rights</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets on 10th Floor in the Commission</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;Times New Roman&quot;,serif'>&rsquo;</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>s Central Office, 40 Rector Street, New York, NY 10006, on the fourth Wednesday of each month, at 8:00 A.M.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>In Rem Foreclosure Release Board</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets in Spector Hall, 22 Reade Street, Main Floor, Manhattan, monthly on Tuesdays, commencing 10:00 A.M., and other days, times and location as warranted.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Franchise and Concession Review Committee</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets in Spector Hall, 22 Reade Street, Main Floor, and other days, times and location as warranted.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Real Property Acquisitions and Dispositions</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets bi-weekly, on Wednesday, at 10:00 A.M. In order to access the Public Hearing and testify, please call 1-646-992-2010, Access Code: 717 876 299, no later than 9:55 A.M.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Landmarks Preservation Commission</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets in the Hearing Room, </span></span><span style='font-size:9.0pt'><span style='font-family:&quot;Cambria&quot;,serif'>253 Broadway, 2nd Floor</span></span> <span style='font-size:9.0pt'><span style='font-family:&quot;Cambria&quot;,serif'>in </span></span><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Manhattan</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;Cambria&quot;,serif'>,</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'> on approximately three Tuesdays each month, commencing at 9:30 A.M. unless otherwise noticed by the Commission. For current meeting dates, times and agendas, please visit our website at www.nyc.gov/landmarks.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Employees</span></span></strong><strong><span style='font-size:9.0pt'><span style='font-family:&quot;Times New Roman&quot;,serif'>&rsquo;</span></span></strong><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'> Retirement System</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets in the Boardroom, 22nd Floor, 335 Adams Street, Brooklyn, NY 11201, at 9:30 A.M., on the second Thursday of each month, at the call of the Chairman.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Housing Authority</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>New York City Housing Authority Board Meetings are scheduled for the</span></span><strong>&nbsp;</strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>last Wednesday of each month (except August) at 10:00 A.M. in the Ceremonial Room on the 5th Floor of 90 Church Street, New York, NY 10007 (unless otherwise noted). Any changes to the schedule will be posted here and on NYCHA</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;Times New Roman&quot;,serif'>&rsquo;</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>s website at https://www.nyc.gov/site/nycha/about/board-meetings.page to the extent practicable, at a reasonable time before the meeting. For additional information, please visit NYCHA</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;Times New Roman&quot;,serif'>&rsquo;</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>s website or contact (212) 306-6088.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Parole Commission</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets at its office, 100 Centre Street, Manhattan, NY 10013, on Thursday, at 10:30 A.M.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Board of Revision of Awards</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets in Room 603, Municipal Building, Manhattan, NY 10007, at the call of the Chairman.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Board of Standards and Appeals</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets at 22 Reade Street, 1st Floor, in Manhattan on Mondays and Tuesdays at 10:00 A.M. Review sessions are customarily held immediately before the public hearing. For changes in the schedule or additional information, please call the Board</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;Times New Roman&quot;,serif'>&rsquo;</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>s office at (212) 386-0009 or consult the Board</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;Times New Roman&quot;,serif'>&rsquo;</span></span><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>s website at www.nyc.gov/bsa.</span></span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><strong><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Tax Commission</span></span></strong></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='font-size:9.0pt'><span style='font-family:&quot;New Century Schoolbook&quot;,serif'>Meets in Room 936, Municipal Building, Manhattan, NY 10007, each month at the call of the President. Manhattan, monthly on Wednesdays, commencing 2:30 P.M.</span></span></span></span></p>"
+  },
+  {
+   "request_id": "20261109007",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Housing Preservation and Development",
+   "type_of_notice_description": "Notice",
+   "short_title": "FY 27-29 Discretionary Contact NEIGHBORHOOD HOUSING SERVICES OF BROOKLYN BEDFORD-STUYVESANT",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'>This is a notice that the New York City Department of Housing Preservation and Development (HPD) is seeking comments from the public about the proposed contract below.  </span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'> </span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>Contract Type:</strong> Contract</span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>Contractor: </strong>Neighborhood Housing Services of Brooklyn Bedford-Stuyvesant</span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>Contractor Address: </strong>506 Macdonough Street, Brooklyn, NY 11233</span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>Scope of Services: </strong>Local Initiatives</span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>Maximum Value:</strong> $375,000.00</span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>Term: </strong>7/1/2026 through 6/30/2029</span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>E-PIN:</strong> 80627L0038001</span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>Procurement Method:</strong> Line-item Appropriation   </span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'><strong>Procurement Policy Board Rule: </strong>Section 1-02 (e) </span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'> </span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong><span style='font-size:11.0pt'><span style='color:black'>How can I comment on this proposed contract award?</span></span></strong></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'>Please submit your comment using HPD\u001as Public Comment Submission Form -</span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'>https://forms.office.com/Pages/ResponsePage.aspx?id=x2_1MoFfIk6pWxXaZlE771CRnVLcmLxIuGIKKghtznRUMEkxWkRYTTVKTUk1TlI0REpYRFFOQThMRC4u</span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'>Be sure to include the E-PIN above in your message. </span></span></span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><span style='font-size:11.0pt'><span style='color:black'>Comments must be submitted before 5:00 P.M. on Monday, November 23, 2026.</span></span></span></span></p>"
+  },
+  {
+   "request_id": "20261109005",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DPRC/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: DPR-C</p><p>Vendor: MKW & Associates</p><p>Description of Services to be Provided: Landscape Architecture D\u001aEmic Playground Reconstruction, BG-1123M, SWO #2B</p><p>Anticipated Procurement Method: Amendment-Task Order</p><p>Anticipated Start Date: 07/21/2023</p><p>Anticipated End Date: 05/21/2027</p><p>Anticipated Modifications to Scope: Increase in additional fees for allowances</p><p>Reason for Renewal/Amendment: Continuation of services</p><p>Job Titles: None</p><p>Headcount: 0</p><p> </p><p>Agency: DPR-C</p><p>Vendor: Henningson, Durham and Richardson Architecture and Engineering, PC</p><p>Description of Services to be Provided: Structural Engineering Design Services for the Reconstruction of Retaining Walls, CNYG-1320M, SWO #1RC</p><p>Anticipated Procurement Method: Amendment-Task Order</p><p>Anticipated Start Date: 04/30/2021</p><p>Anticipated End Date: 12/30/2025</p><p>Anticipated Modifications to Scope: Increase in additional Design Fee</p><p>Reason for Renewal/Amendment: Continuation of services</p><p>Job Titles: None</p><p>Headcount: 0</p>"
+  },
+  {
+   "request_id": "20261109004",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN </strong>that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: DOT</p><p>Vendor: Gartner Inc.</p><p>Description of Services to be Provided: Automated Enforcement Sourcing Optimization: Sourcing and Procurement Strategy Services for the Automated Traffic Enforcement Program and Related Traffic Operations Programs, Including Parking Operations, Technology Solutions, and Asset Management</p><p>Anticipated Procurement Method: Amendment</p><p>Anticipated New Start Date: 7/1/2023 (Original Task Order 2675-006A start date)</p><p>Anticipated New End Date: 04/30/2028</p><p>Anticipated Modifications to Scope: Additional sourcing support for parking operations, including current state assessment, target state strategy, solicitation and evaluation support, and transition planning</p><p>Reason for Renewal/Extension: Time extension and increase in contract value for continuation of services</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261106022",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DDC/NEW",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261105002",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-13T00:00:00.000",
+   "agency_name": "Health and Mental Hygiene",
+   "type_of_notice_description": "Notice",
+   "short_title": "FY27 City Council / Court-Involved Youth Mental Health Initiative / HIV/AIDS Pathways 27AS024001R0X00",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p><span style='font-size:16px'><span style='font-family:Georgia,serif'>This is a notice that DOHMH is seeking comments from the public about the proposed contract below.<br>   <br><strong>Contract Type: </strong>New Contract  <br><strong>Contractor:</strong> The Osborne Association, Inc<br><strong>Contractor Address:</strong> 809 Westchester Avenue, Bronx, NY 10455<br><strong>Scope of Services: </strong>This funding is to supports HIV/AIDS prevention, education, outreach, advocacy, and support services. Organizations under this initiative focus on identifying diagnosed and undiagnosed HIV-positive individuals linking them to care and medication, including PrEP and PEP Services. The initiative aims to reach vulnerable and at-risk populations, including communities of color, seniors, and individuals with mental health and/or substance use disorders. The funding also supports programs that utilize risk assessment tools to identify juveniles in the arrest process who require mental health services and that provide family counseling. <br><strong>Maximum Value: </strong>$1,051,527.00<br><strong>Term: </strong>7/1/2026 through 6/30/2029<br><strong>Renewal: </strong>N/A<br><strong>E-PIN:</strong> 81627L0204001<br><strong>Procurement Method:</strong> Discretionary/City Council/Expense<br><strong>Procurement Policy Board Rule:</strong> Section 1-02(e)<br> <br><strong>How can I comment on this proposed contract award? </strong><br>Please submit your comment to PublicComment@health.nyc.gov. Be sure to include the E-PIN above in your message.  <br> <br>Comments must be submitted before 2:00 P.M. on Friday, November 27, 2026.</span></span></p>"
+  },
+  {
+   "request_id": "20261027031",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-13T00:00:00.000",
+   "agency_name": "Transportation",
+   "type_of_notice_description": "Public Hearings",
+   "short_title": "DINING OUT NYC PUBLIC HEARINGS",
+   "section_name": "Public Hearings and Meetings",
+   "additional_description_1": "<p>NOTICE IS HEREBY GIVEN, PURSUANT TO LAW, that the following revocable consent has been schedules for a public hearing by the New York City Department of Transportation. A draft copy of the revocable consent agreement(s) may be obtained at no cost by submitting a request at diningoutnyc.info/requestcopy</p><p>The public hearing will be held remotely via Zoom, commencing on December 3rd, 2026, at 11:00 am, in the matter of a proposed revocable consent authorizing the following:</p><ol>\t<li>\t<p>C&K Grocery Corporation to modify a license issued to maintain, operate, and use a sidewalk cafe for a term of four years adjacent to 362 2 Avenue in the Borough of Manhattan.</p>\t</li>\t<li>\t<p>AURORA FG INC to modify a license issued to maintain, operate, and use a year-round roadway cafe for a term of four years adjacent to 362 2 Avenue in the Borough of Manhattan.</p>\t</li>\t<li>\t<p>MANSIONS OF GLORY HOSPITALITY LLC to maintain, operate and use a year-round roadway cafe for a term of four years adjacent to 53 Spring Street in the Borough of Manhattan.</p>\t</li>\t<li>\t<p>SHOO SHOO EAST LLC to maintain, operate and use a year-round roadway cafe for a term of four years adjacent to 1477 2 Avenue in the Borough of Manhattan.</p>\t</li></ol><p>To join the hearing enter the following URL link into your browser\u001as address bar: zoom.us/j/91467302621 Meeting ID: 914 6730 2621</p><p>To join the hearing only by phone, use the following information to connect: Phone: +1-929-205-6099 Meeting ID: 914 6730 2621</p>",
+   "event_date": "2026-12-03T11:00:00.000"
+  },
+  {
+   "request_id": "20261105020",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-13T00:00:00.000",
+   "agency_name": "Emergency Management",
+   "type_of_notice_description": "Notice",
+   "short_title": "Metallic VM and File Backup & Recovery",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p>This is a notice that NYC Emergency Management (NYCEM) is seeking comments from the public about the proposed contract below.</p><p> </p><p><strong>Contract Type:</strong> General Contract (CT1)</p><p><strong>Contractor: </strong>Compulink Technologies Inc</p><p><strong>Contractor Address: </strong>260 W 39th Street, New York, NY 10018-4434</p><p><strong>Scope of Services: </strong>Seek<strong> </strong>Metallic VM and File Backup & Recovery for Annual Renewal</p><p><strong>Amount:</strong> $105,438.98</p><p><strong>Term:</strong> 11/5/2026 - 11/5/2027</p><p><strong>E-PIN:</strong>01727W0003001</p><p><strong>Location: </strong>165 Cadman Plaza East, Brooklyn, NY 11201</p><p><strong>Procurement Method: </strong>M/WBE Noncompetitive Small Purchase </p><p><strong>Procurement Policy Board Rule:</strong> Section 3-08</p><p> </p><p><strong>How can I comment on this proposed contract award?  </strong><br>Please submit your comment to procurementmail@oem.nyc.gov. Be sure to include the E-PIN above in your message.</p><p> </p><p>Comments must be submitted before 5:00 P.M. on Friday, November 20, 2026.</p>"
+  },
+  {
+   "request_id": "20261109016",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-13T00:00:00.000",
+   "agency_name": "Citywide Administrative Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "Weekly Fuel Price Schedule Week of 11/09/26",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261102003",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-23T00:00:00.000",
+   "agency_name": "Housing Preservation and Development",
+   "type_of_notice_description": "Notice",
+   "short_title": "Request for Comment Greenpoint Williamsburg List",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261105003",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-13T00:00:00.000",
+   "agency_name": "Taxi and Limousine Commission",
+   "type_of_notice_description": "Notice",
+   "short_title": "NYC TLC Accessible Taxi Loan Assistance (ATLAS) Pilot Program - Notice to Participate",
+   "section_name": "Special Materials",
+   "event_date": "2026-11-13T00:00:00.000"
+  },
+  {
+   "request_id": "20261105019",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-13T00:00:00.000",
+   "agency_name": "Probation",
+   "type_of_notice_description": "Notice",
+   "short_title": "FY27-29 Pre-Employment Testing",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p>This is a notice that the New York City Department of Probation (DOP) is seeking comments from the public regarding the proposed contract award described below.</p><p><br><strong>Contract Type:</strong> General Contract (CT1)</p><p><strong>Contractor: </strong>Police & Public Safety Psychology Associates, Inc.</p><p><strong>Contractor Address:</strong> 4 Bristol Ridge, Boonton, NJ 07005</p><p><strong>Scope of Services:</strong> The New York City Department of Probation seeks to procure pre-employment psychological testing services for prospective Probation Officer candidates. Services shall include the administration and interpretation of standardized psychological assessments, clinical interviews conducted by qualified licensed professionals, and written evaluations to determine candidates' psychological suitability for law enforcement responsibilities. </p><p><strong>Maximum Value: </strong> $142,500.00</p><p><strong>Contract Term:</strong> October 30, 2026 through September 30, 2028 </p><p><strong>Renewal Clauses: </strong>One (1), one-year renewal option</p><p><strong>E-PIN:</strong> 78127W0002001</p><p><strong>Procurement Method:</strong> MWBE Non-Competitive Small Purchase</p><p><strong>Procurement Policy Board Rule:</strong> § 3-08</p><p> </p><p><strong>How can I comment on this proposed contract award?</strong></p><p>Please submit comments by email to the DACCO, Chairon Jeffrey, at cjeffrey@probation.nyc.gov. Please be sure to include E-PIN 78127W0002001 in the subject line of your message.</p><p> </p><p>Comments must be submitted no later than 5:00 P.M. on Friday, November 20, 2026. </p>"
+  },
+  {
+   "request_id": "20261105015",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-13T00:00:00.000",
+   "agency_name": "Information Technology and Telecommunications",
+   "type_of_notice_description": "Notice",
+   "short_title": "LIVEU BACKPACKS AND SERVICES",
+   "section_name": "Public Comment on Contract Awards",
+   "additional_description_1": "<p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'>This is a notice that the NYC Office of Technology & Innovation is seeking comments from the public about the proposed contract below.</span></span></p><p> </p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>Contract Type:</strong> CT1</span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>Contractor:</strong> Visionaryz Inc</span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>Contractor Address:</strong> 111 Broadway, Suite 800, New York, NY 10006</span></span></p><p style='margin-right:8px; text-align:justify'><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>Scope of Services</strong>: LiveU devices transmit broadcast-quality video from field cameras to the Agency\u001as downtown Manhattan broadcast facility. The purchase covers ongoing hardware warranty and support, LiveU IQ upgrades for existing LU-800 backpacks, mobile data service, and continued access to LiveU Central and related bonded video services.</span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>Maximum Value:</strong> $113,039.13</span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>Term:</strong> 7/01/2026 \u001a 6/30/2029</span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>E-PIN:</strong> 85827W0024001</span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>Procurement Method:</strong> M/WBE Small Purchase</span></span></p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>Procurement Policy Board Rule:</strong> Section 3-08 (c)(1)(iv)</span></span></p><p> </p><p><span style='font-size:12pt'><span style='font-family:Aptos,sans-serif'><strong>How can I comment on this proposed contract award?</strong><br>Please submit your comments through the following: MWBECROLComments@oti.nyc.gov. Be sure to include the E-PIN above in your message.<br>Comments must be submitted before 10:00 A.M. ET, on November 20, 2026.</span></span></p>"
+  },
+  {
+   "request_id": "20261102002",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-23T00:00:00.000",
+   "agency_name": "Housing Preservation and Development",
+   "type_of_notice_description": "Notice",
+   "short_title": "Request for Comment SRO List",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261102004",
+   "start_date": "2026-11-13T00:00:00.000",
+   "end_date": "2026-11-23T00:00:00.000",
+   "agency_name": "Housing Preservation and Development",
+   "type_of_notice_description": "Notice",
+   "short_title": "Request for Comment Clinton List",
+   "section_name": "Special Materials"
+  }
+ ]
+}

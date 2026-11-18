@@ -87,7 +87,7 @@ test("a timeout and a network failure each get a plain sentence", async (t) => {
   mockFetch(t, [new DOMException("The operation timed out.", "TimeoutError")]);
   let r = await callTool("search_notices", { query: "parks" });
   assert.equal(r.isError, true);
-  assert.match(text(r), /did not answer within 30 seconds\. Try again/);
+  assert.match(text(r), /did not answer within 60 seconds\. Try again/);
   t.mock.restoreAll();
   mockFetch(t, [new TypeError("fetch failed")]);
   r = await callTool("search_notices", { query: "parks" });

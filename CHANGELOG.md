@@ -73,6 +73,21 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
   advises. Limits are unchanged (default 25, or 50 for a date range; at most 100, or 200).
 - `DATA-SOURCES.json`: the limit caveat says the answer reports more matches and `offset`
   gets them; `data.json` rebuilt.
+- `search_notices` waits up to 60 seconds instead of 30 (#22, with the written reason in
+  `src/city-record.ts`): on 2026-11-18 NYC Open Data took 29 s, 35 s and over 120 s to answer
+  a several-word full-text search, and 8.9 s for one word. The timeout message now suggests
+  the faster agency, type and date tools.
+- Server instructions (#32): one answer guide for the seven City Record tools, said once
+  (the answer's fields and how to get more, cite the Source line, what an empty answer means,
+  the Changes in Personnel listings, keyword search can be slow), before the shared about_data
+  paragraph. `get_notices_by_type`'s description no longer repeats the type list its schema
+  already gives as an `enum`.
+- Evaluation set (#27): `eval/questions.json`, 11 questions with answers found first by direct
+  queries to the dataset on 2026-11-18, replayed offline from `eval/fixtures/` by
+  `npm run eval` (`-- --record` to record missing fixtures live). Results in
+  `eval/results.json`: 10 of 11; Q02 fails because NYC Open Data did not answer that
+  full-text search within 60 seconds (the recorded fixture is the timeout).
+- Live tests (#29): `test/live/`, run only by `npm run test:live`, never by `npm test` or CI.
 - The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
 - `package.json` `files` adds `DATA-SOURCES.json` and `data.json`.
 - README: `about_data` in the tool table and the shared tools section. The "Data source"
@@ -112,6 +127,14 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
   limits stay capped and `offset` must be a whole number from 0.
 - `test/tool-size.test.mjs`: budget raised to 16,000 for the `offset` parameter (measured
   15,606), with a dated note.
+- `test/eval.test.mjs`: at least 10 questions, unique ids, each with checks; the offline
+  replay gives the same pass/fail per question as `eval/results.json` (#27).
+- `test/stdout.test.mjs`: starts the built server, sends initialize, tools/list and two tool
+  calls, and checks every stdout line is a JSON-RPC message (fails on a stray `console.log`,
+  checked by adding one) (#31).
+- `test/tool-size.test.mjs`: the answer guide is in the instructions and no tool description
+  repeats it; budget raised to 16,500 for it (measured 16,104), with a dated note (#32).
+- `test/upstream.test.mjs`: the timeout message names 60 seconds for `search_notices`.
 
 ## [1.2.0] - 2026-11-13
 

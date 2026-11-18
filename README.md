@@ -24,7 +24,7 @@ export SOCRATA_APP_TOKEN="your-app-token"
 
 The server sends the token in the `X-App-Token` header, as [Socrata recommends](https://dev.socrata.com/docs/app-tokens.html), never in the URL, and never repeats it in an error message.
 
-**How the server asks NYC Open Data.** One request per tool call, only when you ask; no background polling. Each request names the server in its User-Agent (`nyc-record-mcp/<version>`), gives up after 30 seconds, and is retried at most twice when NYC Open Data is busy (HTTP 429 or a server error), waiting as long as it asks (up to 10 seconds). When something fails, the tool says what went wrong and what to try, plus at most 500 characters of what NYC Open Data said.
+**How the server asks NYC Open Data.** One request per tool call, only when you ask; no background polling. Each request names the server in its User-Agent (`nyc-record-mcp/<version>`), gives up after 30 seconds (60 for `search_notices`, whose full-text search NYC Open Data can take more than 30 seconds to answer), and is retried at most twice when NYC Open Data is busy (HTTP 429 or a server error), waiting as long as it asks (up to 10 seconds). When something fails, the tool says what went wrong and what to try, plus at most 500 characters of what NYC Open Data said.
 
 ---
 
@@ -266,11 +266,19 @@ npm run build
 npm start
 ```
 
-Run the test suite (builds first, then runs the Node test runner against `test/*.test.mjs`):
+Run the test suite (builds first, then runs the Node test runner against `test/*.test.mjs`). It is offline: every test mocks the network, and it is what CI runs.
 
 ```bash
 npm test
 ```
+
+Live tests ask NYC Open Data, one small request per tool, and live in `test/live/`. They are never part of `npm test` or CI:
+
+```bash
+npm run test:live
+```
+
+The evaluation set, `eval/questions.json`, holds 11 realistic questions with answers found first by querying the dataset directly. `npm run eval` replays them offline from `eval/fixtures/` and writes `eval/results.json`; `npm run eval -- --record` asks NYC Open Data for any missing fixture (delete `eval/fixtures/` to re-record them all; the answers then change as the dataset grows). Results on 2026-11-18: 10 of 11. Q02, a several-word keyword search, failed because NYC Open Data did not answer it within 60 seconds.
 
 ---
 

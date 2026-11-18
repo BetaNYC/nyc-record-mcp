@@ -1,0 +1,27 @@
+{
+ "key": "$limit=2&$offset=0&$order=start_date DESC,:id&$where=type_of_notice_description='Sale'",
+ "status": 200,
+ "body": [
+  {
+   "request_id": "20260604044",
+   "start_date": "2026-06-22T00:00:00.000",
+   "end_date": "2026-06-25T00:00:00.000",
+   "agency_name": "Environmental Protection",
+   "type_of_notice_description": "Sale",
+   "short_title": "CARPENTERS EDDY WEST FOREST MANAGEMENT PROJECT #5202 NOTICE OF PROJECT AVAILABILITY",
+   "section_name": "Property Disposition",
+   "event_date": "2026-07-23T14:00:00.000",
+   "street_address_1": "Address Not Listed In The Dropdown"
+  },
+  {
+   "request_id": "20251106024",
+   "start_date": "2025-11-14T00:00:00.000",
+   "end_date": "2027-05-03T00:00:00.000",
+   "agency_name": "Citywide Administrative Services",
+   "type_of_notice_description": "Sale",
+   "short_title": "AUTO AUCTION",
+   "section_name": "Property Disposition",
+   "additional_description_1": "<p>The City of New York in partnership with GovDeals.com</p><p>posts vehicle and heavy machinery auctions online every week at:</p><p><strong>https://www.govdeals.com/en/nyc-dcas-fleet</strong></p><p> </p><p>All auctions are open to the public and registration is free.</p><p> </p><p>For help with registration or for general questions, please contact the GovDeals</p><p>customer support team at 844-704-0367 or osr@govdeals.com.</p>"
+  }
+ ]
+}

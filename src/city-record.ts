@@ -62,6 +62,11 @@ export function nyToday(now: Date = new Date()): string {
 // ponytail: no per-host gate or cache; add them if one tool call ever makes more than one request.
 export const USER_AGENT = `nyc-record-mcp/${PACKAGE_VERSION} (+https://github.com/BetaNYC/nyc-record-mcp)`;
 export const REQUEST_TIMEOUT_MS = 30_000;
+/** Full-text search ($q) gets longer, with a written reason: on 2026-11-18, $q queries on this
+ * dataset (about a million rows) took 8.9 s for "parks" but 29 s, 35 s and over 120 s for
+ * "City Environmental Quality Review Fee", with or without the :id tie-break, so 30 s cut off
+ * searches NYC Open Data would have answered. The other tools filter on columns and stay at 30 s. */
+export const SEARCH_TIMEOUT_MS = 60_000;
 export const MAX_RETRIES = 2;
 const MAX_WAIT_MS = 10_000;
 
@@ -91,7 +96,7 @@ function failure(status: number): string {
   return `NYC Open Data answered with HTTP ${status}. Try again, or check the dataset at https://data.cityofnewyork.us/d/${DATASET_ID}.`;
 }
 
-async function sodaFetch(params: Record<string, string>): Promise<CityRecordNotice[]> {
+async function sodaFetch(params: Record<string, string>, timeoutMs = REQUEST_TIMEOUT_MS): Promise<CityRecordNotice[]> {
   const url = new URL(`${BASE_URL}/resource/${DATASET_ID}.json`);
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
@@ -103,10 +108,10 @@ async function sodaFetch(params: Record<string, string>): Promise<CityRecordNoti
   for (let attempt = 1; ; attempt++) {
     let res: Response;
     try {
-      res = await fetch(url.toString(), { headers, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+      res = await fetch(url.toString(), { headers, signal: AbortSignal.timeout(timeoutMs) });
     } catch (err) {
       if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {
-        throw new UpstreamError(`NYC Open Data did not answer within ${REQUEST_TIMEOUT_MS / 1000} seconds. Try again in a minute, or ask for fewer notices.`);
+        throw new UpstreamError(`NYC Open Data did not answer within ${timeoutMs / 1000} seconds. Try again in a minute, or narrow the question: a shorter search, or get_notices_by_agency, get_notices_by_type or get_notices_by_date_range, which are faster than a full-text search.`);
       }
       throw new UpstreamError("Could not reach NYC Open Data (a network error, not an answer from the API). Check the connection and try again.");
     }
@@ -153,7 +158,7 @@ async function page(
   };
   if (query.where) params.$where = query.where;
   if (query.q) params.$q = query.q;
-  const rows = await sodaFetch(params);
+  const rows = await sodaFetch(params, query.q ? SEARCH_TIMEOUT_MS : REQUEST_TIMEOUT_MS);
   return { notices: rows.slice(0, limit), offset, more: rows.length > limit };
 }
 

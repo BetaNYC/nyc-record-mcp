@@ -1,0 +1,42 @@
+{
+ "key": "$limit=2&$offset=0&$order=start_date DESC,:id&$where=type_of_notice_description in ('Solicitation','Award','Intent to Award','Intent to Negotiate','Vendor List')",
+ "status": 200,
+ "body": [
+  {
+   "request_id": "20261112010",
+   "start_date": "2026-11-18T00:00:00.000",
+   "end_date": "2026-11-18T00:00:00.000",
+   "agency_name": "Commission on Human Rights",
+   "type_of_notice_description": "Award",
+   "category_description": "Services (other than human services)",
+   "short_title": "Unarmed Security Guards",
+   "selection_method_description": "M/WBE Noncompetitive Small Purchase",
+   "section_name": "Procurement",
+   "pin": "22627W0001001",
+   "contact_name": "Marcos Pagan",
+   "email": "mpaganiv@cchr.nyc.gov",
+   "contract_amount": "57276",
+   "additional_description_1": "<p>This solicitation is being made pursuant to the M/WBE Noncompetitive Small Purchase Method, Section 3-08 of the New York City Procurement Policy Board (PPB) Rules, this procurement is exclusively for the City Certified Minority and Woman Owned Business (M/WBEs). Contracts awarded under this method may not exceed $1.5 million, inclusive of any and all change orders, overruns, amendments, renewals and extensions. If interested, please respond to this solicitation in Passport. Please submit your proposals by both acknowledging the receipt of the RFx in the Acknowledgement tab and completing your response in the Manage Responses tab. Vendor resources and materials can be found at the link below under the Finding and Responding to RFx heading. If you need help or have a question, submit an inquiry to the MOCS Service Desk https://www1.nyc.gov/site/mocs/systems/passport-user-materials.page</p>",
+   "vendor_name": "Vision Security Corporation",
+   "vendor_address": "659 Drew Street"
+  },
+  {
+   "request_id": "20261112002",
+   "start_date": "2026-11-18T00:00:00.000",
+   "end_date": "2026-11-18T00:00:00.000",
+   "agency_name": "NYC Health + Hospitals",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Services (other than human services)",
+   "short_title": "Temporary Security Staffing",
+   "selection_method_description": "Request for Proposals",
+   "section_name": "Procurement",
+   "pin": "2886",
+   "due_date": "2026-12-18T17:00:00.000",
+   "address_to_request": "50 Water Street, 5th Floor, New York, NY 10004",
+   "contact_name": "Bennett Mahler",
+   "contact_phone": "(646) 584-4069",
+   "email": "rfp_contacts@nychhc.org",
+   "additional_description_1": "<p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='color:#000000'>NYC Health + Hospitals\u001a Hospital Police department is seeking qualified vendors to provide Temporary Security Staffing Services to support a range of needs across the enterprise. Staff will be provided upon request at all locations to include Acute Care Hospitals, Long Term Care facilities, Ambulatory Clinics, and office locations. </span></span></span></p><p><span style='font-size:11pt'><span style='font-family:Calibri,sans-serif'><span style='color:#000000'>The objective of this RFP is to identify vendors to streamline the allocation of resources pertaining to the planning, procuring, and scheduling of temporary security staff as needs are identified at the System\u001as facilities. The awarded vendor will be expected to provide metrics in support of improved efficiencies around temporary security staff recruitment and placement.</span></span></span></p>"
+  }
+ ]
+}
