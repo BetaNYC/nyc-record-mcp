@@ -3,6 +3,8 @@ import { z } from "zod";
 import {
   NOTICE_TYPES,
   UpstreamError,
+  SOURCE,
+  type NoticePage,
   searchNotices,
   getNoticesByAgency,
   getNoticesByType,
@@ -11,7 +13,7 @@ import {
   getOpenSolicitations,
   getNoticesByDateRange,
 } from "./city-record.js";
-import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools, toolError } from "./betanyc-tools.js";
+import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools, provenance, toolError } from "./betanyc-tools.js";
 import { PACKAGE_VERSION } from "./version.js";
 
 /**
@@ -44,6 +46,9 @@ const isoDate = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "must be a date in YYYY-MM-DD format");
 
+/** The paging parameter every City Record tool takes (#25). */
+const OFFSET_PROP = { type: "integer", minimum: 0, description: "Skip this many notices, for the next page (default 0)" };
+
 /** The server's own tools. Each one sends a live query to NYC Open Data, so openWorldHint is true. */
 const DOMAIN_TOOLS: Tool[] = [
   {
@@ -55,6 +60,7 @@ const DOMAIN_TOOLS: Tool[] = [
       properties: {
         query: { type: "string", description: "Search term" },
         limit: { type: "number", description: "Max results (default 25, max 100)" },
+        offset: OFFSET_PROP,
       },
       required: ["query"],
       additionalProperties: false,
@@ -69,6 +75,7 @@ const DOMAIN_TOOLS: Tool[] = [
       properties: {
         agency_name: { type: "string", description: "Agency name or partial name, e.g. 'DCAS', 'Parks'" },
         limit: { type: "number", description: "Max results (default 25, max 100)" },
+        offset: OFFSET_PROP,
       },
       required: ["agency_name"],
       additionalProperties: false,
@@ -87,6 +94,7 @@ const DOMAIN_TOOLS: Tool[] = [
           description: "Notice type",
         },
         limit: { type: "number", description: "Max results (default 25, max 100)" },
+        offset: OFFSET_PROP,
       },
       required: ["notice_type"],
       additionalProperties: false,
@@ -100,6 +108,7 @@ const DOMAIN_TOOLS: Tool[] = [
       type: "object",
       properties: {
         limit: { type: "number", description: "Max results (default 25, max 100)" },
+        offset: OFFSET_PROP,
       },
       additionalProperties: false,
     },
@@ -112,6 +121,7 @@ const DOMAIN_TOOLS: Tool[] = [
       type: "object",
       properties: {
         limit: { type: "number", description: "Max results (default 25, max 100)" },
+        offset: OFFSET_PROP,
       },
       additionalProperties: false,
     },
@@ -124,6 +134,7 @@ const DOMAIN_TOOLS: Tool[] = [
       type: "object",
       properties: {
         limit: { type: "number", description: "Max results (default 25, max 100)" },
+        offset: OFFSET_PROP,
       },
       additionalProperties: false,
     },
@@ -137,6 +148,7 @@ const DOMAIN_TOOLS: Tool[] = [
         start_date: { type: "string", description: "Start date, YYYY-MM-DD" },
         end_date: { type: "string", description: "End date, YYYY-MM-DD" },
         limit: { type: "number", description: "Max results (default 50, max 200)" },
+        offset: OFFSET_PROP,
       },
       required: ["start_date", "end_date"],
       additionalProperties: false,
@@ -164,31 +176,35 @@ export const TOOLS: Tool[] = annotateTools(
  * and the tool answered a different question with real, plausible data — see
  * issue #10. Strict turns that into a loud failure.
  */
+const offset = z.number().int().min(0).optional();
+
 export const SCHEMAS = {
   search_notices: z
-    .object({ query: z.string(), limit: z.number().max(100).optional() })
+    .object({ query: z.string(), limit: z.number().max(100).optional(), offset })
     .strict(),
   get_notices_by_agency: z
-    .object({ agency_name: z.string(), limit: z.number().max(100).optional() })
+    .object({ agency_name: z.string(), limit: z.number().max(100).optional(), offset })
     .strict(),
   get_notices_by_type: z
     .object({
       notice_type: z.enum(NOTICE_TYPES),
       limit: z.number().max(100).optional(),
+      offset,
     })
     .strict(),
   get_procurement_notices: z
-    .object({ limit: z.number().max(100).optional() })
+    .object({ limit: z.number().max(100).optional(), offset })
     .strict(),
-  get_public_hearings: z.object({ limit: z.number().max(100).optional() }).strict(),
+  get_public_hearings: z.object({ limit: z.number().max(100).optional(), offset }).strict(),
   get_open_solicitations: z
-    .object({ limit: z.number().max(100).optional() })
+    .object({ limit: z.number().max(100).optional(), offset })
     .strict(),
   get_notices_by_date_range: z
     .object({
       start_date: isoDate,
       end_date: isoDate,
       limit: z.number().max(200).optional(),
+      offset,
     })
     .strict(),
 } satisfies Record<string, z.ZodTypeAny>;
@@ -224,9 +240,26 @@ export function parseToolArgs<K extends ToolName>(
   throw new Error(`${name} could not use its arguments. ${problems.join("; ")}. Fix the value and try again.`);
 }
 
-/** The text block every domain tool answers with. */
-function answer(rows: unknown) {
-  return { content: [{ type: "text" as const, text: JSON.stringify(rows, null, 2) }] };
+/**
+ * The text block every domain tool answers with (#23, #24, #25): how many notices are shown,
+ * whether more match and how to get them, the notices, and the source with its link and the
+ * time it was fetched (shared provenance(), kind "live": every answer is a live query).
+ */
+function answer(page: NoticePage, limit: number) {
+  const p = provenance({ ...SOURCE, kind: "live" });
+  const n = page.notices.length;
+  const next = page.offset + n;
+  const body = {
+    showing: n,
+    offset: page.offset,
+    more_available: page.more,
+    ...(page.more
+      ? { how_to_get_more: `Call again with offset ${next} (and the same limit, ${limit}) for the next notices, or narrow the search.` }
+      : {}),
+    notices: page.notices,
+    source: p.provenance,
+  };
+  return { content: [{ type: "text" as const, text: `${JSON.stringify(body, null, 2)}\n\n${p.text}` }] };
 }
 
 /**
@@ -240,32 +273,32 @@ export async function callTool(name: string, args: unknown) {
   try {
     switch (name) {
       case "search_notices": {
-        const { query, limit } = parseToolArgs("search_notices", args);
-        return answer(await searchNotices(query, limit ?? 25));
+        const { query, limit, offset } = parseToolArgs("search_notices", args);
+        return answer(await searchNotices(query, limit ?? 25, offset), limit ?? 25);
       }
       case "get_notices_by_agency": {
-        const { agency_name, limit } = parseToolArgs("get_notices_by_agency", args);
-        return answer(await getNoticesByAgency(agency_name, limit ?? 25));
+        const { agency_name, limit, offset } = parseToolArgs("get_notices_by_agency", args);
+        return answer(await getNoticesByAgency(agency_name, limit ?? 25, offset), limit ?? 25);
       }
       case "get_notices_by_type": {
-        const { notice_type, limit } = parseToolArgs("get_notices_by_type", args);
-        return answer(await getNoticesByType(notice_type, limit ?? 25));
+        const { notice_type, limit, offset } = parseToolArgs("get_notices_by_type", args);
+        return answer(await getNoticesByType(notice_type, limit ?? 25, offset), limit ?? 25);
       }
       case "get_procurement_notices": {
-        const { limit } = parseToolArgs("get_procurement_notices", args);
-        return answer(await getProcurementNotices(limit ?? 25));
+        const { limit, offset } = parseToolArgs("get_procurement_notices", args);
+        return answer(await getProcurementNotices(limit ?? 25, offset), limit ?? 25);
       }
       case "get_public_hearings": {
-        const { limit } = parseToolArgs("get_public_hearings", args);
-        return answer(await getPublicHearings(limit ?? 25));
+        const { limit, offset } = parseToolArgs("get_public_hearings", args);
+        return answer(await getPublicHearings(limit ?? 25, offset), limit ?? 25);
       }
       case "get_open_solicitations": {
-        const { limit } = parseToolArgs("get_open_solicitations", args);
-        return answer(await getOpenSolicitations(limit ?? 25));
+        const { limit, offset } = parseToolArgs("get_open_solicitations", args);
+        return answer(await getOpenSolicitations(limit ?? 25, offset), limit ?? 25);
       }
       case "get_notices_by_date_range": {
-        const { start_date, end_date, limit } = parseToolArgs("get_notices_by_date_range", args);
-        return answer(await getNoticesByDateRange(start_date, end_date, limit ?? 50));
+        const { start_date, end_date, limit, offset } = parseToolArgs("get_notices_by_date_range", args);
+        return answer(await getNoticesByDateRange(start_date, end_date, limit ?? 50, offset), limit ?? 50);
       }
       default:
         return toolError(`Unknown tool: ${name}. This server's tools are: ${TOOLS.map((t) => t.name).join(", ")}.`);

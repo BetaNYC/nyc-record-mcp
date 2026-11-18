@@ -121,92 +121,104 @@ async function sodaFetch(params: Record<string, string>): Promise<CityRecordNoti
   }
 }
 
-export async function searchNotices(
-  query: string,
-  limit = 25
-): Promise<CityRecordNotice[]> {
-  return sodaFetch({
-    $q: query,
-    $limit: String(limit),
-    $order: "start_date DESC",
-  });
+/** The source every answer names (issue #23). Same values as DATA-SOURCES.json, which a test checks. */
+export const SOURCE = {
+  sourceName: "City Record Online",
+  publisher: "NYC Department of Citywide Administrative Services",
+  sourceUrl: `${BASE_URL}/d/${DATASET_ID}`,
+} as const;
+
+/** One page of notices: the rows asked for, and whether more match after them (#25). */
+export interface NoticePage {
+  notices: CityRecordNotice[];
+  offset: number;
+  more: boolean;
 }
 
-export async function getNoticesByAgency(
-  agencyName: string,
-  limit = 25
-): Promise<CityRecordNotice[]> {
+/**
+ * Ask for one row more than `limit` to learn whether more match without a second count query.
+ * `:id` breaks ties in the order so paging with $offset is stable: Socrata says "if you're
+ * paging, make sure you provide an $order clause or at a minimum $order=:id"
+ * (https://dev.socrata.com/docs/queries/order, https://dev.socrata.com/docs/queries/offset).
+ */
+async function page(
+  query: { where?: string; q?: string; order: string },
+  limit: number,
+  offset: number
+): Promise<NoticePage> {
+  const params: Record<string, string> = {
+    $order: `${query.order},:id`,
+    $limit: String(limit + 1),
+    $offset: String(offset),
+  };
+  if (query.where) params.$where = query.where;
+  if (query.q) params.$q = query.q;
+  const rows = await sodaFetch(params);
+  return { notices: rows.slice(0, limit), offset, more: rows.length > limit };
+}
+
+export function searchNotices(query: string, limit = 25, offset = 0): Promise<NoticePage> {
+  return page({ q: query, order: "start_date DESC" }, limit, offset);
+}
+
+export function getNoticesByAgency(agencyName: string, limit = 25, offset = 0): Promise<NoticePage> {
   // SoQL `like` uses a literal `%` wildcard (https://dev.socrata.com/docs/functions/like.html).
   // Build the SoQL value unencoded; URLSearchParams performs the single
   // URL-encoding pass. Single quotes are escaped by doubling per SQL rules.
   const escaped = soqlString(agencyName);
-  return sodaFetch({
-    $where: `upper(agency_name) like upper('%${escaped}%')`,
-    $limit: String(limit),
-    $order: "start_date DESC",
-  });
+  return page({ where: `upper(agency_name) like upper('%${escaped}%')`, order: "start_date DESC" }, limit, offset);
 }
 
-export async function getNoticesByType(
-  noticeType: string,
-  limit = 25
-): Promise<CityRecordNotice[]> {
-  return sodaFetch({
-    $where: `type_of_notice_description='${soqlString(noticeType)}'`,
-    $limit: String(limit),
-    $order: "start_date DESC",
-  });
+export function getNoticesByType(noticeType: string, limit = 25, offset = 0): Promise<NoticePage> {
+  return page({ where: `type_of_notice_description='${soqlString(noticeType)}'`, order: "start_date DESC" }, limit, offset);
 }
 
-export async function getProcurementNotices(
-  limit = 25
-): Promise<CityRecordNotice[]> {
+export function getProcurementNotices(limit = 25, offset = 0): Promise<NoticePage> {
   // Values live-verified against the dataset 2026-07-06 (see NOTICE_TYPES).
-  return sodaFetch({
-    $where:
-      "type_of_notice_description in ('Solicitation','Award','Intent to Award','Intent to Negotiate','Vendor List')",
-    $limit: String(limit),
-    $order: "start_date DESC",
-  });
+  return page(
+    {
+      where: "type_of_notice_description in ('Solicitation','Award','Intent to Award','Intent to Negotiate','Vendor List')",
+      order: "start_date DESC",
+    },
+    limit,
+    offset
+  );
 }
 
-export async function getPublicHearings(
-  limit = 25
-): Promise<CityRecordNotice[]> {
+export function getPublicHearings(limit = 25, offset = 0): Promise<NoticePage> {
   // Values live-verified against the dataset 2026-07-06 (see NOTICE_TYPES).
-  return sodaFetch({
-    $where:
-      "type_of_notice_description in ('Public Hearings','Public Comment','Meeting','Notice')",
-    $limit: String(limit),
-    $order: "start_date DESC",
-  });
+  return page(
+    {
+      where: "type_of_notice_description in ('Public Hearings','Public Comment','Meeting','Notice')",
+      order: "start_date DESC",
+    },
+    limit,
+    offset
+  );
 }
 
-export async function getOpenSolicitations(
-  limit = 25
-): Promise<CityRecordNotice[]> {
+export function getOpenSolicitations(limit = 25, offset = 0): Promise<NoticePage> {
   // Use the New York calendar date, not UTC: between 8pm and midnight ET the
   // UTC date is already "tomorrow", which would wrongly drop same-day deadlines.
   const today = nyToday();
-  return sodaFetch({
-    $where: `type_of_notice_description='Solicitation' AND due_date >= '${today}'`,
-    $limit: String(limit),
-    $order: "due_date ASC",
-  });
+  return page(
+    { where: `type_of_notice_description='Solicitation' AND due_date >= '${today}'`, order: "due_date ASC" },
+    limit,
+    offset
+  );
 }
 
-export async function getNoticesByDateRange(
-  startDate: string,
-  endDate: string,
-  limit = 50
-): Promise<CityRecordNotice[]> {
-  return sodaFetch({
-    // Live-verified 2026-07-06: every start_date in the dataset carries a
-    // midnight time component (query with date_extract_hh/mm != 0 returned 0
-    // rows), so `<= endDate` safely includes the full end day. Revisit if the
-    // dataset ever starts publishing non-midnight start_date values.
-    $where: `start_date >= '${soqlString(startDate)}' AND start_date <= '${soqlString(endDate)}'`,
-    $limit: String(limit),
-    $order: "start_date DESC",
-  });
+export function getNoticesByDateRange(startDate: string, endDate: string, limit = 50, offset = 0): Promise<NoticePage> {
+  // Live-verified 2026-07-06: every start_date in the dataset carries a
+  // midnight time component (query with date_extract_hh/mm != 0 returned 0
+  // rows), so `<= endDate` safely includes the full end day. Revisit if the
+  // dataset ever starts publishing non-midnight start_date values.
+  return page(
+    {
+      where: `start_date >= '${soqlString(startDate)}' AND start_date <= '${soqlString(endDate)}'`,
+      order: "start_date DESC",
+    },
+    limit,
+    offset
+  );
 }

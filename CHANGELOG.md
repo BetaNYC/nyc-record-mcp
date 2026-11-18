@@ -62,6 +62,17 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
   zod's JSON issue list; an API error carries at most 500 characters of the API's answer
   (was 300); stack lines are dropped and the app token is redacted. The call dispatch moved
   from `src/index.ts` to `callTool` in `src/tools.ts` so it can be tested without stdio.
+- Answers (#23, #24, #25): every City Record tool now answers with a JSON object instead of a
+  bare array: `showing`, `offset`, `more_available`, `how_to_get_more` (when more match),
+  `notices`, and `source` (the shared `provenance()` object: source, publisher, link, the
+  time it was fetched, `as_of_kind: "retrieved"`), followed by the shared one-line source
+  block. The server asks NYC Open Data for one row more than `limit` to tell whether more
+  match, without a second count query.
+- New optional `offset` parameter (integer, 0 or more) on all seven City Record tools, sent
+  as `$offset`; the order gains `:id` as a tie-breaker so pages are stable, as Socrata
+  advises. Limits are unchanged (default 25, or 50 for a date range; at most 100, or 200).
+- `DATA-SOURCES.json`: the limit caveat says the answer reports more matches and `offset`
+  gets them; `data.json` rebuilt.
 - The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
 - `package.json` `files` adds `DATA-SOURCES.json` and `data.json`.
 - README: `about_data` in the tool table and the shared tools section. The "Data source"
@@ -94,6 +105,13 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
   token absent from every error text; a bad value and an unknown tool as plain `isError`.
 - `test/soql.test.mjs`: the two tests of the old 300-character error message now check that
   the API's body travels apart from the plain message (cutting is tested in `upstream`).
+- `test/answers.test.mjs`: `SOURCE` matches `DATA-SOURCES.json`; every City Record tool's
+  answer names the source, publisher and link and an as-of at the time of the call; with a
+  500-notice fixture, a list cut at its limit says more are available and how, the next page
+  continues where the last stopped, the last page and an empty answer say nothing more; the
+  limits stay capped and `offset` must be a whole number from 0.
+- `test/tool-size.test.mjs`: budget raised to 16,000 for the `offset` parameter (measured
+  15,606), with a dated note.
 
 ## [1.2.0] - 2026-11-13
 

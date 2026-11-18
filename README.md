@@ -49,6 +49,12 @@ Exposes 10 tools over MCP:
 
 ## Tools reference
 
+Every City Record tool answers with JSON: `showing` (how many notices are in this answer), `offset`, `more_available` (whether more notices match after these) and, when more match, `how_to_get_more` (call again with the next `offset`), then the `notices` and a `source` block. The answer ends with one line naming the source, its publisher, the time it was fetched from NYC Open Data, and a link to the dataset:
+
+```
+Source: City Record Online (NYC Department of Citywide Administrative Services). As of 2026-11-18T18:24:02.952Z (fetched from the source for this answer). Link: https://data.cityofnewyork.us/d/dg92-zbpx
+```
+
 Every tool only reads, and says so to your AI app with MCP tool annotations (`readOnlyHint: true`). The seven City Record tools query NYC Open Data at the time you ask (`openWorldHint: true`); the three shared tools read files that ship with the package.
 
 ### `search_notices`
@@ -59,6 +65,7 @@ Full-text search across notice titles, descriptions, and agency names.
 |---|---|---|---|---|
 | `query` | string | yes | — | Search term |
 | `limit` | number | no | 25 | Max results (max 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 search_notices("affordable housing")
@@ -75,6 +82,7 @@ Get notices from a specific city agency. Accepts partial name matches.
 |---|---|---|---|---|
 | `agency_name` | string | yes | — | Agency name or partial name |
 | `limit` | number | no | 25 | Max results (max 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_notices_by_agency("DCAS")
@@ -92,6 +100,7 @@ Filter notices by type.
 |---|---|---|---|---|
 | `notice_type` | string | yes | — | One of: Solicitation, Award, Intent to Award, Intent to Negotiate, Public Hearings, Public Comment, Meeting, Notice, Vendor List, Sale |
 | `limit` | number | no | 25 | Max results (max 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_notices_by_type("Solicitation")
@@ -108,6 +117,7 @@ Returns recent solicitations, awards, intent-to-award, and vendor list notices �
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `limit` | number | no | 25 | Max results (max 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_procurement_notices()
@@ -123,6 +133,7 @@ Returns recent public hearings, public comment periods, agency meetings, and gen
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `limit` | number | no | 25 | Max results (max 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_public_hearings()
@@ -137,6 +148,7 @@ Returns active solicitations where the due date has not yet passed, sorted by so
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `limit` | number | no | 25 | Max results (max 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_open_solicitations()
@@ -154,6 +166,7 @@ Get all City Record notices published within a date range.
 | `start_date` | string | yes | — | Start date, YYYY-MM-DD |
 | `end_date` | string | yes | — | End date, YYYY-MM-DD |
 | `limit` | number | no | 50 | Max results (max 200) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_notices_by_date_range("2026-05-01", "2026-05-19")

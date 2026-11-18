@@ -73,7 +73,7 @@
         "get_notices_by_date_range"
       ],
       "caveats": [
-        "Each tool returns at most 100 notices (200 for a date range), newest first (open solicitations: soonest deadline first), so a long list is cut short at that limit.",
+        "Each tool returns at most 100 notices per call (200 for a date range), newest first (open solicitations: soonest deadline first). When more notices match, the answer says so, and the offset parameter gets the next ones.",
         "An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it.",
         "A notice appears only once the agency publishes it in The City Record, which for a public hearing can be about two weeks before the hearing. An agency's own calendar may list a hearing sooner.",
         "City Record Online says questions about the content of a notice go to the agency or contact person named in the notice."
