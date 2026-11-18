@@ -1,3 +1,5 @@
+import { PACKAGE_VERSION } from "./version.js";
+
 const BASE_URL = "https://data.cityofnewyork.us";
 const DATASET_ID = "dg92-zbpx";
 
@@ -51,30 +53,72 @@ export function nyToday(now: Date = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(now);
 }
 
+// Polite requests to NYC Open Data (issue #22). One query per tool call, no background
+// polling and no cache: every answer is live. Each request has a timeout and an identifying
+// User-Agent, and a 429 or 5xx is retried at most twice, honoring Retry-After
+// (Socrata throttles with 429: https://dev.socrata.com/docs/response-codes.html).
+// The optional app token goes in the X-App-Token header, which Socrata calls "the preferred
+// method" for SODA 2.x (https://dev.socrata.com/docs/app-tokens.html), never in the URL (#26).
+// ponytail: no per-host gate or cache; add them if one tool call ever makes more than one request.
+export const USER_AGENT = `nyc-record-mcp/${PACKAGE_VERSION} (+https://github.com/BetaNYC/nyc-record-mcp)`;
+export const REQUEST_TIMEOUT_MS = 30_000;
+export const MAX_RETRIES = 2;
+const MAX_WAIT_MS = 10_000;
+
+/** A failure talking to NYC Open Data: `message` is a plain sentence saying what to try, `body`
+ * is what the API said (Socrata puts the useful diagnostic, e.g. malformed SoQL, there). */
+export class UpstreamError extends Error {
+  constructor(message: string, readonly body?: string) {
+    super(message);
+    this.name = "UpstreamError";
+  }
+}
+
+/** Wait before retry `attempt` (1-based): Retry-After in seconds or as an HTTP-date
+ * (RFC 9110 § 10.2.3), else 1 s then 2 s; never more than 10 s. */
+export function retryWaitMs(retryAfter: string | null, attempt: number, now = Date.now()): number {
+  const backoff = 1000 * 2 ** (attempt - 1);
+  const v = retryAfter?.trim() ?? "";
+  if (/^\d+$/.test(v)) return Math.min(Number(v) * 1000, MAX_WAIT_MS);
+  const at = v ? Date.parse(v) : NaN;
+  return Math.min(Number.isFinite(at) ? Math.max(at - now, 0) : backoff, MAX_WAIT_MS);
+}
+
+function failure(status: number): string {
+  if (status === 400) return "NYC Open Data rejected the query (HTTP 400). Check the search words, agency name or dates, and try again.";
+  if (status === 429) return "NYC Open Data is limiting requests right now (HTTP 429), even after waiting. Try again in a minute; setting SOCRATA_APP_TOKEN raises the limit.";
+  if (status >= 500) return `NYC Open Data had a server error (HTTP ${status}), even after retrying. Try again in a few minutes.`;
+  return `NYC Open Data answered with HTTP ${status}. Try again, or check the dataset at https://data.cityofnewyork.us/d/${DATASET_ID}.`;
+}
+
 async function sodaFetch(params: Record<string, string>): Promise<CityRecordNotice[]> {
   const url = new URL(`${BASE_URL}/resource/${DATASET_ID}.json`);
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
   }
+  const headers: Record<string, string> = { Accept: "application/json", "User-Agent": USER_AGENT };
   const appToken = process.env.SOCRATA_APP_TOKEN;
-  if (appToken) {
-    url.searchParams.set("$$app_token", appToken);
-  }
-  const res = await fetch(url.toString());
-  if (!res.ok) {
-    // Socrata puts the useful diagnostic (e.g. malformed SoQL) in the body.
-    let detail = "";
+  if (appToken) headers["X-App-Token"] = appToken;
+
+  for (let attempt = 1; ; attempt++) {
+    let res: Response;
     try {
-      const body = (await res.text()).trim();
-      if (body) {
-        detail = ` — ${body.length > 300 ? `${body.slice(0, 300)}…` : body}`;
+      res = await fetch(url.toString(), { headers, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+    } catch (err) {
+      if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {
+        throw new UpstreamError(`NYC Open Data did not answer within ${REQUEST_TIMEOUT_MS / 1000} seconds. Try again in a minute, or ask for fewer notices.`);
       }
-    } catch {
-      // body unreadable; fall through with status line only
+      throw new UpstreamError("Could not reach NYC Open Data (a network error, not an answer from the API). Check the connection and try again.");
     }
-    throw new Error(`NYC Open Data API error ${res.status}: ${res.statusText}${detail}`);
+    if (res.ok) return res.json() as Promise<CityRecordNotice[]>;
+    if (attempt <= MAX_RETRIES && (res.status === 429 || res.status >= 500)) {
+      await res.body?.cancel().catch(() => {});
+      await new Promise((r) => setTimeout(r, retryWaitMs(res.headers.get("retry-after"), attempt)));
+      continue;
+    }
+    const body = await res.text().catch(() => "");
+    throw new UpstreamError(failure(res.status), body);
   }
-  return res.json() as Promise<CityRecordNotice[]>;
 }
 
 export async function searchNotices(

@@ -52,6 +52,16 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 - Every tool carries MCP `annotations`: `readOnlyHint: true`, a `title`, and `openWorldHint`
   (`true` for the seven City Record tools, which query NYC Open Data live; `false` for the
   three shared tools, which read files in the package). Set with the shared `annotateTools`.
+- Requests to NYC Open Data (#22): a 30-second timeout, a User-Agent naming the package and
+  version, and at most two retries on HTTP 429 or 5xx, waiting for `Retry-After` (seconds or
+  an HTTP-date, capped at 10 s; else 1 s then 2 s). No polling or cache: one request per call.
+- The optional `SOCRATA_APP_TOKEN` goes in the `X-App-Token` header (Socrata's preferred
+  method for SODA 2.x), no longer in the URL as `$$app_token` (#26).
+- Errors (#30): every failure is an `isError` result from the shared `toolError`, a plain
+  sentence saying what went wrong and what to try. A bad argument value no longer returns
+  zod's JSON issue list; an API error carries at most 500 characters of the API's answer
+  (was 300); stack lines are dropped and the app token is redacted. The call dispatch moved
+  from `src/index.ts` to `callTool` in `src/tools.ts` so it can be tested without stdio.
 - The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
 - `package.json` `files` adds `DATA-SOURCES.json` and `data.json`.
 - README: `about_data` in the tool table and the shared tools section. The "Data source"
@@ -78,6 +88,12 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
   title, and only the seven City Record tools open-world (#21).
 - `test/tool-size.test.mjs`: tools/list JSON plus the instructions stay within 15,500
   characters (measured 14,836 on 2026-11-18), using the shared `toolListSize` (#28).
+- `test/upstream.test.mjs`: User-Agent and timeout on every request; the token in
+  `X-App-Token` and never in the URL; 429 retried with `Retry-After`; 5xx retried twice then a
+  plain error; 400 not retried, body cut at 500; timeout and network failure sentences; the
+  token absent from every error text; a bad value and an unknown tool as plain `isError`.
+- `test/soql.test.mjs`: the two tests of the old 300-character error message now check that
+  the API's body travels apart from the plain message (cutting is tested in `upstream`).
 
 ## [1.2.0] - 2026-11-13
 

@@ -22,6 +22,10 @@ Optionally, you can set a free [NYC Open Data (Socrata) app token](https://data.
 export SOCRATA_APP_TOKEN="your-app-token"
 ```
 
+The server sends the token in the `X-App-Token` header, as [Socrata recommends](https://dev.socrata.com/docs/app-tokens.html), never in the URL, and never repeats it in an error message.
+
+**How the server asks NYC Open Data.** One request per tool call, only when you ask; no background polling. Each request names the server in its User-Agent (`nyc-record-mcp/<version>`), gives up after 30 seconds, and is retried at most twice when NYC Open Data is busy (HTTP 429 or a server error), waiting as long as it asks (up to 10 seconds). When something fails, the tool says what went wrong and what to try, plus at most 500 characters of what NYC Open Data said.
+
 ---
 
 ## What it does

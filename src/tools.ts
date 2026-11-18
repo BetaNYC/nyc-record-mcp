@@ -1,7 +1,17 @@
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-import { NOTICE_TYPES } from "./city-record.js";
-import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools } from "./betanyc-tools.js";
+import {
+  NOTICE_TYPES,
+  UpstreamError,
+  searchNotices,
+  getNoticesByAgency,
+  getNoticesByType,
+  getProcurementNotices,
+  getPublicHearings,
+  getOpenSolicitations,
+  getNoticesByDateRange,
+} from "./city-record.js";
+import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools, toolError } from "./betanyc-tools.js";
 import { PACKAGE_VERSION } from "./version.js";
 
 /**
@@ -207,5 +217,62 @@ export function parseToolArgs<K extends ToolName>(
         `return results for a different question.`
     );
   }
-  throw result.error;
+  // A bad value: one plain sentence per problem, not zod's JSON dump (#30).
+  const problems = result.error.issues.map(
+    (i) => `${i.path.join(".") || "the arguments"}: ${i.message}`
+  );
+  throw new Error(`${name} could not use its arguments. ${problems.join("; ")}. Fix the value and try again.`);
+}
+
+/** The text block every domain tool answers with. */
+function answer(rows: unknown) {
+  return { content: [{ type: "text" as const, text: JSON.stringify(rows, null, 2) }] };
+}
+
+/**
+ * Run one tool call: the shared tools, then the seven City Record tools. Every failure comes
+ * back as an isError result with a plain sentence (shared toolError: stack lines dropped,
+ * upstream body cut to 500 characters, the app token redacted), never as a thrown error.
+ */
+export async function callTool(name: string, args: unknown) {
+  if (betanyc.handles(name)) return betanyc.call(name, args);
+  const secrets = [process.env.SOCRATA_APP_TOKEN];
+  try {
+    switch (name) {
+      case "search_notices": {
+        const { query, limit } = parseToolArgs("search_notices", args);
+        return answer(await searchNotices(query, limit ?? 25));
+      }
+      case "get_notices_by_agency": {
+        const { agency_name, limit } = parseToolArgs("get_notices_by_agency", args);
+        return answer(await getNoticesByAgency(agency_name, limit ?? 25));
+      }
+      case "get_notices_by_type": {
+        const { notice_type, limit } = parseToolArgs("get_notices_by_type", args);
+        return answer(await getNoticesByType(notice_type, limit ?? 25));
+      }
+      case "get_procurement_notices": {
+        const { limit } = parseToolArgs("get_procurement_notices", args);
+        return answer(await getProcurementNotices(limit ?? 25));
+      }
+      case "get_public_hearings": {
+        const { limit } = parseToolArgs("get_public_hearings", args);
+        return answer(await getPublicHearings(limit ?? 25));
+      }
+      case "get_open_solicitations": {
+        const { limit } = parseToolArgs("get_open_solicitations", args);
+        return answer(await getOpenSolicitations(limit ?? 25));
+      }
+      case "get_notices_by_date_range": {
+        const { start_date, end_date, limit } = parseToolArgs("get_notices_by_date_range", args);
+        return answer(await getNoticesByDateRange(start_date, end_date, limit ?? 50));
+      }
+      default:
+        return toolError(`Unknown tool: ${name}. This server's tools are: ${TOOLS.map((t) => t.name).join(", ")}.`);
+    }
+  } catch (err) {
+    if (err instanceof UpstreamError) return toolError(err.message, { upstreamBody: err.body, secrets });
+    const message = err instanceof Error ? err.message : String(err);
+    return toolError(message, { secrets });
+  }
 }

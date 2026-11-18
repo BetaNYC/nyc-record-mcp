@@ -60,23 +60,14 @@ test("nyToday returns the New York calendar date", () => {
   assert.equal(nyToday(new Date("2026-01-02T04:59:00Z")), "2026-01-01");
 });
 
-test("API errors include truncated response body", async (t) => {
-  const longBody = "x".repeat(500);
-  mockFetch(t, { status: 400, statusText: "Bad Request", body: longBody });
+// The API's own explanation (e.g. malformed SoQL) travels as UpstreamError.body; the message is
+// a plain sentence. callTool cuts the body to 500 characters (test/upstream.test.mjs, #30).
+test("API errors keep the response body apart from the plain message", async (t) => {
+  mockFetch(t, { status: 400, statusText: "Bad Request", body: '{"message":"Could not parse SoQL query"}' });
   await assert.rejects(searchNotices("q"), (err) => {
-    assert.match(err.message, /NYC Open Data API error 400: Bad Request/);
-    assert.ok(err.message.includes("x".repeat(300)), "includes body text");
-    assert.ok(!err.message.includes("x".repeat(301)), "truncated to ~300 chars");
-    assert.ok(err.message.endsWith("…"), "signals truncation");
+    assert.equal(err.name, "UpstreamError");
+    assert.match(err.message, /^NYC Open Data rejected the query \(HTTP 400\)\./);
+    assert.equal(err.body, '{"message":"Could not parse SoQL query"}');
     return true;
   });
-});
-
-test("API errors with short bodies include the full body", async (t) => {
-  mockFetch(t, {
-    status: 400,
-    statusText: "Bad Request",
-    body: '{"message":"Could not parse SoQL query"}',
-  });
-  await assert.rejects(searchNotices("q"), /Could not parse SoQL query/);
 });
