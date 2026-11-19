@@ -164,8 +164,8 @@ How to update your code:
   full-text search within 60 seconds (the recorded fixture is the timeout). Q03 was first
   scored a pass, wrongly: its expected answer had closed at 10:00, before the 13:35 run, so
   the fair score was 9 of 11. Its expected answer is corrected (every notice must be due
-  after the time asked); the corrected query was never recorded, so Q03 fails offline until
-  it is recorded live. The replay fixes the server's clock at `asked_at` in
+  after the time asked), and it was recorded live through the server on 2026-11-19, so Q03
+  passes. The replay fixes the server's clock at `asked_at` in
   `eval/questions.json`, and fixture keys write that moment as `<now>`.
 - Live tests (#29): `test/live/`, run only by `npm run test:live`, never by `npm test` or CI.
 - One tool call spends at most 90 seconds on NYC Open Data, across every try and wait
@@ -311,7 +311,12 @@ From the review of epic #33.
   unchanged tools return the City's rows untouched, in the order sent.
 - Eval Q12 (an extended bid, folded) and Q13 (a 00:00 due date kept with a note), each at its
   own `asked_at`, with fixtures built from rows of a direct query on 2026-11-18 (not recorded
-  through the server). Offline score 11 of 13; Q02 and Q03 still fail as described above.
+  through the server). Offline score 11 of 13 then; Q02 and Q03 failed as described above.
+- Eval Q03 recorded live through the server on 2026-11-19 at 09:29 New York time (owner
+  authorized live read-only calls that day), with its `asked_at` set to that moment; the
+  recorded rows drop `contact_name`, `contact_phone` and `email`. Offline score 12 of 13 (Q02
+  still fails: the recorded timeout). `runEval` takes an optional question list, and
+  `test/eval.test.mjs` checks that Q03 passes and that a question with no recording says why.
 - `test/tool-size.test.mjs`: budget raised to 17,000 (measured 16,517) for the limit schema
   and the two-block answer guide, with a dated note.
 - `test/eval.test.mjs`: at least 10 questions, unique ids, each with checks; the offline
