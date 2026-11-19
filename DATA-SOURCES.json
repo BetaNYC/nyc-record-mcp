@@ -35,7 +35,7 @@
       },
       "source_url": "https://data.cityofnewyork.us/d/dg92-zbpx",
       "official": true,
-      "how_gathered": "Read-only requests to the dataset's Socrata API on NYC Open Data (https://data.cityofnewyork.us/resource/dg92-zbpx.json) at the moment you ask, with an app token when SOCRATA_APP_TOKEN is set. Each tool sends one query, such as a keyword search, an agency name, a notice type or a date range, and returns the newest matching notices.",
+      "how_gathered": "Read-only requests to the dataset's Socrata API on NYC Open Data (https://data.cityofnewyork.us/resource/dg92-zbpx.json) at the moment you ask, with an app token when SOCRATA_APP_TOKEN is set. Each tool sends one query, such as a keyword search, an agency name, a notice type or a date range, and returns the newest matching notices. get_open_solicitations sends a second query for amended and cancelled solicitations and adds BetaNYC's own labels, described in the caveats; every notice's fields are still passed on as published.",
       "changes": {
         "changed": false,
         "steps": []
@@ -74,6 +74,7 @@
       ],
       "caveats": [
         "Each tool returns at most 100 notices per call (200 for a date range), newest first (open solicitations: soonest deadline first). When more notices match, the answer says so, and the offset parameter gets the next ones.",
+        "get_open_solicitations adds BetaNYC's reading of each notice, under betanyc_notes, without changing the City's fields: a due time of 00:00 means no closing time was given, so the notice stays listed through its due date; a due date more than a year ahead is marked as a likely placeholder; and notices with the same PIN, agency and title (after an amendment prefix such as \"Bid Extension:\") are folded into the newest one, or listed as cancelled when the newest is a cancellation. These labels are not an official status: read the notice, or ask the agency, before relying on one.",
         "An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it.",
         "A notice appears only once the agency publishes it in The City Record, which for a public hearing can be about two weeks before the hearing. An agency's own calendar may list a hearing sooner.",
         "City Record Online says questions about the content of a notice go to the agency or contact person named in the notice."

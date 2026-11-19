@@ -24,7 +24,7 @@ export SOCRATA_APP_TOKEN="your-app-token"
 
 The server sends the token in the `X-App-Token` header, as [Socrata recommends](https://dev.socrata.com/docs/app-tokens.html), never in the URL, and never repeats it in an error message.
 
-**How the server asks NYC Open Data.** One request per tool call, only when you ask; no background polling. Each request names the server in its User-Agent (`nyc-record-mcp/<version>`), gives up after 30 seconds (60 for `search_notices`, whose full-text search NYC Open Data can take more than 30 seconds to answer), and is retried at most twice when NYC Open Data is busy (HTTP 429 or a server error), waiting as long as it asks (up to 10 seconds). One tool call spends at most 90 seconds in all, counting every try and wait: a try's timeout is cut to what is left, and no retry starts once the 90 seconds are spent. When something fails, the tool says what went wrong and what to try, plus at most 500 characters of what NYC Open Data said.
+**How the server asks NYC Open Data.** One request per tool call (two for `get_open_solicitations`, one after the other), only when you ask; no background polling. Each request names the server in its User-Agent (`nyc-record-mcp/<version>`), gives up after 30 seconds (60 for `search_notices`, whose full-text search NYC Open Data can take more than 30 seconds to answer), and is retried at most twice when NYC Open Data is busy (HTTP 429 or a server error), waiting as long as it asks (up to 10 seconds). One tool call spends at most 90 seconds in all, counting every try, wait and request: a try's timeout is cut to what is left, and no retry starts once the 90 seconds are spent. When something fails, the tool says what went wrong and what to try, plus at most 500 characters of what NYC Open Data said.
 
 ---
 
@@ -149,10 +149,25 @@ get_public_hearings()
 
 Returns active solicitations whose due date and time, in New York, has not yet passed, sorted by soonest deadline first. A solicitation due at 10:00 today is gone from the list at 10:00.
 
+BetaNYC adds three things to this list. They are BetaNYC's reading of the City's titles and dates, not an official status, and they sit apart from the City's data: every notice keeps all its fields exactly as published, and BetaNYC's labels are under its `betanyc_notes`.
+
+- **No closing time given.** A due time of 00:00 means the City Record has no closing time for that notice (none was entered). Such a notice stays on the list through the end of its due date, with a note saying so. Check the notice or the agency for the real closing time.
+- **Placeholder dates.** A due date more than a year away (2099-12-31, 2039 and so on) usually stands for an open-ended or long-term solicitation. The notice stays listed, its `due_date` unchanged, with a note saying the date looks like a placeholder.
+- **Amended, extended and cancelled notices.** A change to a solicitation is posted as a new notice, with a title starting "Bid Extension:", "Correction:" or "Cancellation:". Each notice's `betanyc_notes.notice_kind` says which (`original`, `extension`, `correction`, `cancellation`). When notices are clearly the same solicitation, only the newest is listed, and its `supersedes` names the older ones (request id, posted date, due date). If the newest is a cancellation, the solicitation is listed under `cancelled` instead, with what it cancels. To find amendments on other pages or past their due date, the tool makes one extra request (amended and cancelled solicitations posted in the last 400 days, at most 1,000). If that request fails, the list still comes back, with a note that amendments could not be checked.
+
+Limits of this reading:
+
+- Notices count as the same solicitation only on a strong match: the same PIN (at least 8 characters, because short PINs such as 3434 are reused for unrelated notices), the same agency, and the same title once the prefix is removed. Anything less is shown, not folded. So the list can still show the same solicitation twice, under slightly different titles.
+- When the two newest notices for a solicitation were posted the same day, the tool cannot tell which came last, so both are listed with a note.
+- A cancellation that matches no other notice is listed with a note that it is a cancellation.
+- `offset`, `limit` and `more_available` count notices as NYC Open Data returns them. The answer says how many were folded (`folded_into_newer_notice`) and how many are under `cancelled`, so `showing` can be smaller than `limit` even when more are available. `include_superseded: true` lists every notice on the page, each labeled.
+- `other_info_1` sometimes holds a date and time: that is the pre-bid meeting, not the deadline.
+
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `limit` | integer | no | 25 | Max results (1 to 100; more is lowered to 100) |
 | `offset` | integer | no | 0 | Skip this many notices, for the next page |
+| `include_superseded` | boolean | no | false | List every notice, folded ones included, each labeled |
 
 ```
 get_open_solicitations()
@@ -282,7 +297,7 @@ Live tests ask NYC Open Data, one small request per tool, and live in `test/live
 npm run test:live
 ```
 
-The evaluation set, `eval/questions.json`, holds 11 realistic questions with answers found first by querying the dataset directly. `npm run eval` replays them offline from `eval/fixtures/` and writes `eval/results.json`; `npm run eval -- --record` asks NYC Open Data for any missing fixture (delete `eval/fixtures/` to re-record them all; the answers then change as the dataset grows). Results on 2026-11-18: 9 of 11. Q02, a several-word keyword search, failed because NYC Open Data did not answer it within 60 seconds. Q03 ("which open solicitation closes soonest?") was first scored a pass, but its expected answer had closed at 10:00 that morning, before the question was asked at about 13:35; the fair score was 9 of 11 then too. Now that `get_open_solicitations` compares the time as well as the date, Q03 has no recording of the corrected query, so it fails offline until someone records it live with `npm run eval -- --record`. The replay fixes the server's clock at the moment the questions were asked (`asked_at` in `eval/questions.json`).
+The evaluation set, `eval/questions.json`, holds 13 realistic questions with answers found first by querying the dataset directly. `npm run eval` replays them offline from `eval/fixtures/` and writes `eval/results.json`; `npm run eval -- --record` asks NYC Open Data for any missing fixture (delete `eval/fixtures/` to re-record them all; the answers then change as the dataset grows). Results on 2026-11-18: 11 of 13. Q12 (a bid with an extension) and Q13 (a due date with no closing time) were added for the open-solicitation labels; their fixtures were built from rows of a direct query on 2026-11-18, not recorded through the server, and each question fixes its own moment (`asked_at`). Before they were added the score was 9 of 11. Q02, a several-word keyword search, failed because NYC Open Data did not answer it within 60 seconds. Q03 ("which open solicitation closes soonest?") was first scored a pass, but its expected answer had closed at 10:00 that morning, before the question was asked at about 13:35; the fair score was 9 of 11 then too. Now that `get_open_solicitations` compares the time as well as the date, Q03 has no recording of the corrected query, so it fails offline until someone records it live with `npm run eval -- --record`. The replay fixes the server's clock at the moment the questions were asked (`asked_at` in `eval/questions.json`).
 
 ---
 

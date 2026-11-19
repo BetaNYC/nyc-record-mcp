@@ -2,6 +2,7 @@ import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import {
   NOTICE_TYPES,
+  clock,
   UpstreamError,
   SOURCE,
   type NoticePage,
@@ -15,6 +16,7 @@ import {
 } from "./city-record.js";
 import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools, isRealDate, provenance, toolError } from "./betanyc-tools.js";
 import { PACKAGE_VERSION } from "./version.js";
+import { foldOpenSolicitations, type Folded } from "./solicitations.js";
 
 /**
  * whats_changed, about_betanyc and about_data, the three tools BetaNYC adds to each of its MCP
@@ -154,12 +156,14 @@ const DOMAIN_TOOLS: Tool[] = [
   {
     name: "get_open_solicitations",
     description:
-      "Get active solicitations (RFPs, RFQs, IFBs) whose due date and time, in New York, has not yet passed. Sorted by due date ascending — soonest deadlines first.",
+      "Get active solicitations (RFPs, RFQs, IFBs) whose due date and time, in New York, has not yet passed. Sorted by due date ascending — soonest deadlines first. " +
+      "BetaNYC labels each notice in betanyc_notes (no closing time given, placeholder date, extension, correction, cancellation) and folds amended notices into the newest one; cancelled ones are listed under cancelled.",
     inputSchema: {
       type: "object",
       properties: {
         limit: LIMIT_PROP,
         offset: OFFSET_PROP,
+        include_superseded: { type: "boolean", description: "List every notice, folded ones included, each labeled (default false)" },
       },
       additionalProperties: false,
     },
@@ -219,7 +223,7 @@ export const SCHEMAS = {
   get_notices_by_type: z.object({ notice_type: z.enum(NOTICE_TYPES), limit, offset }).strict(),
   get_procurement_notices: z.object({ limit, offset }).strict(),
   get_public_hearings: z.object({ limit, offset }).strict(),
-  get_open_solicitations: z.object({ limit, offset }).strict(),
+  get_open_solicitations: z.object({ limit, offset, include_superseded: z.boolean().optional() }).strict(),
   get_notices_by_date_range: z
     .object({ start_date: isoDate, end_date: isoDate, limit, offset })
     .strict()
@@ -280,19 +284,23 @@ function useLimit(asked: number | undefined, dflt: number, max: number): { limit
  * to get them, the notices, and the source object. The last is the human-readable Source line
  * with the link and the time it was fetched (shared provenance(), kind "live").
  */
-function answer(page: NoticePage, use: { limit: number; note?: string }) {
+function answer(page: NoticePage, use: { limit: number; note?: string }, open?: OpenExtras) {
   const p = provenance({ ...SOURCE, kind: "live" });
-  const n = page.notices.length;
-  const next = page.offset + n;
+  // offset, limit and more_available count notices as NYC Open Data returns them, so paging
+  // stays right when some of them are folded (get_open_solicitations).
+  const cityRows = page.notices.length;
+  const listed = open ? open.folded.notices : page.notices;
+  const next = page.offset + cityRows;
   const body = {
-    showing: n,
+    showing: listed.length,
     offset: page.offset,
     more_available: page.more,
     ...(page.more
       ? { how_to_get_more: `Call again with offset ${next} (and the same limit, ${use.limit}) for the next notices, or narrow the search.` }
       : {}),
     ...(use.note ? { note: use.note } : {}),
-    notices: page.notices,
+    ...(open ? openSummary(open, cityRows) : {}),
+    notices: listed,
     source: p.provenance,
   };
   return {
@@ -300,6 +308,32 @@ function answer(page: NoticePage, use: { limit: number; note?: string }) {
       { type: "text" as const, text: JSON.stringify(body, null, 2) },
       { type: "text" as const, text: p.text },
     ],
+  };
+}
+
+interface OpenExtras {
+  folded: Folded;
+  includeSuperseded: boolean;
+  amendmentNote?: string;
+}
+
+/** get_open_solicitations' own top-level fields: how the City's rows became this list. */
+function openSummary(open: OpenExtras, cityRows: number) {
+  const { folded, movedToCancelled, cancelled } = open.folded;
+  const listedCount = cityRows - folded - movedToCancelled;
+  return {
+    city_notices_on_this_page: cityRows,
+    folded_into_newer_notice: folded,
+    ...(cancelled.length ? { cancelled } : {}),
+    paging_note:
+      `offset, limit and more_available count notices as NYC Open Data returns them: ${cityRows} on this page. ` +
+      (folded || movedToCancelled
+        ? `${folded} were folded into a newer notice for the same solicitation (see supersedes) and ${movedToCancelled} are listed under cancelled, so ${listedCount} are in notices. Call again with include_superseded: true to list all ${cityRows}, each labeled. `
+        : open.includeSuperseded
+          ? "include_superseded is on, so every one is listed. "
+          : "None were folded. ") +
+      "The labels in betanyc_notes are BetaNYC's reading of the titles and dates, not an official status.",
+    ...(open.amendmentNote ? { amendment_check: open.amendmentNote } : {}),
   };
 }
 
@@ -340,9 +374,13 @@ export async function callTool(name: string, args: unknown) {
         return answer(await getPublicHearings(use.limit, offset), use);
       }
       case "get_open_solicitations": {
-        const { limit, offset } = parseToolArgs("get_open_solicitations", args);
+        const { limit, offset, include_superseded } = parseToolArgs("get_open_solicitations", args);
         const use = useLimit(limit, 25, MAX_LIMIT.default);
-        return answer(await getOpenSolicitations(use.limit, offset), use);
+        const now = new Date(clock.now());
+        const page = await getOpenSolicitations(use.limit, offset, now);
+        const includeSuperseded = include_superseded ?? false;
+        const folded = foldOpenSolicitations(page.notices, page.amendments, { now, includeSuperseded });
+        return answer(page, use, { folded, includeSuperseded, amendmentNote: page.amendmentNote });
       }
       case "get_notices_by_date_range": {
         const { start_date, end_date, limit, offset } = parseToolArgs("get_notices_by_date_range", args);

@@ -147,6 +147,31 @@ From the review of epic #33.
 - `get_notices_by_date_range` accepted impossible dates such as `2026-02-31`, and a start
   after the end silently found nothing. Both are refused with a plain sentence.
 - A comment in `src/city-record.ts` began with a stray tag; reworded.
+- `get_open_solicitations`, BetaNYC's reading of the list (owner's request in the review of #33;
+  evidence: the 1,000 newest solicitations, pulled 2026-11-18). Every notice keeps its fields as
+  published; BetaNYC's additions are under its `betanyc_notes` and in the answer's own fields.
+  - A due time of 00:00 means no closing time was entered (9 of the 1,000; 17.8% of all
+    solicitations, mostly 2003-2008). Such a notice now stays listed through the end of its due
+    date (`due_date > now OR due_date = today at 00:00`, so paging stays right), with a note to
+    check the notice or the agency for the real time. Before, it left the list at the start of
+    its due day.
+  - A due date more than 366 days ahead gets a note that it looks like a placeholder for an
+    open-ended or long-term solicitation. The row is still listed, `due_date` unchanged.
+  - Amended notices are new rows. Each notice gets `notice_kind` from its title prefix
+    (`extension` "Bid Extension:", `correction` "Correction:", `cancellation` "Cancel…",
+    else `original`). Notices with the same PIN (8 characters or more), agency and title
+    without the prefix are one solicitation: only the newest by posting date is listed, with
+    `supersedes`; if the newest is a cancellation, the solicitation goes to a separate
+    `cancelled` list. When the two newest were posted the same day nothing is folded and both
+    get a note (in the real data a cancellation and its original were posted the same day, and
+    the request_id order would have made the original look current). One extra request per
+    call (amended and cancelled solicitations posted in the last 400 days, at most 1,000, inside
+    the same 90-second budget) finds amendments on other pages; if it fails, the list comes back
+    with a note. New `include_superseded` lists every notice, labeled. New answer fields:
+    `city_notices_on_this_page`, `folded_into_newer_notice`, `cancelled`, `paging_note`,
+    `amendment_check`; `offset` and `more_available` still count the City's notices.
+  - `other_info_1` is named in the known-fields comment: when it holds a date and time, that is
+    the pre-bid meeting, not the deadline.
 - README: a `%` or `_` in an agency name is passed to the `like` match as typed, where it acts
   as a wildcard (no escape is used: the Socrata docs this repo cites do not give one).
 - The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
@@ -198,6 +223,17 @@ From the review of epic #33.
 - `test/upstream.test.mjs`: a 200 that is not JSON, a JSON object, and a body that times out
   are plain errors; with a fake clock, no retry starts after 90 seconds, and a try cut short by
   the budget says so.
+- `test/open-solicitations.test.mjs` also covers the labels and folding, from real rows in
+  `test/fixtures/solicitations.json` (contact fields removed; rows derived from a real one are
+  marked): 00:00 kept through its due day and on daylight-saving days; placeholders; an
+  extension and a correction folded; a cancellation moved to `cancelled`, including one due
+  later than its original and one found only by the extra query; same-day pairs left
+  unfolded; reused short PINs, another agency or another title never folded;
+  `include_superseded`; the extra query failing, cut at 1,000, skipped when the budget is spent;
+  paging after folding; the City's fields unchanged.
+- Eval Q12 (an extended bid, folded) and Q13 (a 00:00 due date kept with a note), each at its
+  own `asked_at`, with fixtures built from rows of a direct query on 2026-11-18 (not recorded
+  through the server). Offline score 11 of 13; Q02 and Q03 still fail as described above.
 - `test/tool-size.test.mjs`: budget raised to 17,000 (measured 16,517) for the limit schema
   and the two-block answer guide, with a dated note.
 - `test/eval.test.mjs`: at least 10 questions, unique ids, each with checks; the offline

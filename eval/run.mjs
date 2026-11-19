@@ -14,10 +14,16 @@ const RECORD = process.argv.includes("--record");
 const { questions, asked_at } = JSON.parse(readFileSync(here("questions.json"), "utf8"));
 const SOURCE_URL = "https://data.cityofnewyork.us/d/dg92-zbpx";
 
-// The server's clock is fixed for the whole run: at asked_at for the offline replay, so
-// "open now" means open when the questions were asked, and at the start of a --record run.
-const NOW = RECORD ? Date.now() : Date.parse(asked_at);
-if (!Number.isFinite(NOW)) throw new Error(`questions.json asked_at is not a date: ${asked_at}`);
+// The server's clock is fixed for each question: at its own asked_at, else the file's asked_at
+// for the offline replay (so "open now" means open when the question was asked), else the start
+// of a --record run.
+const RUN_START = Date.now();
+let NOW = 0;
+export function setMoment(q = {}) {
+  NOW = q.asked_at ? Date.parse(q.asked_at) : RECORD ? RUN_START : Date.parse(asked_at);
+  if (!Number.isFinite(NOW)) throw new Error(`${q.id ?? "questions.json"}: asked_at is not a date`);
+}
+setMoment();
 clock.now = () => NOW;
 
 /** A request's fixture key: its query parameters, sorted, with the run's moment in New York
@@ -69,7 +75,22 @@ function check(c, r, body, text) {
   if (c.all_prefix) return body.notices.every((n) => String(n[c.all_prefix[0]] ?? "").startsWith(c.all_prefix[1]));
   if (c.all_in) return body.notices.every((n) => c.all_in[1].includes(n[c.all_in[0]]));
   if (c.count) return body.notices.filter((n) => n[c.count[0]] === c.count[1]).length === c.count[2];
-  if (c.all_after_now) return body.notices.every((n) => String(n[c.all_after_now] ?? "") > nyNow(new Date(NOW)));
+  if (c.all_open_now) {
+    const now = new Date(NOW);
+    return body.notices.every((n) => {
+      const d = String(n[c.all_open_now] ?? "");
+      return d > nyNow(now) || d === `${nyToday(now)}T00:00:00.000`;
+    });
+  }
+  if (c.supersedes) {
+    const [id, old] = c.supersedes;
+    return (body.notices.find((n) => n.request_id === id)?.betanyc_notes?.supersedes ?? []).some((s) => s.request_id === old);
+  }
+  if (c.note) {
+    const [id, re] = c.note;
+    return (body.notices.find((n) => n.request_id === id)?.betanyc_notes?.notes ?? []).some((x) => new RegExp(re).test(x));
+  }
+  if (c.not_listed) return !body.notices.some((n) => n.request_id === c.not_listed);
   throw new Error(`unknown check ${JSON.stringify(c)}`);
 }
 
@@ -88,6 +109,7 @@ function invariants(r, body, text) {
 export async function runEval() {
   const results = [];
   for (const q of questions) {
+    setMoment(q);
     missing.clear();
     const r = await callTool(q.tool, q.args);
     const text = r.content.map((c) => c.text).join("\n");
@@ -110,9 +132,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const passed = results.filter((r) => r.pass).length;
   for (const r of results) console.log(`${r.pass ? "PASS" : "FAIL"} ${r.id} ${r.q}${r.pass ? "" : ` ${[...r.failed_checks, ...r.failed_invariants].join("; ")}`}`);
   console.log(`${passed} of ${results.length} passed (${RECORD ? "live, fixtures recorded" : "offline, from fixtures"})`);
-  if (RECORD) console.log(`Set "asked_at" in eval/questions.json to ${new Date(NOW).toISOString()} so the replay asks at the same moment.`);
+  if (RECORD) console.log(`Set "asked_at" in eval/questions.json to ${new Date(RUN_START).toISOString()} so the replay asks at the same moment.`);
   writeFileSync(here("results.json"), JSON.stringify({
-    run_at: new Date().toISOString(), mode: RECORD ? "live" : "offline", asked_at: new Date(NOW).toISOString(),
+    run_at: new Date().toISOString(), mode: RECORD ? "live" : "offline", asked_at: RECORD ? new Date(RUN_START).toISOString() : asked_at,
     passed, total: results.length, results,
   }, null, 2) + "\n");
   process.exit(passed === results.length ? 0 : 1);

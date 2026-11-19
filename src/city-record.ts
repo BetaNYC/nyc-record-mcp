@@ -14,7 +14,10 @@ const DATASET_ID = "dg92-zbpx";
  * contact_name, contact_phone, email, contract_amount, contact_fax,
  * additional_description_1..3, vendor_name, vendor_address,
  * document_links, event_date, building_name, street_address_1,
- * street_address_2, city, state, zip_code.
+ * street_address_2, city, state, zip_code, other_info_1.
+ * other_info_1, on solicitations, is free text; in about 4 of 10 rows that have it, it holds
+ * "Date/Time - YYYY-MM-DD HH:MM:SS", the PRE-BID MEETING time, not the deadline. Never read it
+ * as a due date. event_date and additional_description_3 do not appear on solicitations.
  */
 export type CityRecordNotice = Record<string, string>;
 
@@ -89,8 +92,8 @@ export function nyNow(now: Date = new Date(clock.now())): string {
 // (Socrata throttles with 429: https://dev.socrata.com/docs/response-codes.html).
 // The optional app token goes in the X-App-Token header, which Socrata calls "the preferred
 // method" for SODA 2.x (https://dev.socrata.com/docs/app-tokens.html), never in the URL (#26).
-// There is no per-host request gate and no cache: add them if one tool call ever makes more
-// than one request.
+// There is no cache. get_open_solicitations is the one tool that can make two requests in a
+// call: one after the other, never at once, sharing one time budget (CALL_BUDGET_MS).
 export const USER_AGENT = `nyc-record-mcp/${PACKAGE_VERSION} (+https://github.com/BetaNYC/nyc-record-mcp)`;
 export const REQUEST_TIMEOUT_MS = 30_000;
 /** Full-text search ($q) gets longer, with a written reason: on 2026-11-18, $q queries on this
@@ -153,7 +156,11 @@ async function readRows(res: Response): Promise<CityRecordNotice[]> {
   return rows as CityRecordNotice[];
 }
 
-async function sodaFetch(params: Record<string, string>, timeoutMs = REQUEST_TIMEOUT_MS): Promise<CityRecordNotice[]> {
+async function sodaFetch(
+  params: Record<string, string>,
+  timeoutMs = REQUEST_TIMEOUT_MS,
+  deadline = clock.now() + CALL_BUDGET_MS
+): Promise<CityRecordNotice[]> {
   const url = new URL(`${BASE_URL}/resource/${DATASET_ID}.json`);
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
@@ -161,10 +168,10 @@ async function sodaFetch(params: Record<string, string>, timeoutMs = REQUEST_TIM
   const headers: Record<string, string> = { Accept: "application/json", "User-Agent": USER_AGENT };
   const appToken = process.env.SOCRATA_APP_TOKEN;
   if (appToken) headers["X-App-Token"] = appToken;
-  const deadline = clock.now() + CALL_BUDGET_MS;
 
   for (let attempt = 1; ; attempt++) {
     const left = deadline - clock.now();
+    if (left <= 0) throw new UpstreamError(timedOut(CALL_BUDGET_MS / 1000, true));
     const budgetBound = left < timeoutMs;
     let res: Response;
     try {
@@ -214,7 +221,8 @@ export interface NoticePage {
 async function page(
   query: { where?: string; q?: string; order: string },
   limit: number,
-  offset: number
+  offset: number,
+  deadline?: number
 ): Promise<NoticePage> {
   const params: Record<string, string> = {
     $order: `${query.order},:id`,
@@ -223,7 +231,7 @@ async function page(
   };
   if (query.where) params.$where = query.where;
   if (query.q) params.$q = query.q;
-  const rows = await sodaFetch(params, query.q ? SEARCH_TIMEOUT_MS : REQUEST_TIMEOUT_MS);
+  const rows = await sodaFetch(params, query.q ? SEARCH_TIMEOUT_MS : REQUEST_TIMEOUT_MS, deadline);
   return { notices: rows.slice(0, limit), offset, more: rows.length > limit };
 }
 
@@ -269,15 +277,78 @@ export function getPublicHearings(limit = 25, offset = 0): Promise<NoticePage> {
   );
 }
 
-export function getOpenSolicitations(limit = 25, offset = 0, now: Date = new Date(clock.now())): Promise<NoticePage> {
+/** The open list's $where: a due date and time still ahead in New York, or a due date of today
+ * at 00:00, which in this dataset means no closing time was entered (Fix A): such a notice
+ * stays listed through the end of its due date. Only `>` and `=` on due_date, as before. */
+export function openSolicitationsWhere(now: Date): string {
+  return `type_of_notice_description='Solicitation' AND (due_date > '${nyNow(now)}' OR due_date = '${nyToday(now)}T00:00:00.000')`;
+}
+
+/** How far back the extra query looks for amended and cancelled notices, and how many it takes. */
+export const AMENDMENT_LOOKBACK_DAYS = 400;
+export const AMENDMENT_LIMIT = 1000;
+/** Only the fields matching needs (src/solicitations.ts). */
+const AMENDMENT_FIELDS = "request_id,start_date,due_date,pin,agency_name,short_title";
+
+/** The extra query's $where: solicitations posted in the last 400 days whose title starts with an
+ * amendment prefix (the prefixes counted in src/solicitations.ts), in the code's existing
+ * `like 'text%'` form. */
+export function amendmentsWhere(now: Date): string {
+  const since = nyToday(new Date(now.getTime() - AMENDMENT_LOOKBACK_DAYS * 86_400_000));
+  return (
+    `type_of_notice_description='Solicitation' AND start_date >= '${since}' AND ` +
+    `(short_title like 'Bid Extension:%' OR short_title like 'Correction:%' OR short_title like 'Cancel%')`
+  );
+}
+
+export interface OpenSolicitationsPage extends NoticePage {
+  /** Amended and cancelled notices to match against, or null when they could not be checked. */
+  amendments: CityRecordNotice[] | null;
+  /** A plain sentence when the amendment check failed or was cut at AMENDMENT_LIMIT. */
+  amendmentNote?: string;
+}
+
+export async function getOpenSolicitations(
+  limit = 25,
+  offset = 0,
+  now: Date = new Date(clock.now())
+): Promise<OpenSolicitationsPage> {
   // Compare with the date AND time in New York, in due_date's own floating form: a deadline
   // earlier today has passed (comparing with the bare date counted it as open all day), and
   // New York time, not UTC, so the evening and daylight saving come out right.
-  return page(
-    { where: `type_of_notice_description='Solicitation' AND due_date > '${nyNow(now)}'`, order: "due_date ASC" },
-    limit,
-    offset
-  );
+  const deadline = clock.now() + CALL_BUDGET_MS;
+  const main = await page({ where: openSolicitationsWhere(now), order: "due_date ASC" }, limit, offset, deadline);
+  if (main.notices.length === 0) return { ...main, amendments: [] };
+  // One extra request, after the main one and inside the same budget: amended and cancelled
+  // notices, which may sit on another page or be past their due date. Its failure never fails
+  // the answer.
+  try {
+    const rows = await sodaFetch(
+      {
+        $select: AMENDMENT_FIELDS,
+        $where: amendmentsWhere(now),
+        $order: "start_date DESC,:id",
+        $limit: String(AMENDMENT_LIMIT + 1),
+      },
+      REQUEST_TIMEOUT_MS,
+      deadline
+    );
+    const cut = rows.length > AMENDMENT_LIMIT;
+    return {
+      ...main,
+      amendments: rows.slice(0, AMENDMENT_LIMIT),
+      ...(cut
+        ? { amendmentNote: `More than ${AMENDMENT_LIMIT} amended or cancelled solicitations were posted in the last ${AMENDMENT_LOOKBACK_DAYS} days; only the newest ${AMENDMENT_LIMIT} were checked against this list.` }
+        : {}),
+    };
+  } catch (err) {
+    const why = err instanceof UpstreamError ? ` (${err.message.split(". ")[0]}.)` : "";
+    return {
+      ...main,
+      amendments: null,
+      amendmentNote: `Amended, extended and cancelled notices could not be checked this time${why} The list is shown as NYC Open Data returned it; a notice here may have a newer deadline or be cancelled.`,
+    };
+  }
 }
 
 export function getNoticesByDateRange(startDate: string, endDate: string, limit = 50, offset = 0): Promise<NoticePage> {
