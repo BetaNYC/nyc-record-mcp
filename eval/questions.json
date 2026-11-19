@@ -38,7 +38,8 @@
         { "all_open_now": "due_date" },
         { "all_in": ["type_of_notice_description", ["Solicitation"]] }
       ],
-      "note": "Corrected 2026-11-18 (#33 review). The first expected answer, 20260929029 (Environmental Protection, due 2026-11-18 10:00), was wrong: asked at about 13:35 New York time, it had closed. So had the other two notices in that recording, 20260421016 (due 10:30) and 20260625055 (due 11:00); the recording is kept in eval/fixtures/7c70934e11376ab1.json, but the corrected query no longer uses it. The true answer, the first solicitation due after 13:35 that day, was never recorded, so the check no longer names a notice: every notice in the answer must still be open at the time asked (due later, or due that day with no time given). Q03 fails offline until someone runs npm run eval -- --record and updates asked_at."
+      "asked_at": "2026-11-19T09:29:12.400-05:00",
+      "note": "Corrected 2026-11-18 (#33 review). The first expected answer, 20260929029 (Environmental Protection, due 2026-11-18 10:00), was wrong: asked at about 13:35 New York time, it had closed. So had the other two notices in that recording, 20260421016 (due 10:30) and 20260625055 (due 11:00); the recording is kept in eval/fixtures/7c70934e11376ab1.json, but the corrected query no longer uses it. So the check names no notice: every notice in the answer must still be open at the time asked (due later, or due that day with no time given). Recorded live through the server on 2026-11-19 at 09:29 New York time (owner authorized live read-only calls that day), with npm run eval -- --record: the two soonest were 20260923005 (Housing Authority, due 2026-11-19 10:00) and 20260930001 (NYC Health + Hospitals, due 2026-11-19 11:00). contact_name, contact_phone and email were removed from the recorded rows."
     },
     {
       "id": "Q04",

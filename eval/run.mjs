@@ -110,9 +110,10 @@ function invariants(r, body, text) {
   return bad;
 }
 
-export async function runEval() {
+// `list` lets a test replay its own questions; the default is eval/questions.json.
+export async function runEval(list = questions) {
   const results = [];
-  for (const q of questions) {
+  for (const q of list) {
     setMoment(q);
     missing.clear();
     const r = await callTool(q.tool, q.args);
@@ -127,7 +128,7 @@ export async function runEval() {
       id: q.id, q: q.q, pass: failed.length === 0 && broken.length === 0, failed_checks: failed, failed_invariants: broken,
       ...(r.isError && !missing.size ? { answer_error: text.slice(0, 300) } : {}),
       ...(missing.size
-        ? { why: "No recorded fixture for this query. Recording one needs a live request to NYC Open Data, which was not authorized for this PR, and no fixture was built by hand. Record it with: npm run eval -- --record (then set asked_at in eval/questions.json to the time it prints)." }
+        ? { why: "No recorded fixture for this query, and none was built by hand. Recording one sends live requests to NYC Open Data, so run it only when live calls are allowed. Record it with: npm run eval -- --record (then set asked_at in eval/questions.json to the time it prints)." }
         : {}),
       ...(q.fixture ? { fixture: q.fixture } : {}),
     });

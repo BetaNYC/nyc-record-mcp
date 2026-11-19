@@ -1,8 +1,8 @@
 {
-  "run_at": "2026-11-19T04:38:11.310Z",
+  "run_at": "2026-11-19T14:30:07.354Z",
   "mode": "offline",
   "asked_at": "2026-11-18T13:35:00-05:00",
-  "passed": 11,
+  "passed": 12,
   "total": 13,
   "results": [
     {
@@ -25,12 +25,9 @@
     {
       "id": "Q03",
       "q": "Which open City solicitation closes soonest?",
-      "pass": false,
-      "failed_checks": [
-        "no recorded fixture for $limit=3&$offset=0&$order=due_date ASC,:id&$where=type_of_notice_description='Solicitation' AND (due_date > '<now>' OR due_date = '<today>T00:00:00.000')"
-      ],
-      "failed_invariants": [],
-      "why": "No recorded fixture for this query. Recording one needs a live request to NYC Open Data, which was not authorized for this PR, and no fixture was built by hand. Record it with: npm run eval -- --record (then set asked_at in eval/questions.json to the time it prints)."
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
     },
     {
       "id": "Q04",
