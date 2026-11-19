@@ -149,6 +149,8 @@ get_public_hearings()
 
 Returns active solicitations whose due date and time, in New York, has not yet passed, sorted by soonest deadline first. A solicitation due at 10:00 today is gone from the list at 10:00.
 
+**BetaNYC modified this list, so it is not the official record.** The official record is the [City Record Online dataset](https://data.cityofnewyork.us/d/dg92-zbpx). BetaNYC arranges the list: it folds older notices under newer ones, lists matched cancellations apart, and keeps 00:00 due dates through their day. Every City field in every notice is passed through unchanged, and `include_superseded: true` shows every notice. `about_data` says so for this tool (its own entry in [DATA-SOURCES.json](DATA-SOURCES.json), `open-solicitations`). Each answer's Source line begins "BetaNYC arranged these notices", and its `source` object carries `figures_official: false` and `changed_by_betanyc`. The other six City Record tools are not modified. Each returns one page of the City's notices exactly as NYC Open Data sends them, in the order the query asks for (newest first), with BetaNYC's own fields beside them.
+
 BetaNYC adds three things to this list. They are BetaNYC's reading of the City's titles and dates, not an official status, and they sit apart from the City's data: every notice keeps all its fields exactly as published, and BetaNYC's labels are under its `betanyc_notes`.
 
 - **No closing time given.** A due time of 00:00 means the City Record has no closing time for that notice (none was entered). Such a notice stays on the list through the end of its due date, with a note saying so. Check the notice or the agency for the real closing time.

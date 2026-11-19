@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { TOOLS, callTool, parseToolArgs } from "../dist/tools.js";
+import { TOOLS, callTool, parseToolArgs, OPEN_SOLICITATIONS_LINE, OPEN_SOLICITATIONS_CHANGES } from "../dist/tools.js";
 import { SOURCE } from "../dist/city-record.js";
 
 const FIXTURE = Array.from({ length: 500 }, (_, i) => ({
@@ -65,7 +65,8 @@ test("every City Record tool names the source, links it and says when it was fet
     assert.equal(body.source.as_of_kind, "retrieved", name);
     const asOf = Date.parse(body.source.as_of);
     assert.ok(asOf >= before - 1000 && asOf <= Date.now() + 1000, `${name}: as_of is the time of the call`);
-    assert.match(line, /^Source: City Record Online \(NYC Department of Citywide Administrative Services\)\. /, name);
+    const prefix = name === "get_open_solicitations" ? OPEN_SOLICITATIONS_LINE : "";
+    assert.ok(line.startsWith(`${prefix}Source: City Record Online (NYC Department of Citywide Administrative Services). `), `${name}: ${line}`);
     assert.equal(body.source.retrieved_at, body.source.as_of, name);
     assert.match(line, /\. Fetched from the source for this answer at \d{4}-\d{2}-\d{2} \d{2}:\d{2} E[SD]T \(New York time\)\. /, name);
     assert.ok(line.endsWith("Link: https://data.cityofnewyork.us/d/dg92-zbpx"), name);
@@ -122,7 +123,7 @@ test("every City Record tool's first text block is JSON alone, and the Source li
     let body;
     assert.doesNotThrow(() => (body = JSON.parse(r.content[0].text)), `${name}: content[0].text is not JSON`);
     for (const key of ["showing", "offset", "more_available", "notices", "source"]) assert.ok(key in body, `${name}: ${key}`);
-    assert.match(r.content.at(-1).text, /^Source: City Record Online .*Link: https:\/\/data\.cityofnewyork\.us\/d\/dg92-zbpx$/, name);
+    assert.match(r.content.at(-1).text, /^(BetaNYC arranged these notices .*)?Source: City Record Online .*Link: https:\/\/data\.cityofnewyork\.us\/d\/dg92-zbpx$/, name);
   }
 });
 
@@ -190,5 +191,45 @@ test("get_notices_by_date_range refuses impossible dates and a start after the e
   assert.equal(calls.length, 0, "nothing sent for a bad date");
   for (const args of [{ start_date: "2028-02-29", end_date: "2028-02-29" }, { start_date: "2026-01-31", end_date: "2026-02-01" }]) {
     assert.ok(!(await callTool("get_notices_by_date_range", args)).isError, JSON.stringify(args));
+  }
+});
+
+// Review of #33: get_open_solicitations' answer must not read like the untouched record. Its
+// source object and Source line say what about_data says for it (DATA-SOURCES.json
+// "open-solicitations"); the other six tools keep the plain source.
+test("get_open_solicitations says BetaNYC arranged the notices; the other six do not", async (t) => {
+  mockDataset(t);
+  const ds = JSON.parse(readFileSync(new URL("../DATA-SOURCES.json", import.meta.url), "utf8")).sources;
+  const entry = ds.find((s) => s.id === "open-solicitations");
+  assert.deepEqual(OPEN_SOLICITATIONS_CHANGES, entry.changes);
+  for (const [name, args] of Object.entries(CALLS)) {
+    const r = await callTool(name, args);
+    const { body, line } = parse(r);
+    if (name === "get_open_solicitations") {
+      assert.equal(body.source.figures_official, false);
+      assert.deepEqual(body.source.changed_by_betanyc, entry.changes);
+      assert.match(line, /^BetaNYC arranged these notices .*; the official record is the City Record Online dataset\. Source: City Record Online /);
+    } else {
+      assert.equal(body.source.changed_by_betanyc, undefined, name);
+      assert.equal(body.source.figures_official, undefined, name);
+      assert.match(line, /^Source: City Record Online /, name);
+    }
+  }
+});
+
+// The owner's line (review of #33): one page with a stated limit, and BetaNYC's own separate
+// fields, do not count as modifying the data; dropping, folding, re-sorting by our own rule or
+// rewriting a field does. The six tools DATA-SOURCES.json calls unchanged must pass the City's
+// rows through exactly, in the order NYC Open Data sent them. The mock returns rows in fixture
+// order whatever $order says, so any re-sort, drop or edit here would show.
+test("the six unchanged tools pass the City's rows through untouched, in the order sent", async (t) => {
+  mockDataset(t);
+  const ds = JSON.parse(readFileSync(new URL("../DATA-SOURCES.json", import.meta.url), "utf8")).sources;
+  const six = ds.find((s) => s.id === "city-record").tools;
+  assert.equal(six.length, 6);
+  assert.ok(!six.includes("get_open_solicitations"));
+  for (const name of six) {
+    const { body } = parse(await callTool(name, { ...CALLS[name], limit: 30, offset: 7 }));
+    assert.deepEqual(body.notices, FIXTURE.slice(7, 37), name);
   }
 });

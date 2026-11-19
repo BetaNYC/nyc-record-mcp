@@ -101,7 +101,7 @@ function invariants(r, body, text) {
   if (body.source?.publisher !== "NYC Department of Citywide Administrative Services") bad.push("publisher");
   if (body.source?.source_url !== SOURCE_URL || !text.endsWith(`Link: ${SOURCE_URL}`)) bad.push("link");
   if (body.source?.as_of_kind !== "retrieved" || !body.source?.as_of) bad.push("as-of");
-  if (!text.split("\n").at(-1).startsWith("Source: ")) bad.push("Source line last");
+  if (!/(^|\. )Source: City Record Online /.test(text.split("\n").at(-1))) bad.push("Source line last");
   if (body.showing !== body.notices?.length) bad.push("showing");
   return bad;
 }

@@ -17,6 +17,7 @@ import {
 import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools, isRealDate, provenance, toolError } from "./betanyc-tools.js";
 import { PACKAGE_VERSION } from "./version.js";
 import { foldOpenSolicitations, type Folded } from "./solicitations.js";
+import { readFileSync } from "node:fs";
 
 /**
  * whats_changed, about_betanyc and about_data, the three tools BetaNYC adds to each of its MCP
@@ -36,6 +37,28 @@ export const betanyc = createBetanycTools({
   whatsChangedPath: new URL("../WHATS-CHANGED.md", import.meta.url),
   dataSourcesPath: new URL("../DATA-SOURCES.json", import.meta.url),
 });
+
+/**
+ * get_open_solicitations is the one tool whose answers BetaNYC modifies (it folds, moves
+ * cancellations and adds labels), so DATA-SOURCES.json describes it in its own entry,
+ * "open-solicitations", with changes.changed true. Its answers repeat that entry's changes, read
+ * here from the same file so the two cannot disagree. Throws at startup if the entry is missing.
+ */
+export const OPEN_SOLICITATIONS_CHANGES: { changed: true; steps: string[]; detail: string } = (() => {
+  const doc = JSON.parse(readFileSync(new URL("../DATA-SOURCES.json", import.meta.url), "utf8"));
+  const entry = doc.sources?.find((s: { id?: string }) => s.id === "open-solicitations");
+  const ch = entry?.changes;
+  if (!entry?.tools?.includes("get_open_solicitations") || ch?.changed !== true || !ch.steps?.length || !ch.detail) {
+    throw new Error("DATA-SOURCES.json must describe get_open_solicitations in an 'open-solicitations' entry with changes.changed true, steps and detail");
+  }
+  return { changed: true, steps: [...ch.steps], detail: ch.detail };
+})();
+
+/** Said before the Source line of a get_open_solicitations answer, so it never reads like the
+ * untouched record. */
+export const OPEN_SOLICITATIONS_LINE =
+  "BetaNYC arranged these notices (folded, cancellations listed apart, labels in betanyc_notes; see about_data); " +
+  "the official record is the City Record Online dataset. ";
 
 /** The server's MCP instructions: what it covers, then the shared module's own instructions
  * (call about_data, about_betanyc and whats_changed). */
@@ -301,12 +324,16 @@ function answer(page: NoticePage, use: { limit: number; note?: string }, open?: 
     ...(use.note ? { note: use.note } : {}),
     ...(open ? openSummary(open, cityRows) : {}),
     notices: listed,
-    source: p.provenance,
+    // For the open list, the source object says what about_data says: BetaNYC modified this
+    // list, so these figures are not the official record (same field names as about_data).
+    source: open
+      ? { ...p.provenance, figures_official: false, changed_by_betanyc: OPEN_SOLICITATIONS_CHANGES }
+      : p.provenance,
   };
   return {
     content: [
       { type: "text" as const, text: JSON.stringify(body, null, 2) },
-      { type: "text" as const, text: p.text },
+      { type: "text" as const, text: open ? OPEN_SOLICITATIONS_LINE + p.text : p.text },
     ],
   };
 }

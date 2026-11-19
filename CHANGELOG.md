@@ -172,6 +172,18 @@ From the review of epic #33.
     `amendment_check`; `offset` and `more_available` still count the City's notices.
   - `other_info_1` is named in the known-fields comment: when it holds a date and time, that is
     the pre-bid meeting, not the deadline.
+- `DATA-SOURCES.json` has two entries for the same dataset (owner's rule: "If we've changed the
+  data in any way, this is the only option"). `open-solicitations` covers
+  `get_open_solicitations` and says BetaNYC modified it (`changes.changed: true`, steps
+  `filtered` and `reshaped`, with a plain `detail`), so `about_data` answers "BetaNYC modified
+  this data … should not be considered the official record. Official record: City Record
+  Online …". `city-record` keeps the other six tools, not modified; its `how_gathered` now
+  says exactly what they do (one page of the City's rows as sent, in the order the query asks
+  for, plus BetaNYC's own separate fields; nothing dropped, folded, re-sorted or rewritten).
+  The open-solicitations correction moved to the new entry. `data.json` rebuilt.
+- `get_open_solicitations` answers match: the Source line starts "BetaNYC arranged these
+  notices …; the official record is the City Record Online dataset.", and `source` adds
+  `figures_official: false` and `changed_by_betanyc` (read from `DATA-SOURCES.json` at start).
 - README: a `%` or `_` in an agency name is passed to the `like` match as typed, where it acts
   as a wildcard (no escape is used: the Socrata docs this repo cites do not give one).
 - The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
@@ -231,6 +243,10 @@ From the review of epic #33.
   unfolded; reused short PINs, another agency or another title never folded;
   `include_superseded`; the extra query failing, cut at 1,000, skipped when the budget is spent;
   paging after folding; the City's fields unchanged.
+- `test/about-data.test.mjs`: `about_data` says BetaNYC modified `get_open_solicitations` (the
+  plain words of the detail, and the "modified" answer) and says the other six are not.
+  `test/answers.test.mjs`: the open list's Source line and `source` say so too, and the six
+  unchanged tools return the City's rows untouched, in the order sent.
 - Eval Q12 (an extended bid, folded) and Q13 (a 00:00 due date kept with a note), each at its
   own `asked_at`, with fixtures built from rows of a direct query on 2026-11-18 (not recorded
   through the server). Offline score 11 of 13; Q02 and Q03 still fail as described above.
