@@ -68,7 +68,8 @@ test("every City Record tool names the source, links it and says when it was fet
     const asOf = Date.parse(body.source.as_of);
     assert.ok(asOf >= before - 1000 && asOf <= Date.now() + 1000, `${name}: as_of is the time of the call`);
     assert.match(line, /^Source: City Record Online \(NYC Department of Citywide Administrative Services\)\. /, name);
-    assert.ok(line.includes(`As of ${body.source.as_of} (fetched from the source for this answer).`), name);
+    assert.equal(body.source.retrieved_at, body.source.as_of, name);
+    assert.match(line, /\. Fetched from the source for this answer at \d{4}-\d{2}-\d{2} \d{2}:\d{2} E[SD]T \(New York time\)\. /, name);
     assert.ok(line.endsWith("Link: https://data.cityofnewyork.us/d/dg92-zbpx"), name);
   }
 });

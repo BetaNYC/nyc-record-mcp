@@ -170,7 +170,7 @@ const DOMAIN_TOOLS: Tool[] = [
 
 /**
  * Tool definitions advertised to clients by the ListTools handler. Every tool only reads, so
- * annotateTools (shared module 1.5.0) gives each readOnlyHint: true, openWorldHint and a title.
+ * annotateTools (shared module 1.5.0 and later) gives each readOnlyHint: true, openWorldHint and a title.
  * The three shared tools (what's changed, who built it, where the data comes from) declare their
  * own annotations and pass through. Their definitions are plain JSON Schema with an
  * outputSchema; the cast is only for the type.

@@ -52,7 +52,7 @@ Exposes 10 tools over MCP:
 Every City Record tool answers with JSON: `showing` (how many notices are in this answer), `offset`, `more_available` (whether more notices match after these) and, when more match, `how_to_get_more` (call again with the next `offset`), then the `notices` and a `source` block. The answer ends with one line naming the source, its publisher, the time it was fetched from NYC Open Data, and a link to the dataset:
 
 ```
-Source: City Record Online (NYC Department of Citywide Administrative Services). As of 2026-11-18T18:24:02.952Z (fetched from the source for this answer). Link: https://data.cityofnewyork.us/d/dg92-zbpx
+Source: City Record Online (NYC Department of Citywide Administrative Services). Fetched from the source for this answer at 2026-11-18 13:24 EST (New York time). Link: https://data.cityofnewyork.us/d/dg92-zbpx
 ```
 
 Every tool only reads, and says so to your AI app with MCP tool annotations (`readOnlyHint: true`). The seven City Record tools query NYC Open Data at the time you ask (`openWorldHint: true`); the three shared tools read files that ship with the package.

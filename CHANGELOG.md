@@ -8,9 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - unreleased
 
 Adds `about_data`, the third tool BetaNYC adds to each of its MCP servers, and
-`DATA-SOURCES.json`, the file it answers from. Moves to BetaNYC's shared module 1.4.0
-(`src/betanyc-tools.ts`, `scripts/whats_changed.py`, `scripts/mcp_shared/data-sources.schema.json`,
-`scripts/tests/catalog_validate.py`, copied unchanged), whose answer to "is this data official?"
+`DATA-SOURCES.json`, the file it answers from. Moves to BetaNYC's shared module 1.5.1
+(`src/betanyc-tools.ts`; `scripts/whats_changed.py`, `scripts/mcp_shared/data-sources.schema.json`,
+`scripts/tests/catalog_validate.py` are 1.4.1; all copied unchanged), whose answer to "is this data official?"
 names the source, its publisher and a link: "Publisher: NYC Department of Citywide
 Administrative Services. BetaNYC did not modify it. Source: City Record Online, …".
 Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
@@ -45,10 +45,18 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 
 ### Changed
 
-- `src/betanyc-tools.ts` is the workspace's shared module 1.5.0 (was 1.2.4), and
+- `src/betanyc-tools.ts` is the workspace's shared module 1.5.1 (was 1.2.4), and
   `scripts/whats_changed.py` and `scripts/mcp_shared/data-sources.schema.json` are 1.4.1, all
   copied in unchanged. Never edit the copies. Module 1.5.0 adds the helpers below for the
-  server's own tools (#21, #28).
+  server's own tools (#21, #28). Module 1.5.1 (BetaNYC/betanyc-ai-workspace#1702, commit
+  `17938f2`; raw file sha256 `567838e0…a72d`, stamp hash on line 2 `e1e15642…a96`) tightens
+  them: `assertEveryToolAnnotated` requires `readOnlyHint: true`, a boolean `openWorldHint`
+  and a non-empty title; in `annotateTools` a tool's own declared hint wins; the Source line
+  of a live answer gives the fetch time in New York time to the minute, and the `source`
+  object gains `retrieved_at` (and `as_of_kind: "source"` when a live answer carries the
+  data's own date, which this server's answers do not); source links with a username or
+  password, and control characters in names, are refused; `toolError` scrubs more encoded
+  forms of a secret and ignores secrets under 8 characters.
 - Every tool carries MCP `annotations`: `readOnlyHint: true`, a `title`, and `openWorldHint`
   (`true` for the seven City Record tools, which query NYC Open Data live; `false` for the
   three shared tools, which read files in the package). Set with the shared `annotateTools`.
@@ -104,7 +112,7 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 - `test/about-data.test.mjs`: every listed tool has a source (`assertEveryToolExplained`,
   which also fails on an unknown tool); the topic in the description; the source's publisher,
   link, official and live status, unchanged figures, error route and corrections; every tool
-  name as a topic; a bad topic and an unknown key; the server instructions; module 1.5.0.
+  name as a topic; a bad topic and an unknown key; the server instructions; module 1.5.1.
 - `test/betanyc-tools.test.mjs`: three shared tools, read-only with an output schema;
   `about_data` over stdio answers with lab@beta.nyc and passes the SDK client's output-schema
   check, and the server's instructions name `about_data`; `npm pack --dry-run` lists
