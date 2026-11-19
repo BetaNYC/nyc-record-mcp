@@ -1,0 +1,154 @@
+{
+  "_readme": [
+    "Fixed question set for nyc-record-mcp, written 2026-11-18 before scoring. Each expected answer was found first with an independent SoQL query to NYC Open Data dataset dg92-zbpx (not through this server), on 2026-11-18.",
+    "Run: npm run eval (offline, replays eval/fixtures/). npm run eval -- --record re-asks NYC Open Data live and rewrites the fixtures; then the answers below may no longer hold, because the dataset grows every day.",
+    "Checks on the answer's JSON body: `field` [path, value] (a dotted path equals a value), `top` {index, field: value...} (the notice at that index has these values), `any` {field: value...} (some notice has all of them), `all_prefix` [field, prefix] (every notice's field starts with it), `all_in` [field, [values]] (every notice's field is one of them), `count` [field, value, n] (exactly n notices have field = value), `error` regex (the answer is isError and its text matches), `all_open_now` field (every notice's field, a floating New York timestamp, is later than \"now\" or is today at 00:00), `supersedes` [request_id, older request_id] (that listed notice folds the older one), `note` [request_id, regex] (one of that notice's betanyc_notes matches), `not_listed` request_id (it is not in notices).",
+    "A question may carry its own asked_at; Q12 and Q13 do, and their fixtures were built from rows of a direct query on 2026-11-18, not recorded through the server (see their notes).",
+    "asked_at is the moment the questions were asked (the fixtures were recorded about then). The offline replay fixes the server's clock there, so get_open_solicitations asks for what was open at that moment. --record fixes the clock at the start of the run instead and prints the asked_at to put here. Fixture keys write that moment as <now> (and its date as <today>).",
+    "Invariants on every non-error answer: the source block names City Record Online, the NYC Department of Citywide Administrative Services and https://data.cityofnewyork.us/d/dg92-zbpx, with as_of_kind retrieved, and the text ends with that link on the Source line (for get_open_solicitations, the line says BetaNYC modified the data and names the official record); showing equals the number of notices."
+  ],
+  "asked_at": "2026-11-18T13:35:00-05:00",
+  "questions": [
+    {
+      "id": "Q01",
+      "q": "When is the next City Planning Commission public hearing?",
+      "tool": "get_notices_by_agency",
+      "args": { "agency_name": "City Planning Commission", "limit": 5 },
+      "checks": [
+        { "top": { "index": 0, "request_id": "20261109025", "event_date": "2026-12-02T10:00:00.000" } },
+        { "any": { "event_date": "2026-11-18T10:00:00.000", "type_of_notice_description": "Public Hearings" } }
+      ],
+      "note": "Asked on 2026-11-18: the Nov 18 hearing is that day; the next notice published is for Dec 2."
+    },
+    {
+      "id": "Q02",
+      "q": "Is there a hearing on the City Environmental Quality Review fee rule?",
+      "tool": "search_notices",
+      "args": { "query": "City Environmental Quality Review Fee", "limit": 3 },
+      "checks": [
+        { "top": { "index": 0, "request_id": "20261027004", "agency_name": "City Planning Commission", "event_date": "2026-12-02T10:00:00.000" } }
+      ]
+    },
+    {
+      "id": "Q03",
+      "q": "Which open City solicitation closes soonest?",
+      "tool": "get_open_solicitations",
+      "args": { "limit": 2 },
+      "checks": [
+        { "all_open_now": "due_date" },
+        { "all_in": ["type_of_notice_description", ["Solicitation"]] }
+      ],
+      "note": "Corrected 2026-11-18 (#33 review). The first expected answer, 20260929029 (Environmental Protection, due 2026-11-18 10:00), was wrong: asked at about 13:35 New York time, it had closed. So had the other two notices in that recording, 20260421016 (due 10:30) and 20260625055 (due 11:00); the recording is kept in eval/fixtures/7c70934e11376ab1.json, but the corrected query no longer uses it. The true answer, the first solicitation due after 13:35 that day, was never recorded, so the check no longer names a notice: every notice in the answer must still be open at the time asked (due later, or due that day with no time given). Q03 fails offline until someone runs npm run eval -- --record and updates asked_at."
+    },
+    {
+      "id": "Q04",
+      "q": "How many City Record notices were published on November 17, 2026?",
+      "tool": "get_notices_by_date_range",
+      "args": { "start_date": "2026-11-17", "end_date": "2026-11-17", "limit": 50 },
+      "checks": [
+        { "field": ["showing", 29] },
+        { "field": ["more_available", false] }
+      ]
+    },
+    {
+      "id": "Q05",
+      "q": "How many contract awards were published on November 17, 2026?",
+      "tool": "get_notices_by_date_range",
+      "args": { "start_date": "2026-11-17", "end_date": "2026-11-17", "limit": 50 },
+      "checks": [
+        { "count": ["type_of_notice_description", "Award", 12] }
+      ]
+    },
+    {
+      "id": "Q06",
+      "q": "What was the most recent sale notice?",
+      "tool": "get_notices_by_type",
+      "args": { "notice_type": "Sale", "limit": 1 },
+      "checks": [
+        { "top": { "index": 0, "request_id": "20260604044", "agency_name": "Environmental Protection" } },
+        { "field": ["more_available", true] }
+      ]
+    },
+    {
+      "id": "Q07",
+      "q": "What is the newest procurement notice?",
+      "tool": "get_procurement_notices",
+      "args": { "limit": 1 },
+      "checks": [
+        { "top": { "index": 0, "request_id": "20261112010", "type_of_notice_description": "Award" } },
+        { "all_in": ["type_of_notice_description", ["Solicitation", "Award", "Intent to Award", "Intent to Negotiate", "Vendor List"]] }
+      ]
+    },
+    {
+      "id": "Q08",
+      "q": "Show notices from the Mayor's Office.",
+      "tool": "get_notices_by_agency",
+      "args": { "agency_name": "Mayor's Office", "limit": 25 },
+      "checks": [
+        { "field": ["showing", 25] },
+        { "field": ["more_available", true] },
+        { "all_prefix": ["agency_name", "Mayor's Office"] }
+      ],
+      "note": "An apostrophe in the agency name: 4,114 notices across seven Mayor's Office agencies on 2026-11-18."
+    },
+    {
+      "id": "Q09",
+      "q": "Show me the next page of public hearings (notices 26 to 50).",
+      "tool": "get_public_hearings",
+      "args": { "limit": 25, "offset": 25 },
+      "checks": [
+        { "top": { "index": 0, "request_id": "20261109025" } },
+        { "field": ["offset", 25] },
+        { "all_in": ["type_of_notice_description", ["Public Hearings", "Public Comment", "Meeting", "Notice"]] }
+      ]
+    },
+    {
+      "id": "Q10",
+      "q": "List the last vendor-list notices (the third page of 100).",
+      "tool": "get_notices_by_type",
+      "args": { "notice_type": "Vendor List", "limit": 100, "offset": 200 },
+      "checks": [
+        { "field": ["showing", 94] },
+        { "field": ["more_available", false] }
+      ],
+      "note": "294 Vendor List notices in all on 2026-11-18."
+    },
+    {
+      "id": "Q12",
+      "q": "Is the Department of Correction's elevator maintenance bid still open, and when is it due now?",
+      "asked_at": "2026-05-26T09:00:00-04:00",
+      "fixture": "hand-built from rows of a direct query on 2026-11-18, not recorded through the server",
+      "tool": "get_open_solicitations",
+      "args": { "limit": 7 },
+      "checks": [
+        { "any": { "request_id": "20260429002", "due_date": "2026-05-27T11:00:00.000" } },
+        { "supersedes": ["20260429002", "20260227028"] },
+        { "not_listed": "20260227028" }
+      ],
+      "note": "PIN 07226B0002: a Bid Extension (20260227028, posted 2026-03-06, due 2026-04-20) and then a newer notice with the same PIN, agency and title (20260429002, posted 2026-05-05, due 2026-05-27 11:00). The extension is past due on 2026-05-26, so only the extra amended-notices query finds it; the answer lists the newer notice once and names the extension in supersedes. The fixtures were built from rows of a direct query on 2026-11-18, not recorded through the server: a live query at that moment could have returned other rows too."
+    },
+    {
+      "id": "Q13",
+      "q": "On the morning of January 7, 2026, is the FDNY EMS dispatch software solicitation still open?",
+      "asked_at": "2026-01-07T09:00:00-05:00",
+      "fixture": "hand-built from rows of a direct query on 2026-11-18, not recorded through the server",
+      "tool": "get_open_solicitations",
+      "args": { "limit": 5 },
+      "checks": [
+        { "any": { "request_id": "20251223003", "due_date": "2026-01-07T00:00:00.000" } },
+        { "note": ["20251223003", "gives no closing time"] }
+      ],
+      "note": "Its due_date is 2026-01-07T00:00, which in this dataset means no time was entered. It stays listed all of January 7, with a note to check the notice or the agency for the real time. Fixtures built from rows of a direct query on 2026-11-18, as for Q12."
+    },
+    {
+      "id": "Q11",
+      "q": "Which Parks notices are in Council District 10?",
+      "tool": "get_notices_by_agency",
+      "args": { "agency_name": "Parks", "council_district": 10 },
+      "checks": [
+        { "error": "council_district.*accepts only" }
+      ],
+      "note": "The dataset has no Council district; the call must be refused, not answered for all of Parks."
+    }
+  ]
+}

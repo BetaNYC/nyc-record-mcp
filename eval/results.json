@@ -1,0 +1,109 @@
+{
+  "run_at": "2026-11-19T04:38:11.310Z",
+  "mode": "offline",
+  "asked_at": "2026-11-18T13:35:00-05:00",
+  "passed": 11,
+  "total": 13,
+  "results": [
+    {
+      "id": "Q01",
+      "q": "When is the next City Planning Commission public hearing?",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
+    },
+    {
+      "id": "Q02",
+      "q": "Is there a hearing on the City Environmental Quality Review fee rule?",
+      "pass": false,
+      "failed_checks": [
+        "{\"top\":{\"index\":0,\"request_id\":\"20261027004\",\"agency_name\":\"City Planning Commission\",\"event_date\":\"2026-12-02T10:00:00.000\"}}"
+      ],
+      "failed_invariants": [],
+      "answer_error": "Error: NYC Open Data did not answer within 60 seconds. Try again in a minute, or narrow the question: a shorter search, or get_notices_by_agency, get_notices_by_type or get_notices_by_date_range, which are faster than a full-text search."
+    },
+    {
+      "id": "Q03",
+      "q": "Which open City solicitation closes soonest?",
+      "pass": false,
+      "failed_checks": [
+        "no recorded fixture for $limit=3&$offset=0&$order=due_date ASC,:id&$where=type_of_notice_description='Solicitation' AND (due_date > '<now>' OR due_date = '<today>T00:00:00.000')"
+      ],
+      "failed_invariants": [],
+      "why": "No recorded fixture for this query. Recording one needs a live request to NYC Open Data, which was not authorized for this PR, and no fixture was built by hand. Record it with: npm run eval -- --record (then set asked_at in eval/questions.json to the time it prints)."
+    },
+    {
+      "id": "Q04",
+      "q": "How many City Record notices were published on November 17, 2026?",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
+    },
+    {
+      "id": "Q05",
+      "q": "How many contract awards were published on November 17, 2026?",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
+    },
+    {
+      "id": "Q06",
+      "q": "What was the most recent sale notice?",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
+    },
+    {
+      "id": "Q07",
+      "q": "What is the newest procurement notice?",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
+    },
+    {
+      "id": "Q08",
+      "q": "Show notices from the Mayor's Office.",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
+    },
+    {
+      "id": "Q09",
+      "q": "Show me the next page of public hearings (notices 26 to 50).",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
+    },
+    {
+      "id": "Q10",
+      "q": "List the last vendor-list notices (the third page of 100).",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": []
+    },
+    {
+      "id": "Q12",
+      "q": "Is the Department of Correction's elevator maintenance bid still open, and when is it due now?",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": [],
+      "fixture": "hand-built from rows of a direct query on 2026-11-18, not recorded through the server"
+    },
+    {
+      "id": "Q13",
+      "q": "On the morning of January 7, 2026, is the FDNY EMS dispatch software solicitation still open?",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": [],
+      "fixture": "hand-built from rows of a direct query on 2026-11-18, not recorded through the server"
+    },
+    {
+      "id": "Q11",
+      "q": "Which Parks notices are in Council District 10?",
+      "pass": true,
+      "failed_checks": [],
+      "failed_invariants": [],
+      "answer_error": "Error: get_notices_by_agency received unrecognized parameter(s): council_district. It accepts only: agency_name, limit, offset. The call was rejected rather than run without that filter, because dropping it silently would return results for a different question."
+    }
+  ]
+}

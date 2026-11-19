@@ -1,0 +1,90 @@
+{
+ "key": "$limit=6&$offset=0&$order=start_date DESC,:id&$where=upper(agency_name) like upper('%City Planning Commission%')",
+ "status": 200,
+ "body": [
+  {
+   "request_id": "20261109025",
+   "start_date": "2026-11-17T00:00:00.000",
+   "end_date": "2026-12-02T00:00:00.000",
+   "agency_name": "City Planning Commission",
+   "type_of_notice_description": "Public Hearings",
+   "short_title": "City Planning Commission Public Hearing Ad",
+   "section_name": "Public Hearings and Meetings",
+   "event_date": "2026-12-02T10:00:00.000",
+   "street_address_1": "120 Broadway",
+   "street_address_2": "Lower Level",
+   "city": "New York",
+   "state": "NY",
+   "zip_code": "10271"
+  },
+  {
+   "request_id": "20261027024",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-18T00:00:00.000",
+   "agency_name": "City Planning Commission",
+   "type_of_notice_description": "Public Hearings",
+   "short_title": "City Planning Commission Public Hearing",
+   "section_name": "Public Hearings and Meetings",
+   "event_date": "2026-11-18T10:00:00.000",
+   "street_address_1": "120 Broadway",
+   "street_address_2": "Lower Level",
+   "city": "New York",
+   "state": "NY",
+   "zip_code": "10271"
+  },
+  {
+   "request_id": "20261027004",
+   "start_date": "2026-10-30T00:00:00.000",
+   "end_date": "2026-10-30T00:00:00.000",
+   "agency_name": "City Planning Commission",
+   "type_of_notice_description": "Public Hearings",
+   "short_title": "City Environmental Quality Review Fee Update Rulemaking",
+   "section_name": "Agency Rules",
+   "event_date": "2026-12-02T10:00:00.000",
+   "street_address_1": "120 Broadway",
+   "street_address_2": "Lower Level",
+   "city": "New York",
+   "state": "NY",
+   "zip_code": "10271"
+  },
+  {
+   "request_id": "20261006007",
+   "start_date": "2026-10-15T00:00:00.000",
+   "end_date": "2026-10-15T00:00:00.000",
+   "agency_name": "City Planning Commission",
+   "type_of_notice_description": "Notice",
+   "short_title": "Notice of Adoption of Expedited Land Use Review Procedure and Affordable Housing Appeals Board Rules",
+   "section_name": "Agency Rules"
+  },
+  {
+   "request_id": "20261006022",
+   "start_date": "2026-10-14T00:00:00.000",
+   "end_date": "2026-10-28T00:00:00.000",
+   "agency_name": "City Planning Commission",
+   "type_of_notice_description": "Public Hearings",
+   "short_title": "City Planning Commission Public Hearing",
+   "section_name": "Public Hearings and Meetings",
+   "event_date": "2026-10-28T10:00:00.000",
+   "street_address_1": "120 Broadway",
+   "street_address_2": "Lower Level",
+   "city": "New York",
+   "state": "NY",
+   "zip_code": "10271"
+  },
+  {
+   "request_id": "20260818027",
+   "start_date": "2026-08-25T00:00:00.000",
+   "end_date": "2026-09-09T00:00:00.000",
+   "agency_name": "City Planning Commission",
+   "type_of_notice_description": "Public Hearings",
+   "short_title": "City Planning Commission Public Hearing Ad",
+   "section_name": "Public Hearings and Meetings",
+   "event_date": "2026-09-09T10:00:00.000",
+   "street_address_1": "120 Broadway",
+   "street_address_2": "Lower Level",
+   "city": "New York",
+   "state": "NY",
+   "zip_code": "10271"
+  }
+ ]
+}

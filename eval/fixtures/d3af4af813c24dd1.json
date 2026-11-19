@@ -1,0 +1,1272 @@
+{
+ "key": "$limit=1001&$order=start_date DESC,:id&$select=request_id,start_date,due_date,pin,agency_name,short_title&$where=type_of_notice_description='Solicitation' AND start_date >= '2025-04-21' AND (short_title like 'Bid Extension:%' OR short_title like 'Correction:%' OR short_title like 'Cancellation:%')",
+ "status": 200,
+ "built_from": "Rows of a direct query to dg92-zbpx on 2026-11-18 (the 1,000 newest solicitations), filtered as this query would filter them at asked_at; not recorded through the server. That pull starts at notices posted 2025-10-14, so older amended notices are missing. Contact fields, address_to_request and long descriptions removed.",
+ "body": [
+  {
+   "request_id": "20260515016",
+   "start_date": "2026-05-22T00:00:00.000",
+   "due_date": "2026-10-06T13:00:00.000",
+   "pin": "R1875040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirements Contracts for Postsecondary Pathways Programs"
+  },
+  {
+   "request_id": "20260518032",
+   "start_date": "2026-05-22T00:00:00.000",
+   "due_date": "2026-07-17T14:00:00.000",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: Requirement Contract for Installation of V/C Floor Tile in Apartments-Gun Hill, Marble Hill, Parkside, Pelham Parkway, Castle Hill Houses Soundview and Throggs Neck,  Located in Bronx Neighborhood (BX01) and (BX02), Bronx."
+  },
+  {
+   "request_id": "20260512043",
+   "start_date": "2026-05-21T00:00:00.000",
+   "due_date": "2026-07-30T10:00:00.000",
+   "pin": "521185",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMD_Services_IDIQ contract for Service and Maintenance of HVAC, Heat and Hot Water (HMSD), at Various NYCHA Developments Citywide"
+  },
+  {
+   "request_id": "20260518004",
+   "start_date": "2026-05-21T00:00:00.000",
+   "due_date": "2026-06-29T17:00:00.000",
+   "pin": "26REQ0286",
+   "agency_name": "New York City Police Pension Fund",
+   "short_title": "Correction: Installation and maintenance of four vending machines"
+  },
+  {
+   "request_id": "20260514019",
+   "start_date": "2026-05-20T00:00:00.000",
+   "due_date": "2026-11-18T14:00:00.000",
+   "pin": "85624B0007",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: 85624B0007-CSB 360 Adams ADA Improvements Construction"
+  },
+  {
+   "request_id": "20260506022",
+   "start_date": "2026-05-13T00:00:00.000",
+   "due_date": "2026-06-15T15:00:00.000",
+   "pin": "83626B0001",
+   "agency_name": "Finance",
+   "short_title": "Correction: PCI DSS Qualified Security Assessor Services"
+  },
+  {
+   "request_id": "20260506034",
+   "start_date": "2026-05-13T00:00:00.000",
+   "due_date": "2026-06-22T23:59:00.000",
+   "pin": "NY-CUCF-08-26",
+   "agency_name": "City University",
+   "short_title": "Bid Extension: NYC College of Technology (NYCCT) NAB Courtyard Landscape Restoration"
+  },
+  {
+   "request_id": "20260428017",
+   "start_date": "2026-05-08T00:00:00.000",
+   "due_date": "2026-05-29T12:00:00.000",
+   "pin": "521149",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_Materials_ Set Tracks"
+  },
+  {
+   "request_id": "20260428002",
+   "start_date": "2026-05-05T00:00:00.000",
+   "due_date": "2026-06-02T11:00:00.000",
+   "pin": "517986",
+   "agency_name": "Housing Authority",
+   "short_title": "Correction: SMD_A&CM_RFQ #517986 - Elevator Rehabilitation, Maintenance and Service at Castle Hill Houses"
+  },
+  {
+   "request_id": "20260428035",
+   "start_date": "2026-05-05T00:00:00.000",
+   "due_date": "2026-10-20T13:00:00.000",
+   "pin": "R1866040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirements Contracts for Postsecondary Pathways Programs"
+  },
+  {
+   "request_id": "20260428047",
+   "start_date": "2026-05-05T00:00:00.000",
+   "due_date": "2026-06-03T15:00:00.000",
+   "pin": "82726Y0433",
+   "agency_name": "Sanitation",
+   "short_title": "Bid Extension: Request For Information (\u001aRFI\u001a): Commingled Organics Pre-Processing Equipment for the DSNY Staten Island Compost Facility"
+  },
+  {
+   "request_id": "20260428048",
+   "start_date": "2026-05-05T00:00:00.000",
+   "due_date": "2026-06-03T14:00:00.000",
+   "pin": "21202506",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: JACOBI MEDICAL ROOF REPLACEMENT, #14 AND #14A ROOF"
+  },
+  {
+   "request_id": "20260422026",
+   "start_date": "2026-04-29T00:00:00.000",
+   "due_date": "2026-12-15T16:00:00.000",
+   "pin": "R1861040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Payroll Managed Services"
+  },
+  {
+   "request_id": "20260421016",
+   "start_date": "2026-04-28T00:00:00.000",
+   "due_date": "2026-11-18T10:30:00.000",
+   "pin": "85624B0012",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: 85624B0012-CSB 25th FL Construction at 1 Centre Street"
+  },
+  {
+   "request_id": "20260420019",
+   "start_date": "2026-04-27T00:00:00.000",
+   "due_date": "2026-05-29T17:00:00.000",
+   "pin": "26-0427",
+   "agency_name": "School Construction Authority",
+   "short_title": "Bid Extension: SCA Pedagogical Strategic Master Plan"
+  },
+  {
+   "request_id": "20260416018",
+   "start_date": "2026-04-24T00:00:00.000",
+   "due_date": "2026-05-15T12:00:00.000",
+   "pin": "521163,1",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD MATERIALS OFFICE SUPPLIES"
+  },
+  {
+   "request_id": "20260416009",
+   "start_date": "2026-04-22T00:00:00.000",
+   "due_date": "2026-07-08T10:00:00.000",
+   "pin": "85626B0009",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: 85626B0009-CSB Elevator Monitoring Services"
+  },
+  {
+   "request_id": "20260417025",
+   "start_date": "2026-04-22T00:00:00.000",
+   "due_date": "2026-06-10T16:00:00.000",
+   "pin": "82726CWZMNMS",
+   "agency_name": "Sanitation",
+   "short_title": "Correction: Commercial Waste Zone Midtown North and Manhattan Southwest Implementation"
+  },
+  {
+   "request_id": "20260414044",
+   "start_date": "2026-04-21T00:00:00.000",
+   "due_date": "2026-05-22T14:00:00.000",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: IDIQ Maintenance Painting of Apartments, Interior and Exterior Public Space Work Including Stairwell Painting (FRP & Silicate Systems)- Various Developments, in All Five (5) Boroughs, City-Wide"
+  },
+  {
+   "request_id": "20260415014",
+   "start_date": "2026-04-21T00:00:00.000",
+   "due_date": "2026-05-28T12:00:00.000",
+   "pin": "BMCC266703",
+   "agency_name": "City University",
+   "short_title": "Bid Extension: IFB # BMCC266703 \u001a Yamaha Pianos and Installation"
+  },
+  {
+   "request_id": "20260413021",
+   "start_date": "2026-04-20T00:00:00.000",
+   "due_date": "2039-09-09T16:00:00.000",
+   "pin": "B5953040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Systems Integration Services"
+  },
+  {
+   "request_id": "20260410024",
+   "start_date": "2026-04-17T00:00:00.000",
+   "due_date": "2026-06-17T13:00:00.000",
+   "pin": "ES#056-10-2026",
+   "agency_name": "Police Department",
+   "short_title": "Correction: RE-BID Service Stripes"
+  },
+  {
+   "request_id": "20260403016",
+   "start_date": "2026-04-15T00:00:00.000",
+   "due_date": "2026-05-28T12:00:00.000",
+   "pin": "521132",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_MATERIAL_ Heating (Bushing, Control Module, Fitting, Pressure Switch, Sensor, Transformers, Kits & Igniter)"
+  },
+  {
+   "request_id": "20260409020",
+   "start_date": "2026-04-15T00:00:00.000",
+   "due_date": "2026-06-25T14:00:00.000",
+   "pin": "4820205",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: OTxHU - Package 2 - Curtainwall Project (GC Work, (Arch, Hazmat, HVAC & Structural)"
+  },
+  {
+   "request_id": "20260406010",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0056",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Processed Fresh & Frozen Foods"
+  },
+  {
+   "request_id": "20260406011",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0055",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Dairy Products"
+  },
+  {
+   "request_id": "20260406012",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0054",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Condiments"
+  },
+  {
+   "request_id": "20260406013",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0053",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Cereals"
+  },
+  {
+   "request_id": "20260406014",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0052",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Beverages"
+  },
+  {
+   "request_id": "20260406015",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0051",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Baby Foods"
+  },
+  {
+   "request_id": "20260406016",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0050",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Cancellation: ACS - Sauces, Seasonings, Spices"
+  },
+  {
+   "request_id": "20260406017",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0049",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Snacks"
+  },
+  {
+   "request_id": "20260406018",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0048",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: ACS - Shelf Stable Foods"
+  },
+  {
+   "request_id": "20260406019",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T11:00:00.000",
+   "pin": "85726B0047",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Meats, Poultry, & Fish"
+  },
+  {
+   "request_id": "20260406020",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0046",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Baking Products and Baked Goods"
+  },
+  {
+   "request_id": "20260406021",
+   "start_date": "2026-04-13T00:00:00.000",
+   "due_date": "2026-05-22T12:00:00.000",
+   "pin": "85726B0045",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: ACS - Fresh Fruits and Vegetables"
+  },
+  {
+   "request_id": "20260330017",
+   "start_date": "2026-04-10T00:00:00.000",
+   "due_date": "2026-05-01T12:00:00.000",
+   "pin": "521116,1",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMD_MATERIALS AIR CONDITIONERS"
+  },
+  {
+   "request_id": "20260330018",
+   "start_date": "2026-04-10T00:00:00.000",
+   "due_date": "2026-05-01T12:00:00.000",
+   "pin": "521128",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMD_MATERIALS PLUMBING SUPPLIES"
+  },
+  {
+   "request_id": "20260403013",
+   "start_date": "2026-04-10T00:00:00.000",
+   "due_date": "2026-05-08T15:00:00.000",
+   "pin": "MHP-1020",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: Risk Adjustment Services"
+  },
+  {
+   "request_id": "20260402019",
+   "start_date": "2026-04-09T00:00:00.000",
+   "due_date": "2026-07-07T17:00:00.000",
+   "pin": "2866",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: CHS Telepsychiatry Services"
+  },
+  {
+   "request_id": "20260330002",
+   "start_date": "2026-04-08T00:00:00.000",
+   "due_date": "2026-05-05T12:00:00.000",
+   "pin": "521123",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_MATERIALS_PADLOCKS"
+  },
+  {
+   "request_id": "20260330003",
+   "start_date": "2026-04-08T00:00:00.000",
+   "due_date": "2026-04-28T12:00:00.000",
+   "pin": "521124",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_MATERIALS_METALS, IRON AND STEEL"
+  },
+  {
+   "request_id": "20260401046",
+   "start_date": "2026-04-08T00:00:00.000",
+   "due_date": "2026-07-22T11:00:00.000",
+   "pin": "NCB-Ph2-24202204",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: NCB OTXHU Phase 2 Decanting"
+  },
+  {
+   "request_id": "20260330026",
+   "start_date": "2026-04-07T00:00:00.000",
+   "due_date": "2026-05-05T12:00:00.000",
+   "pin": "521125",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD _ Material _ Plumbing Boiler Parts (Areco Material)"
+  },
+  {
+   "request_id": "20260313031",
+   "start_date": "2026-04-01T00:00:00.000",
+   "due_date": "2026-05-27T10:00:00.000",
+   "pin": "82626B0001",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82626B0001-BEDC-RESAMSAF-SL Construction for In-City Dam Rehab Silver Lake Reservoir"
+  },
+  {
+   "request_id": "20260325037",
+   "start_date": "2026-04-01T00:00:00.000",
+   "due_date": "2027-01-14T16:00:00.000",
+   "pin": "B5868040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirements Contract for Asbestos Bulk and Air Sampling, Analysis and Project Monitoring"
+  },
+  {
+   "request_id": "20260325039",
+   "start_date": "2026-03-31T00:00:00.000",
+   "due_date": "2026-07-09T10:00:00.000",
+   "pin": "85626B0008",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: 85626B0008-CSB HVAC/Chiller Repair Services REBID"
+  },
+  {
+   "request_id": "20260319029",
+   "start_date": "2026-03-26T00:00:00.000",
+   "due_date": "2026-05-07T13:30:00.000",
+   "pin": "85725B0034",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Cancellation: INTEGRATED PEST MANAGEMENT AND RELATED SERVICES, CITYWIDE"
+  },
+  {
+   "request_id": "20260319032",
+   "start_date": "2026-03-26T00:00:00.000",
+   "due_date": "2026-12-10T16:00:00.000",
+   "pin": "B5721040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirement Contract for Electrical Installations and Repair"
+  },
+  {
+   "request_id": "20260313022",
+   "start_date": "2026-03-20T00:00:00.000",
+   "due_date": "2026-04-08T09:00:00.000",
+   "pin": "2600056/2600055",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: PRE-SOLICITATION CONFERENCE \u001a Bid 2600056 FORKLIFTS, DIESEL \u001a DOT and Bid 2600055 FORKLIFTS, ELECTRIC - DOT"
+  },
+  {
+   "request_id": "20260313028",
+   "start_date": "2026-03-20T00:00:00.000",
+   "due_date": "2026-05-07T10:00:00.000",
+   "pin": "517955,3",
+   "agency_name": "Housing Authority",
+   "short_title": "Correction: IDIQ Contract for Gas Piping Inspections at Various NYCHA Developments, Citywide"
+  },
+  {
+   "request_id": "20260312023",
+   "start_date": "2026-03-19T00:00:00.000",
+   "due_date": "2026-12-17T16:00:00.000",
+   "pin": "B5948040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Job Order Contract for Cafeteria Experience Enhancement"
+  },
+  {
+   "request_id": "20260312030",
+   "start_date": "2026-03-19T00:00:00.000",
+   "due_date": "2026-05-21T16:00:00.000",
+   "pin": "R1883040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Library Automation"
+  },
+  {
+   "request_id": "20260311021",
+   "start_date": "2026-03-18T00:00:00.000",
+   "due_date": "2026-05-06T13:00:00.000",
+   "pin": "ES#056-06-2026",
+   "agency_name": "Police Department",
+   "short_title": "Bid Extension: NYPD Emblems (Embroidered)"
+  },
+  {
+   "request_id": "20260309035",
+   "start_date": "2026-03-16T00:00:00.000",
+   "due_date": "2026-04-15T11:00:00.000",
+   "pin": "84125B0010",
+   "agency_name": "Transportation",
+   "short_title": "Correction: COMPONENT REHABILITATION OF 8 BRIDGES IN THE BOROUGH OF BRONX"
+  },
+  {
+   "request_id": "20260309036",
+   "start_date": "2026-03-16T00:00:00.000",
+   "due_date": "2026-04-15T11:00:00.000",
+   "pin": "84126B0008",
+   "agency_name": "Transportation",
+   "short_title": "Correction: Marine When and Where Structural Repairs and Other Miscellaneous Work in Five Boroughs"
+  },
+  {
+   "request_id": "20260311022",
+   "start_date": "2026-03-16T00:00:00.000",
+   "due_date": "2026-03-31T11:00:00.000",
+   "pin": "84126B0023",
+   "agency_name": "Transportation",
+   "short_title": "Correction: Maintenance of Street Lights throughout the City of New York"
+  },
+  {
+   "request_id": "20260310023",
+   "start_date": "2026-03-13T00:00:00.000",
+   "due_date": "2026-05-07T13:30:00.000",
+   "pin": "25202106",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: RE-BID, Pharmacy 797-800 (GC Work & Misc. MEP Trades)"
+  },
+  {
+   "request_id": "20260304048",
+   "start_date": "2026-03-11T00:00:00.000",
+   "due_date": "2026-04-30T13:00:00.000",
+   "pin": "VAN-26202302",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: 26202302: Gotham/Vanderbilt Dental Suite"
+  },
+  {
+   "request_id": "20260303042",
+   "start_date": "2026-03-10T00:00:00.000",
+   "due_date": "2026-05-06T09:00:00.000",
+   "pin": "85726B0039",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: 85726B0039-Bid 2600050 - ELECTRIC VEHICLE SUPPLY EQUIPMENT - BRAND SPECIFIC"
+  },
+  {
+   "request_id": "20260303043",
+   "start_date": "2026-03-10T00:00:00.000",
+   "due_date": "2026-04-07T14:00:00.000",
+   "pin": "85726B0035",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: 85726B0035-Auto Body and Chassis Repair Services Citywide (RE-AD #2)"
+  },
+  {
+   "request_id": "20260302027",
+   "start_date": "2026-03-09T00:00:00.000",
+   "due_date": "2026-06-17T15:00:00.000",
+   "pin": "80125P0049",
+   "agency_name": "Small Business Services",
+   "short_title": "Bid Extension: 80125P0049-Business Solution & Industrial Business Zone Center RFP"
+  },
+  {
+   "request_id": "20260225025",
+   "start_date": "2026-03-06T00:00:00.000",
+   "due_date": "2026-03-27T12:00:00.000",
+   "pin": "518126",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD MATERIALS ELEVATOR PARTS (Wire Rope)"
+  },
+  {
+   "request_id": "20260227028",
+   "start_date": "2026-03-06T00:00:00.000",
+   "due_date": "2026-04-20T11:30:00.000",
+   "pin": "07226B0002",
+   "agency_name": "Correction",
+   "short_title": "Bid Extension: New Elevator Maintenance and Repair Service"
+  },
+  {
+   "request_id": "20260226026",
+   "start_date": "2026-03-05T00:00:00.000",
+   "due_date": "2026-09-24T16:00:00.000",
+   "pin": "B5700040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Job Order Contract for Electric Work"
+  },
+  {
+   "request_id": "20260227013",
+   "start_date": "2026-03-05T00:00:00.000",
+   "due_date": "2026-06-04T11:00:00.000",
+   "pin": "85626B0007",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: 85626B0007-CSB 125-01 Queens Blvd Annex Elevator Modernization REBID"
+  },
+  {
+   "request_id": "20260303032",
+   "start_date": "2026-03-05T00:00:00.000",
+   "due_date": "2026-04-02T13:30:00.000",
+   "pin": "85726B0031",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: 85726B0031-COOLING TOWER MAINTENANCE/ REMEDIATION SUPPLIES & SERVICES, CITYWIDE (RE-AD)"
+  },
+  {
+   "request_id": "20260225006",
+   "start_date": "2026-03-03T00:00:00.000",
+   "due_date": "2026-09-09T16:00:00.000",
+   "pin": "B5883040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirement Contract for Water Treatment of Cooling Towers"
+  },
+  {
+   "request_id": "20260224011",
+   "start_date": "2026-02-27T00:00:00.000",
+   "due_date": "2026-04-01T13:30:00.000",
+   "pin": "34202304",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: RE-BID Pharmacy ED Admin Decanting, 1st Floor"
+  },
+  {
+   "request_id": "20260223014",
+   "start_date": "2026-02-26T00:00:00.000",
+   "due_date": "2026-05-04T11:00:00.000",
+   "pin": "PIN #BMCC 266641",
+   "agency_name": "City University",
+   "short_title": "Bid Extension: Medical Equipment for Allied Health Lab"
+  },
+  {
+   "request_id": "20260218028",
+   "start_date": "2026-02-25T00:00:00.000",
+   "due_date": "2026-03-27T17:00:00.000",
+   "pin": "26REQ0270",
+   "agency_name": "New York City Police Pension Fund",
+   "short_title": "Correction: Financial Management System"
+  },
+  {
+   "request_id": "20260219032",
+   "start_date": "2026-02-25T00:00:00.000",
+   "due_date": "2026-03-31T17:00:00.000",
+   "pin": "000346",
+   "agency_name": "Brooklyn Navy Yard Development Corp.",
+   "short_title": "Correction: Building 50 Renovation"
+  },
+  {
+   "request_id": "20260220035",
+   "start_date": "2026-02-25T00:00:00.000",
+   "due_date": "2026-08-27T14:00:00.000",
+   "pin": "85625B0010",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: 85625B0010-CSB 2 Lafayette St. Elevator Modernization"
+  },
+  {
+   "request_id": "20260220036",
+   "start_date": "2026-02-25T00:00:00.000",
+   "due_date": "2026-03-24T10:00:00.000",
+   "pin": "82626B0016",
+   "agency_name": "Environmental Protection",
+   "short_title": "Correction: 82626B0016-BWSO_CBB-26 Service and Repair of Catch Basin Buckets"
+  },
+  {
+   "request_id": "20260205013",
+   "start_date": "2026-02-19T00:00:00.000",
+   "due_date": "2026-03-25T13:00:00.000",
+   "pin": "ES#056-03-2026- Turt",
+   "agency_name": "Police Department",
+   "short_title": "Correction: ES#056-03-2026-Turtleneck Jersey"
+  },
+  {
+   "request_id": "20260211020",
+   "start_date": "2026-02-19T00:00:00.000",
+   "due_date": "2026-08-20T16:00:00.000",
+   "pin": "B5821040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: REQUIREMENTS CONTRACT FOR PAINTING, PLASTERING AND RELATED WORK"
+  },
+  {
+   "request_id": "20260205026",
+   "start_date": "2026-02-17T00:00:00.000",
+   "due_date": "2026-04-15T10:30:00.000",
+   "pin": "ELM-33202104",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: 33202104; Elevator Modernization at Elmhurst Hospital Cars 6, 7, 10, Annex O & G"
+  },
+  {
+   "request_id": "20260203020",
+   "start_date": "2026-02-13T00:00:00.000",
+   "due_date": "2026-03-13T12:00:00.000",
+   "pin": "518072",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_MATERIALS_ COMPACTOR BAGS AT VARIOUS DEVELOPMENTS LOCATED IN ALL FIVE (5) BOROUGHS OF NEW YORK CITY"
+  },
+  {
+   "request_id": "20260206017",
+   "start_date": "2026-02-13T00:00:00.000",
+   "due_date": "2026-09-17T16:00:00.000",
+   "pin": "B5923040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: REQUIREMENTS CONTRACT FOR REMOVAL AND TRANSFER OF CAFETERIA AND KITCHEN EQUIPMENT"
+  },
+  {
+   "request_id": "20260126021",
+   "start_date": "2026-02-11T00:00:00.000",
+   "due_date": "2026-04-10T17:00:00.000",
+   "pin": "2845",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: Information Technology (IT) Supplemental Staffing Services"
+  },
+  {
+   "request_id": "20260203017",
+   "start_date": "2026-02-11T00:00:00.000",
+   "due_date": "2026-03-16T10:30:00.000",
+   "pin": "85726B0020",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: 85726B0020-Bid2600022_Sheeting, Retroreflective Vinyl for Traffic Signs - Brand Specific"
+  },
+  {
+   "request_id": "20260202026",
+   "start_date": "2026-02-10T00:00:00.000",
+   "due_date": "2026-03-27T10:00:00.000",
+   "pin": "82625B0039",
+   "agency_name": "Environmental Protection",
+   "short_title": "Correction: 82625B0039-BEDC - PS-316 Reconstruction of Avenue U Pumping Station"
+  },
+  {
+   "request_id": "20260203008",
+   "start_date": "2026-02-10T00:00:00.000",
+   "due_date": "2026-10-15T16:00:00.000",
+   "pin": "B5697040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirements Contract for Repair and Replacement of Playground Safety Mats and Sport Surfacing"
+  },
+  {
+   "request_id": "20260204014",
+   "start_date": "2026-02-10T00:00:00.000",
+   "due_date": "2026-03-02T17:00:00.000",
+   "pin": "MF20261",
+   "agency_name": "Mayor's Fund to Advance New York City",
+   "short_title": "Correction: High Acuity DHS/DSS Technical Assistance"
+  },
+  {
+   "request_id": "20260130016",
+   "start_date": "2026-02-06T00:00:00.000",
+   "due_date": "2026-12-03T16:00:00.000",
+   "pin": "B5710040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirements Contract for Central Station Monitoring of Fire Alarm Systems"
+  },
+  {
+   "request_id": "20260129026",
+   "start_date": "2026-02-05T00:00:00.000",
+   "due_date": "2026-03-05T14:00:00.000",
+   "pin": "2026SVD16001",
+   "agency_name": "District Attorney - New York County",
+   "short_title": "Correction: Washington Heights/Inwood Intimate Partner Violence Survivor Services"
+  },
+  {
+   "request_id": "20260130001",
+   "start_date": "2026-02-05T00:00:00.000",
+   "due_date": "2026-03-31T10:00:00.000",
+   "pin": "Met 37202003",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: Metropolitan EES Upgrade"
+  },
+  {
+   "request_id": "20260127012",
+   "start_date": "2026-02-04T00:00:00.000",
+   "due_date": "2026-03-03T12:00:00.000",
+   "pin": "518026",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_Materials _ Boiler Chemical, Additive, Treatment, All-In-One"
+  },
+  {
+   "request_id": "20260128022",
+   "start_date": "2026-02-04T00:00:00.000",
+   "due_date": "2026-04-14T10:30:00.000",
+   "pin": "85726B0029",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: 85726B0029-2600002 ROLLERS, ASPHALT - DOT"
+  },
+  {
+   "request_id": "20260127001",
+   "start_date": "2026-02-02T00:00:00.000",
+   "due_date": "2026-03-03T14:00:00.000",
+   "pin": "20202301",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: FACADE RESTORATION AT GOTHAM BELVIS"
+  },
+  {
+   "request_id": "20260115031",
+   "start_date": "2026-01-28T00:00:00.000",
+   "due_date": "2026-02-19T12:00:00.000",
+   "pin": "518056",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_Materials_Electronic Keyless Access"
+  },
+  {
+   "request_id": "20260120024",
+   "start_date": "2026-01-27T00:00:00.000",
+   "due_date": "2026-03-03T16:59:00.000",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: Strategic Vehicle Parts Partner - Request for Expression of Interest"
+  },
+  {
+   "request_id": "20260120031",
+   "start_date": "2026-01-27T00:00:00.000",
+   "due_date": "2026-03-17T10:30:00.000",
+   "pin": "85726B0028",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: 85726B0028-2600001 TRUCK, 16 CUBIC YARD ELECTRIC COMPACTING"
+  },
+  {
+   "request_id": "20260115022",
+   "start_date": "2026-01-26T00:00:00.000",
+   "due_date": "2039-09-09T16:00:00.000",
+   "pin": "B5869040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirement Contract for Repair and Maintenance of Cooling Towers"
+  },
+  {
+   "request_id": "20260114027",
+   "start_date": "2026-01-23T00:00:00.000",
+   "due_date": "2026-02-24T12:00:00.000",
+   "pin": "518021",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_MATERIALS_ TEXTILE BOOTS"
+  },
+  {
+   "request_id": "20260114028",
+   "start_date": "2026-01-23T00:00:00.000",
+   "due_date": "2026-02-24T12:00:00.000",
+   "pin": "518022",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_MATERIALS_ TEXTILE WORK GLOVES"
+  },
+  {
+   "request_id": "20260114029",
+   "start_date": "2026-01-23T00:00:00.000",
+   "due_date": "2026-02-13T12:00:00.000",
+   "pin": "518023",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_MATERIAL_TEXTILE RECLOSABLE BAGS"
+  },
+  {
+   "request_id": "20260114026",
+   "start_date": "2026-01-22T00:00:00.000",
+   "due_date": "2026-02-27T12:00:00.000",
+   "pin": "518025",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_Materials_Door Locking, Electromagnetic Devices and Accessories"
+  },
+  {
+   "request_id": "20260112022",
+   "start_date": "2026-01-21T00:00:00.000",
+   "due_date": "2026-03-20T17:00:00.000",
+   "pin": "2864",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: Infrastructure Adoption Mode (INFRAM) Assessment Services"
+  },
+  {
+   "request_id": "20260112031",
+   "start_date": "2026-01-20T00:00:00.000",
+   "due_date": "2026-02-18T11:00:00.000",
+   "pin": "07226B0004",
+   "agency_name": "Correction",
+   "short_title": "Correction: ON-CALL REFRIGERATION FOR DEPARTMENT OF CORRECTION FACILITIES, ALL BOROUGHS"
+  },
+  {
+   "request_id": "20260113003",
+   "start_date": "2026-01-20T00:00:00.000",
+   "due_date": "2026-02-17T11:00:00.000",
+   "pin": "IFB # BMCC256631",
+   "agency_name": "City University",
+   "short_title": "Correction: Exterminating and Pest Control Services, Collegewide"
+  },
+  {
+   "request_id": "20260109016",
+   "start_date": "2026-01-16T00:00:00.000",
+   "due_date": "2026-02-24T10:00:00.000",
+   "pin": "82625B0046",
+   "agency_name": "Environmental Protection",
+   "short_title": "Correction: 82625B0046-BEC: BEC-ATL: To provide Emergency Analytical Services to the Bureau of Environmental Compliance Laboratory for Three Years"
+  },
+  {
+   "request_id": "20260105022",
+   "start_date": "2026-01-15T00:00:00.000",
+   "due_date": "2026-03-24T10:00:00.000",
+   "pin": "82625B0057",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82625B0057-BEDC-OB-135 Headworks Improvements, Oakwood Beach WWTP"
+  },
+  {
+   "request_id": "20260105020",
+   "start_date": "2026-01-14T00:00:00.000",
+   "due_date": "2026-02-25T10:30:00.000",
+   "pin": "85726B0027",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: 85726B0027-2600023 Heat Pump Water Heaters"
+  },
+  {
+   "request_id": "20260107016",
+   "start_date": "2026-01-14T00:00:00.000",
+   "due_date": "2026-03-30T16:00:00.000",
+   "pin": "B5983040",
+   "agency_name": "Education",
+   "short_title": "Correction: Nursing Educational Supplies"
+  },
+  {
+   "request_id": "20260105018",
+   "start_date": "2026-01-13T00:00:00.000",
+   "due_date": "2039-09-09T16:00:00.000",
+   "pin": "B5929040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Request for Bids for Transportation of Goods and Equipment"
+  },
+  {
+   "request_id": "20260105023",
+   "start_date": "2026-01-12T00:00:00.000",
+   "due_date": "2026-03-17T10:00:00.000",
+   "pin": "82626B0028",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82626B0028-BEDC-RESAMSAF-CP In-City Dam Rehabilitation at Central Park Reservoir"
+  },
+  {
+   "request_id": "20251226001",
+   "start_date": "2026-01-09T00:00:00.000",
+   "due_date": "2026-04-28T13:00:00.000",
+   "pin": "R1662040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Labor Support Unit Consultants"
+  },
+  {
+   "request_id": "20251226002",
+   "start_date": "2026-01-09T00:00:00.000",
+   "due_date": "2026-04-29T13:00:00.000",
+   "pin": "R1680040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: LABOR CONTRACT GRIEVANCE REPRESENTATIVES AND SALARY AND RATING APPEALS REPRESENTATIVES"
+  },
+  {
+   "request_id": "20251231006",
+   "start_date": "2026-01-08T00:00:00.000",
+   "due_date": "2026-03-26T10:00:00.000",
+   "pin": "517978,7",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: Indefinite Delivery Indefinite Quantity (IDIQ) Contract for Pump Repair and Replacement Citywide with Borough of Manhattan Focus"
+  },
+  {
+   "request_id": "20251224033",
+   "start_date": "2026-01-07T00:00:00.000",
+   "due_date": "2026-03-13T10:00:00.000",
+   "pin": "82626B0017",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82626B0017-BEDC-KENS-EAST-SS Kensico-Eastview Connection Shoreline Stabilization"
+  },
+  {
+   "request_id": "20251231015",
+   "start_date": "2026-01-07T00:00:00.000",
+   "due_date": "2026-03-19T10:00:00.000",
+   "pin": "82626B0029",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82626B0029-BEDC-OH-88: Owls Head WWTP Final Settling System Rehabilitation"
+  },
+  {
+   "request_id": "20251226006",
+   "start_date": "2026-01-06T00:00:00.000",
+   "due_date": "2026-03-13T10:00:00.000",
+   "pin": "82625B0048",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82625B0048-BEDC-WI-298 Conversion of Sharon Wards Island WRRF"
+  },
+  {
+   "request_id": "20251224017",
+   "start_date": "2026-01-05T00:00:00.000",
+   "due_date": "2026-02-24T10:00:00.000",
+   "pin": "85726B0026",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Bid Extension: 85726B0026-BID 2500050 TRUCK TRACTOR AND VARIOUS TRAILERS - DSNY"
+  },
+  {
+   "request_id": "20251222020",
+   "start_date": "2026-01-02T00:00:00.000",
+   "due_date": "2026-02-11T10:30:00.000",
+   "pin": "85726B0018",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: 85726B0018-2600019_FN 509 ACRO LE Firearm"
+  },
+  {
+   "request_id": "20251224025",
+   "start_date": "2026-01-02T00:00:00.000",
+   "due_date": "2026-03-04T16:00:00.000",
+   "pin": "B5921040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: PSAL Track and Field Running Time and Services"
+  },
+  {
+   "request_id": "20251222004",
+   "start_date": "2025-12-30T00:00:00.000",
+   "due_date": "2026-01-30T17:00:00.000",
+   "agency_name": "District Attorney - Bronx County",
+   "short_title": "Correction: ADDENDUM: Bronx Restore at St. Mary\u001as and Bronx Restore at Fordham"
+  },
+  {
+   "request_id": "20251219003",
+   "start_date": "2025-12-29T00:00:00.000",
+   "due_date": "2026-02-06T14:00:00.000",
+   "agency_name": "Housing Authority",
+   "short_title": "Correction: IDIQ Contract Lead Based Paint Clearance Services, Citywide"
+  },
+  {
+   "request_id": "20251219015",
+   "start_date": "2025-12-29T00:00:00.000",
+   "due_date": "2026-03-04T10:00:00.000",
+   "pin": "82626B0025",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82626B0025-BEDC-CSO-GC-SFS-RH3-CP3: Construction of the CSO facility superstructure, reconstruction/abandonment of impacted conveyance, and construction of public amenities above the below ground portions of the tank."
+  },
+  {
+   "request_id": "20251219021",
+   "start_date": "2025-12-26T00:00:00.000",
+   "due_date": "2026-01-21T16:00:00.000",
+   "agency_name": "Environmental Protection",
+   "short_title": "Correction: Request for Expressions of Interest for DEP Residuals"
+  },
+  {
+   "request_id": "20251210020",
+   "start_date": "2025-12-22T00:00:00.000",
+   "due_date": "2026-06-16T13:00:00.000",
+   "pin": "R1231040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Requirements / Full Value Contracts for Learning to Work Program"
+  },
+  {
+   "request_id": "20251212006",
+   "start_date": "2025-12-19T00:00:00.000",
+   "due_date": "2026-01-30T15:00:00.000",
+   "pin": "80126D0002",
+   "agency_name": "Small Business Services",
+   "short_title": "Correction: Challenged Based Procurement - Venture Forward: New Opportunities & Services for NYC Street Vendors"
+  },
+  {
+   "request_id": "20251210022",
+   "start_date": "2025-12-17T00:00:00.000",
+   "due_date": "2026-02-11T13:00:00.000",
+   "pin": "ES#056-01-2026",
+   "agency_name": "Police Department",
+   "short_title": "Bid Extension: Mock Turtlenecks"
+  },
+  {
+   "request_id": "20251208028",
+   "start_date": "2025-12-15T00:00:00.000",
+   "due_date": "2026-02-06T14:59:00.000",
+   "pin": "2026GunViolenceRFP00",
+   "agency_name": "District Attorney - New York County",
+   "short_title": "Correction: Gun Violence Prevention Initiative RFP Summer 2026"
+  },
+  {
+   "request_id": "20251205040",
+   "start_date": "2025-12-12T00:00:00.000",
+   "due_date": "2026-02-05T13:00:00.000",
+   "pin": "R1136040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Nursing Services"
+  },
+  {
+   "request_id": "20251202021",
+   "start_date": "2025-12-09T00:00:00.000",
+   "due_date": "2026-01-09T13:00:00.000",
+   "pin": "Correction: 05726Y05",
+   "agency_name": "Fire Department",
+   "short_title": "Correction: Particulate Blocking Hoods (R2)"
+  },
+  {
+   "request_id": "20251029030",
+   "start_date": "2025-12-01T00:00:00.000",
+   "due_date": "2026-02-18T14:00:00.000",
+   "pin": "177-22-0322",
+   "agency_name": "Police Department",
+   "short_title": "Bid Extension: Addendum #2 - BID EXTENSION and Q & As: Request for Proposals (RFP): Concession for Operation and Maintenance of Cafeteria at the NYPD's Police Academy in College Point, Queens"
+  },
+  {
+   "request_id": "20251119002",
+   "start_date": "2025-12-01T00:00:00.000",
+   "due_date": "2026-01-06T09:00:00.000",
+   "pin": "004202600005",
+   "agency_name": "Campaign Finance Board",
+   "short_title": "Correction: Recruitment/ Talent Acquisition"
+  },
+  {
+   "request_id": "20251124001",
+   "start_date": "2025-12-01T00:00:00.000",
+   "due_date": "2026-01-23T17:00:00.000",
+   "pin": "AAAA",
+   "agency_name": "Transportation",
+   "short_title": "Bid Extension: Request for Proposals to Manage and Operate a Food & Beverage Subconcession at Albee Square Plaza"
+  },
+  {
+   "request_id": "20251119027",
+   "start_date": "2025-11-26T00:00:00.000",
+   "due_date": "2026-01-20T10:00:00.000",
+   "pin": "82626B0006",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82626B0006-BWS-SWP-120 Management of Hydrilla and Water Chestnut in East Hudson Reservoirs"
+  },
+  {
+   "request_id": "20251107024",
+   "start_date": "2025-11-21T00:00:00.000",
+   "due_date": "2026-01-13T11:00:00.000",
+   "pin": "85726B0009",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: Bid 2600009 - Lab Supplies, Consumables, Reagents, Equipment (OCME)"
+  },
+  {
+   "request_id": "20251119037",
+   "start_date": "2025-11-21T00:00:00.000",
+   "due_date": "2025-12-22T15:00:00.000",
+   "pin": "334 Exhibit Design R",
+   "agency_name": "Brooklyn Bridge Park",
+   "short_title": "Correction: Brooklyn Bridge Park - 334 Furman Street Exhibition Design Services"
+  },
+  {
+   "request_id": "20251112030",
+   "start_date": "2025-11-20T00:00:00.000",
+   "due_date": "2026-01-21T17:00:00.000",
+   "pin": "2837",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: Print and Mail Patient Statements"
+  },
+  {
+   "request_id": "20251113018",
+   "start_date": "2025-11-20T00:00:00.000",
+   "due_date": "2026-01-05T10:30:00.000",
+   "pin": "85726B0012",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: 85726B0012-2500095 - Paper, Multipurpose"
+  },
+  {
+   "request_id": "20251112004",
+   "start_date": "2025-11-18T00:00:00.000",
+   "due_date": "2026-01-23T17:00:00.000",
+   "pin": "2843",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: Self Pay Bad Debt and Estate Collections"
+  },
+  {
+   "request_id": "20251106025",
+   "start_date": "2025-11-17T00:00:00.000",
+   "due_date": "2026-01-15T14:00:00.000",
+   "pin": "515557",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: RFP 515557 CONSTRUCTION MONITORING SERVICES FOR REAL ESTATE DEVELOPMENT"
+  },
+  {
+   "request_id": "20251110003",
+   "start_date": "2025-11-17T00:00:00.000",
+   "due_date": "2025-12-19T14:00:00.000",
+   "pin": "I0005040",
+   "agency_name": "Education",
+   "short_title": "Bid Extension: Enterprise VoIP Solution for the New York City Department of Education"
+  },
+  {
+   "request_id": "20251110006",
+   "start_date": "2025-11-17T00:00:00.000",
+   "due_date": "2026-04-09T14:00:00.000",
+   "pin": "517898",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: 2nd  RFP_517898-SINGLE AUDIT OF THE NEW YORK CITY HOUSING AUTHORITY-ADDENDUM 4"
+  },
+  {
+   "request_id": "20251112017",
+   "start_date": "2025-11-17T00:00:00.000",
+   "due_date": "2026-01-28T10:30:00.000",
+   "pin": "BEL-11202205",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: 11202205: Bellevue Fire Pump and Standpipe"
+  },
+  {
+   "request_id": "20251107040",
+   "start_date": "2025-11-14T00:00:00.000",
+   "due_date": "2025-12-18T10:00:00.000",
+   "agency_name": "Housing Authority",
+   "short_title": "Correction: IDIQ Maintenance Contract for Heating Building Management Systems (BMS) and Controls Systems \u001a Citywide"
+  },
+  {
+   "request_id": "20251110022",
+   "start_date": "2025-11-14T00:00:00.000",
+   "due_date": "2026-04-02T13:30:00.000",
+   "pin": "26202103",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: DENTAL SUITE 5TH FL, GC WORK (MISC: MEP TRADES, SOUTH BROOKLYN HEALTH"
+  },
+  {
+   "request_id": "20251105018",
+   "start_date": "2025-11-13T00:00:00.000",
+   "due_date": "2025-12-16T13:00:00.000",
+   "pin": "85726B0007",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: Bid 2600007 - Water Cooler Rentals & 5-Gallon Bottled Drinking Water"
+  },
+  {
+   "request_id": "20251031010",
+   "start_date": "2025-11-10T00:00:00.000",
+   "due_date": "2025-12-16T12:00:00.000",
+   "pin": "517878",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_MATERIALS HARDWARE (Mortise Locks, Parts & Accessories)"
+  },
+  {
+   "request_id": "20251029035",
+   "start_date": "2025-11-06T00:00:00.000",
+   "due_date": "2026-01-22T10:30:00.000",
+   "pin": "ELM-33202302",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: Elmhurst Hospital J1 Infectious Disease Clinic Renovation"
+  },
+  {
+   "request_id": "20251030001",
+   "start_date": "2025-11-06T00:00:00.000",
+   "due_date": "2026-01-16T14:00:00.000",
+   "pin": "503366",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: Architectural & Engineering Professional Services for IDIQ Projects"
+  },
+  {
+   "request_id": "20251028033",
+   "start_date": "2025-11-05T00:00:00.000",
+   "due_date": "2026-01-23T17:00:00.000",
+   "pin": "26REQ0212",
+   "agency_name": "New York City Police Pension Fund",
+   "short_title": "Bid Extension: Video Surveillance System Replacement"
+  },
+  {
+   "request_id": "20251020017",
+   "start_date": "2025-10-30T00:00:00.000",
+   "due_date": "2025-12-05T12:00:00.000",
+   "pin": "517855",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMD_MATERIAL-PADLOCKS"
+  },
+  {
+   "request_id": "20251021001",
+   "start_date": "2025-10-30T00:00:00.000",
+   "due_date": "2025-12-01T10:00:00.000",
+   "pin": "515745",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: Indefinite Delivery Indefinite Quantity (IDIQ) Contract for Response to Elevator Dual Brake Plunger Replacement and Installation at Various NYCHA developments and Buildings, Citywide"
+  },
+  {
+   "request_id": "20251020018",
+   "start_date": "2025-10-29T00:00:00.000",
+   "due_date": "2025-12-08T14:00:00.000",
+   "pin": "514588",
+   "agency_name": "Housing Authority",
+   "short_title": "Correction: SMD_PS_RFP 514588_Stakeholder Engagement Services"
+  },
+  {
+   "request_id": "20251021020",
+   "start_date": "2025-10-29T00:00:00.000",
+   "due_date": "2026-01-02T14:00:00.000",
+   "pin": "514558",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: RFP 514558 ARCHITECTURAL SERVICES FOR REAL ESTATE DEVELOPMENT"
+  },
+  {
+   "request_id": "20251021022",
+   "start_date": "2025-10-29T00:00:00.000",
+   "due_date": "2025-12-05T12:00:00.000",
+   "pin": "515869",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_Materials_Plumbing Valves (Angle, Check, & Gate) in Developments located in all five (5) boroughs of New York City"
+  },
+  {
+   "request_id": "20251021023",
+   "start_date": "2025-10-29T00:00:00.000",
+   "due_date": "2025-11-26T12:00:00.000",
+   "pin": "515868",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMPD_Materials_Plumbing Tee (Reducing, Pipe & Solder Joint) in developments located in all five (5) boroughs of New York City"
+  },
+  {
+   "request_id": "20251021027",
+   "start_date": "2025-10-28T00:00:00.000",
+   "due_date": "2025-12-19T15:00:00.000",
+   "pin": "MHP-1118",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Bid Extension: RFP for Strategic Marketing Services"
+  },
+  {
+   "request_id": "20251017022",
+   "start_date": "2025-10-24T00:00:00.000",
+   "due_date": "2025-11-21T17:00:00.000",
+   "pin": "2844",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: Billing and Coding Auditing Services"
+  },
+  {
+   "request_id": "20251020001",
+   "start_date": "2025-10-24T00:00:00.000",
+   "due_date": "2025-12-03T13:00:00.000",
+   "pin": "ES# 056-25-2025",
+   "agency_name": "Police Department",
+   "short_title": "Correction: NYPD Long and Short Sleeve Shirts"
+  },
+  {
+   "request_id": "20251008020",
+   "start_date": "2025-10-16T00:00:00.000",
+   "due_date": "2025-11-13T12:00:00.000",
+   "pin": "516863",
+   "agency_name": "Housing Authority",
+   "short_title": "Bid Extension: SMD_MATERIALS WINDOW GUARDS"
+  },
+  {
+   "request_id": "20251009004",
+   "start_date": "2025-10-16T00:00:00.000",
+   "due_date": "2025-11-13T17:00:00.000",
+   "pin": "2846",
+   "agency_name": "NYC Health + Hospitals",
+   "short_title": "Correction: Manhattan Mental Health Court"
+  },
+  {
+   "request_id": "20251006019",
+   "start_date": "2025-10-14T00:00:00.000",
+   "due_date": "2025-12-09T13:00:00.000",
+   "pin": "85726B0008",
+   "agency_name": "Citywide Administrative Services",
+   "short_title": "Correction: Bid 2500093 - Bottled Drinking Water - DCAS CSH / NYCEM"
+  },
+  {
+   "request_id": "20251008017",
+   "start_date": "2025-10-14T00:00:00.000",
+   "due_date": "2025-11-19T10:00:00.000",
+   "pin": "82625B0010",
+   "agency_name": "Environmental Protection",
+   "short_title": "Bid Extension: 82625B0010-BEPA:GI-IB-24: Heavy Cleaning Services for Right-of-Way Infiltration Basins"
+  }
+ ]
+}

@@ -1,0 +1,260 @@
+{
+ "key": "$limit=26&$offset=0&$order=start_date DESC,:id&$where=upper(agency_name) like upper('%Mayor''s Office%')",
+ "status": 200,
+ "body": [
+  {
+   "request_id": "20261110002",
+   "start_date": "2026-11-17T00:00:00.000",
+   "end_date": "2026-11-17T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: Department of Transportation</p><p>Description of Services to be Provided: General/Biennial Bridge Inspections and inventory updates for seven (7) pedestrian bridges owned by the City of New York and located within the Boroughs of Queens and Brooklyn</p><p>Anticipated New Start Date:<strong> </strong>01/04/2027</p><p>Anticipated New End Date: 12/26/2027</p><p>Anticipated Procurement Method: Task Order</p><p>Job Titles: None</p><p>Headcounts: 0 </p>"
+  },
+  {
+   "request_id": "20261106024",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/OMB/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: OMB</p><p>Vendor: Marsh USA LLC</p><p>Description of Services to be Provided: Insurance Brokerage Services</p><p>Anticipated Procurement Method: Amendment</p><p>Anticipated Modifications of Scope: None</p><p>New Start Date: 04/01/2022 </p><p>New End Date: 03/31/2027</p><p>Reason for Amendment/Extension- Money Only- to add funding capacity</p><p>Job Titles: None </p><p>Headcount: 0</p><p> </p><p>Agency: OMB</p><p>Vendor: Marsh USA LLC</p><p>Description of Services to be Provided: Insurance Brokerage Services</p><p>Anticipated Procurement Method: Renewal</p><p>Anticipated Modifications of Scope: None</p><p>New Start Date: 04/01/2027 </p><p>New End Date: 03/31/2030</p><p>Reason for Amendment/Extension- Continuation of service</p><p>Job Titles: None </p><p>Headcount: 0</p>"
+  },
+  {
+   "request_id": "20261109005",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DPRC/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: DPR-C</p><p>Vendor: MKW & Associates</p><p>Description of Services to be Provided: Landscape Architecture D\u001aEmic Playground Reconstruction, BG-1123M, SWO #2B</p><p>Anticipated Procurement Method: Amendment-Task Order</p><p>Anticipated Start Date: 07/21/2023</p><p>Anticipated End Date: 05/21/2027</p><p>Anticipated Modifications to Scope: Increase in additional fees for allowances</p><p>Reason for Renewal/Amendment: Continuation of services</p><p>Job Titles: None</p><p>Headcount: 0</p><p> </p><p>Agency: DPR-C</p><p>Vendor: Henningson, Durham and Richardson Architecture and Engineering, PC</p><p>Description of Services to be Provided: Structural Engineering Design Services for the Reconstruction of Retaining Walls, CNYG-1320M, SWO #1RC</p><p>Anticipated Procurement Method: Amendment-Task Order</p><p>Anticipated Start Date: 04/30/2021</p><p>Anticipated End Date: 12/30/2025</p><p>Anticipated Modifications to Scope: Increase in additional Design Fee</p><p>Reason for Renewal/Amendment: Continuation of services</p><p>Job Titles: None</p><p>Headcount: 0</p>"
+  },
+  {
+   "request_id": "20261109004",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN </strong>that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: DOT</p><p>Vendor: Gartner Inc.</p><p>Description of Services to be Provided: Automated Enforcement Sourcing Optimization: Sourcing and Procurement Strategy Services for the Automated Traffic Enforcement Program and Related Traffic Operations Programs, Including Parking Operations, Technology Solutions, and Asset Management</p><p>Anticipated Procurement Method: Amendment</p><p>Anticipated New Start Date: 7/1/2023 (Original Task Order 2675-006A start date)</p><p>Anticipated New End Date: 04/30/2028</p><p>Anticipated Modifications to Scope: Additional sourcing support for parking operations, including current state assessment, target state strategy, solicitation and evaluation support, and transition planning</p><p>Reason for Renewal/Extension: Time extension and increase in contract value for continuation of services</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261106022",
+   "start_date": "2026-11-16T00:00:00.000",
+   "end_date": "2026-11-16T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DDC/NEW",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261104020",
+   "start_date": "2026-11-12T00:00:00.000",
+   "end_date": "2026-11-12T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule </u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: Department of Transportation</p><p>Vendor: Sherry Matthews Inc</p><p>Description of Services to be Provided: Safety Transportation Education and Media Campaigns</p><p>Anticipated Procurement Method: Amendment </p><p>Start Date: October 1, 2024</p><p>End Date: September 30, 2027</p><p>Anticipated Modifications to Scope: None</p><p>Reason for Amendment: Increase contract capacity by $5,000,000 to fund Vision Zero and other Advertising and Media campaigns</p><p>Job Titles: None</p><p>Headcounts: 0</p><p> </p><p>Agency: Department of Transportation</p><p>Vendor: Parsons Transportation Group of New York, Inc.</p><p>Description of Services to be Provided: Resident Engineering and Inspection (REI) Services for the Williamsburg Bridge Miscellaneous Rehabilitation, Boroughs of Manhattan and Brooklyn</p><p>Anticipated Procurement Method: Amendment</p><p>Anticipated New Start Date: September 20, 2022</p><p>Anticipated New End Date: April 15, 2027</p><p>Anticipated Modifications to Scope: None</p><p>Reason for Renewal/Extension: Extension is needed for continuation of services</p><p>Job Titles: None</p><p>Head count: 0</p>"
+  },
+  {
+   "request_id": "20261104021",
+   "start_date": "2026-11-12T00:00:00.000",
+   "end_date": "2026-11-12T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: Department of Transportation</p><p>Description of Services to be Provided: Total Design (TD) and Construction Support Services (CSS) for the Rehabilitation of Crooke Avenue over BMT Subway, Brighton; Total Design (TD) and Construction Support Services (CSS) for the Rehabilitation of Caton Avenue over BMT Subway, Brighton; Total Design (TD) and Construction Support Services (CSS) for the Rehabilitation of Church Avenue over BMT Subway, Brighton, Borough of Brooklyn - HBKA24304 - HBK243050- HBK243080</p><p>Anticipated New Start Date: 5/17/2028</p><p>Anticipated New End Date: 5/15/2036</p><p>Anticipated Procurement Method: Competitive Sealed Proposal</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261102027",
+   "start_date": "2026-11-10T00:00:00.000",
+   "end_date": "2026-11-10T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DDC/EXT",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261102006",
+   "start_date": "2026-11-09T00:00:00.000",
+   "end_date": "2026-11-09T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DDC/NEW",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261102005",
+   "start_date": "2026-11-09T00:00:00.000",
+   "end_date": "2026-11-09T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DEP/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: Department of Environmental Protection</p><p>Description of services to be provided: CSO-GC-SFS-CM-OH-CP3 for the Construction Management Services for the Superstructure of the Owls Head (OH-007) Combined Sewer Overflow Facility at the Gowanus Canal</p><p>Anticipated Contract Start Date: 12/1/2026</p><p>Anticipated Contract End Date: 10/3/2031</p><p>Anticipated Procurement Method: Competitive Sealed Proposal</p><p>Job titles: Project Manager; Civil Engineer</p><p>Headcounts: 564</p>"
+  },
+  {
+   "request_id": "20261030003",
+   "start_date": "2026-11-06T00:00:00.000",
+   "end_date": "2026-11-06T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN </strong>that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: Department of Transportation</p><p>Description of Services to be Provided: Total Design (TD) and Construction Support Services(CSS) for Fort Tryon Place over Entrance from Riverside Drive (BIN 2-24650-0) & Margaret Corbin Drive over Pedestrian Path near North Entrance (BIN 2-24505-0), Borough of Manhattan - HBM224650 & HBM224505</p><p>Anticipated New Start Date: 7/2/2028</p><p>Anticipated New End Date: 5/9/2036</p><p>Anticipated Procurement Method: Competitive Sealed Proposal</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261028023",
+   "start_date": "2026-11-05T00:00:00.000",
+   "end_date": "2026-11-05T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/NYPD/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: New York City Police Department<br>Vendor: Intergraph Corporation <br>Description of Services to be Provided: 911 Computer Aided Dispatch System<br>Anticipated Procurement Method:  Amendment<br>Anticipated New Start Date: 09/01/2025<br>Anticipated New End Date: 8/31/2030<br>Anticipated Modification to Scope: Software Upgrade<br>Reason for Renewal/ Amendment: Increase to contract value and statement of work addition.<br>Job Titles:  None<br>Headcount: 0 </p>"
+  },
+  {
+   "request_id": "20261028002",
+   "start_date": "2026-11-04T00:00:00.000",
+   "end_date": "2026-11-04T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DPR/NEW",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261026026",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DHS/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule  </u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p><br>Agency: NYC Department of Homeless Services (DHS)</p><p>Description of Services to Provided: On-Call Construction Management Services-Citywide- related to temporary/permanent certificate of occupancy and other construction assessment, drawings, scope of work for city-owned buildings</p><p>Anticipated New Start Date: 07/01/2027</p><p>Anticipated New End Date: 06/30/2029</p><p>Anticipated Procurement Method: Competitive Sealed Proposal</p><p>Job Titles: None</p><p>Headcount: 0</p>"
+  },
+  {
+   "request_id": "20261026028",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN </strong>that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: New York City Department of Transportation</p><p>Vendor: Flowbird America Inc</p><p>Description of Services to be Provided: Parking Meters Retrofit for License Plate Recognition</p><p>Anticipated Procurement Method: Amendment</p><p>Anticipated New Start Date: 1/1/2027</p><p>Anticipated New End Date: 12/31/2031</p><p>Anticipated Modifications to Scope: None</p><p>Reason for Renewal/Extension: Continuity of service until a new solicitation can be processed.</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261026023",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DSNY/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: DSNY</p><p>Vendor: Henningson Durham & Richardson PC</p><p>Description of Services to be Provided: Environmental and Transportation Planning Services</p><p>Anticipated Procurement Method: Amendment (to CT1 827 20248805473)</p><p>Anticipated Start Date 11/1/2026</p><p>Anticipated End Date 3/31/2027</p><p>Anticipated Modifications to Scope: No</p><p>Reason for Amendment: Increase to contract value as additional funds are necessary to support essential Sanitation services</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261027005",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DPR/EXT",
+   "section_name": "Special Materials"
+  },
+  {
+   "request_id": "20261026024",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DCAS/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: DCAS 856</p><p>Description of Services to be Provided: Large-Scale Administration of Examinations</p><p>Anticipated Contract Start Date:1/1/2027</p><p>Anticipated Contract End Date:12/31/2028</p><p>Anticipated Procurement Method: Negotiated Acquisition</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261026027",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/OTI/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: Office of Technology and Innovation (OTI)</p><p>Vendor: PowerSchool Group, LLC</p><p>Description of Services to be Provided: PowerSchool Special Education software enhancement, support, maintenance and related training solution</p><p>Anticipated Procurement Method: Amendment</p><p>Anticipated Start Date: 1/4/2027</p><p>Anticipated End Date: 1/3/2028</p><p>Anticipated Modifications to Scope: This amendment does not change the scope of services</p><p>Reason for Renewal/Amendment: Continuity of service. The amendment allows additional time for continued vendor services</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261027009",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DDC/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): <br> </p><p>Agency: Department of Design and Construction</p><p>Vendor: Grimshaw Architects</p><p>Description of Services to be Provided: Design Services for NEW CONSTRUCTION HORIZON JUVENILE DETENTION CENTER (NEWHJC2)</p><p>Anticipated Procurement Method: Amendment</p><p>Anticipated New Start Date: 09/01/2022</p><p>Anticipated New End Date: 02/04/2029</p><p>Anticipated Modifications to Scope: None</p><p>Reason for Renewal/Extension: Additional Money</p><p>Job Titles: Administrative Architect, Administrative Architect NM, Administrative City Planner, Administrative City Planner NM, Administrative Construction Project Manager, Administrative Engineer, Administrative Engineer NM, Administrative Landscape Architect, Administrative Landscape Architect NM, Administrative Project Manager, Administrative Project Manager NM, Architect, Assistant Architect, Assistant Civil Engineer, Assistant Electrical Engineer, Assistant Environmental Engineer, Assistant Landscape Architect, Assistant Mechanical Engineer, Associate Project Manager, Associate Urban Designer, City Planner, Civil Engineer, Civil Engineer Intern, Electrical Engineer, Geologist, Landscape Architect, Mechanical Engineer, Mechanical Engineering Intern, Project Manager, Project Manager Intern, Transportation Specialist</p><p>Headcounts: 635</p>"
+  },
+  {
+   "request_id": "20261026025",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/HRA/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p><br>Agency: NYC Department of Human Resources Administration (HRA)</p><p>Description of Services to Provided: Provide On-Call Emergency Mass Feeding for small to large scale mass feeding services to affected individuals in the event of a localized or citywide emergency. The meals will include hot and cold fresh meal options with delivery and any necessary set-up and clean-up.</p><p>Anticipated New Start Date: 07/01/2026</p><p>Anticipated New End Date: 06/30/2028</p><p>Anticipated Procurement Method: Required Method</p><p>Job Titles: None</p><p>Headcount: 0</p>"
+  },
+  {
+   "request_id": "20261027008",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: Department of Transportation</p><p>Description of Services to be Provided: Engineering Service Agreement (ESA) for Resident Engineering and Inspection Services, Citywide (HBESA27A and HBESA27B) This new procurement for ESA Services will provide resident engineering and construction inspection services including construction supervision, contract compliance monitoring, daily reporting, material testing, safety oversight, constructability reviews, and evaluation of proposed changes and value engineering options. Services will also include public outreach and communications, preparation of final as-built drawings and payment packages, project closeout documentation, audit support, and other resident engineering services as specified in individual assignments.</p><p>Anticipated New Start Date: 12/3/2027</p><p>Anticipated New End Date: 12/2/2030</p><p>Anticipated Procurement Method: Request for Proposal</p><p>Job Titles: None</p><p>Headcounts: 0</p><p> </p><p>Agency: Department of Transportation</p><p>Description of Services to be Provided: Engineering Service Agreement (ESA) for Design Services, Citywide (HBESA27C and HBESA27D)</p><p>This new procurement for ESA Services will provide total design and construction support services including land surveying, inspections, street and highway design, bridge engineering, traffic engineering, geotechnical investigations and analysis, environmental assessments and reporting, permit acquisition and regulatory approvals, community outreach and presentations, preparation of contract plans, schedules, and estimates, bid analysis, contract document interpretation, shop drawing review, value engineering, and other design services as specified in individual assignments.</p><p>Anticipated New Start Date:12/3/2027</p><p>Anticipated New End Date: 12/2/2030</p><p>Anticipated Procurement Method: Request for Proposal</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261027007",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DEP/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN </strong>that the mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: Department of Environmental Protection</p><p>Description of services to be provided: The Sewer Heat Recovery (SHR) Demonstration Contract will include the design, installation, monitoring and evaluation of two SHR technologies in order to determine the efficiency and effectiveness of these novel technologies to recover clean usable heat energy from the wastewater collection system, Bronx.</p><p>Anticipated Contract Start Date: 03/23/2027</p><p>Anticipated Contract End Date: 03/22/2030</p><p>Anticipated Procurement Method: Demonstration Project</p><p>Job titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261027006",
+   "start_date": "2026-11-02T00:00:00.000",
+   "end_date": "2026-11-02T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DOT/NEW",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Issue New Solicitation(s) Not Included in FY 2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be issuing the following solicitation(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a):</p><p>Agency: Department of Transportation</p><p>Description of Services to be Provided: Resident Engineering Inspection (REI) Services in Connection with Rehabilitation of Union Turnpike Bridge over Cross Island Parkway, Borough of Queens\u001a HBQ1115</p><p>Anticipated New Start Date: 7/1/2028</p><p>Anticipated New End Date: 9/30/2032</p><p>Anticipated Procurement Method: Competitive Sealed Proposal</p><p>Job Titles: None</p><p>Headcounts: 0</p>"
+  },
+  {
+   "request_id": "20261019005",
+   "start_date": "2026-10-23T00:00:00.000",
+   "end_date": "2026-10-23T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DCAS/EXT",
+   "section_name": "Special Materials",
+   "additional_description_1": "<p><u>Notice of Intent to Renew or Amend Contract(s) Not Included in FY2027 Annual Contracting Plan and Schedule</u></p><p><strong>NOTICE IS HEREBY GIVEN</strong> that the Mayor will be entering into the following renewal(s)/amendment(s)) of (a) contract(s) not included in the FY 2027 Annual Contracting Plan and Schedule that is published pursuant to New York City Charter § 312(a): </p><p>Agency: DCAS<br>Vendor: Superstructures Engineering Architecture<br>Description of Services to be Provided: Professional Services and Consultant Services at DCAS Facilities throughout the five boroughs.<br>Anticipated Procurement Method: Amendment<br>Anticipated New Start Date: 08/01/2022<br>Anticipated New End Date: 08/20/2027<br>Anticipated Modifications to Scope: None <br>Reason for Renewal/Extension: For continuation of services<br>Job Titles: Senior Architect (Chief Architect), Senior Engineer (Chief Engineer), and Civil Engineer.<br>Headcounts: 3</p>"
+  },
+  {
+   "request_id": "20261019004",
+   "start_date": "2026-10-23T00:00:00.000",
+   "end_date": "2026-10-23T00:00:00.000",
+   "agency_name": "Mayor's Office of Contract Services",
+   "type_of_notice_description": "Notice",
+   "short_title": "LL63/DDC/NEW",
+   "section_name": "Special Materials"
+  }
+ ]
+}

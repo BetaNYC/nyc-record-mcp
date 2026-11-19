@@ -110,7 +110,7 @@
       ],
       "provenance": [
         "Publisher: NYC Department of Citywide Administrative Services. BetaNYC did not modify it. Source: City Record Online, https://data.cityofnewyork.us/d/dg92-zbpx",
-        "Read-only requests to the dataset's Socrata API on NYC Open Data (https://data.cityofnewyork.us/resource/dg92-zbpx.json) at the moment you ask, with an app token when SOCRATA_APP_TOKEN is set. Each tool sends one query, such as a keyword search, an agency name, a notice type or a date range, and returns the newest matching notices."
+        "Read-only requests to the dataset's Socrata API on NYC Open Data (https://data.cityofnewyork.us/resource/dg92-zbpx.json) at the moment you ask, with an app token when SOCRATA_APP_TOKEN is set. Each tool sends one query, such as a keyword search, an agency name, a notice type or a date range, and returns one page of the matching notices exactly as NYC Open Data sends them, in the order the query asks NYC Open Data for: newest publication date (start_date) first, ties broken by the dataset's row id. It asks for one notice more than the limit only to learn whether more are available. BetaNYC's own fields sit beside the notices (showing, offset, more_available, how_to_get_more, a note when a limit was lowered, and source); no notice is dropped, folded, re-sorted or rewritten."
       ],
       "page": [
         {
@@ -135,10 +135,110 @@
         "Credit: Source: NYC Department of Citywide Administrative Services, City Record Online (NYC Open Data dg92-zbpx).",
         "Terms of use: https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-216807"
       ],
-      "scopeNote": "Known gap: About 88% of the notices in the dataset are 'Changes in Personnel' listings (City staff appointments, departures and pay changes, from July 2013 on). They have no notice type, so get_notices_by_type, get_procurement_notices, get_public_hearings and get_open_solicitations never return them. search_notices, get_notices_by_agency and get_notices_by_date_range do, and personnel listings can fill most of those results. Known gap: Personnel listings start in July 2013. Other kinds of notice go back to 2003 at a steady 3,500 to 8,000 a year. Caveat: Each tool returns at most 100 notices (200 for a date range), newest first (open solicitations: soonest deadline first), so a long list is cut short at that limit. Caveat: An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it. Caveat: City Record Online says questions about the content of a notice go to the agency or contact person named in the notice.",
+      "scopeNote": "Known gap: About 88% of the notices in the dataset are 'Changes in Personnel' listings (City staff appointments, departures and pay changes, from July 2013 on). They have no notice type, so get_notices_by_type, get_procurement_notices and get_public_hearings never return them (nor does get_open_solicitations, described under open-solicitations). search_notices, get_notices_by_agency and get_notices_by_date_range do, and personnel listings can fill most of those results. Known gap: Personnel listings start in July 2013. Other kinds of notice go back to 2003 at a steady 3,500 to 8,000 a year. Caveat: Each tool returns at most 100 notices per call (200 for a date range), newest first. When more notices match, the answer says so, and the offset parameter gets the next ones. Caveat: An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it. Caveat: A notice appears only once the agency publishes it in The City Record, which for a public hearing can be about two weeks before the hearing. An agency's own calendar may list a hearing sooner. Caveat: City Record Online says questions about the content of a notice go to the agency or contact person named in the notice.",
       "isReferencedBy": [
         "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/WHATS-CHANGED.md#2026-07-21-tools-ignored-settings-they-did-not-have-without-saying-so",
-        "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/WHATS-CHANGED.md#2026-07-06-searches-by-agency-name-came-back-empty",
+        "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/WHATS-CHANGED.md#2026-07-06-searches-by-agency-name-came-back-empty"
+      ]
+    },
+    {
+      "@id": "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/DATA-SOURCES.json#open-solicitations",
+      "@type": "Dataset",
+      "title": "Open solicitations, as BetaNYC arranges them (NYC City Record MCP server)",
+      "description": "Solicitations published in The City Record whose due date has not passed, from the same City Record Online dataset, arranged by BetaNYC: an older extended or corrected notice folded under the newest notice for the same solicitation, matched cancellation notices listed apart (a cancellation never takes a solicitation off the list), and BetaNYC's own labels added to each notice.",
+      "identifier": "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/DATA-SOURCES.json#open-solicitations",
+      "contactPoint": {
+        "@type": "Kind",
+        "fn": "BetaNYC (serves this dataset; report errors in the data to BetaNYC: https://github.com/BetaNYC/nyc-record-mcp/issues; errors in the original records to NYC Open Data: https://www.nyc.gov/opendata/contact-us)",
+        "hasEmail": "mailto:lab@beta.nyc"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://www.beta.nyc/",
+        "name": "BetaNYC",
+        "subOrganizationOf": [
+          {
+            "@type": "Organization",
+            "name": "Fund for the City of New York"
+          }
+        ]
+      },
+      "source": [
+        {
+          "@id": "https://data.cityofnewyork.us/d/dg92-zbpx",
+          "@type": "Dataset",
+          "title": "City Record Online",
+          "description": "City Record Online, published by NYC Department of Citywide Administrative Services.",
+          "identifier": "https://data.cityofnewyork.us/d/dg92-zbpx",
+          "contactPoint": {
+            "@type": "Kind",
+            "fn": "BetaNYC (lists this dataset; report errors in the data to NYC Open Data: https://www.nyc.gov/opendata/contact-us)",
+            "hasEmail": "mailto:lab@beta.nyc"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "NYC Department of Citywide Administrative Services",
+            "@id": "https://www.nyc.gov/site/dcas/index.page"
+          },
+          "landingPage": {
+            "@type": "Document",
+            "title": "City Record Online",
+            "accessURL": "https://data.cityofnewyork.us/d/dg92-zbpx"
+          },
+          "page": [
+            {
+              "@type": "Document",
+              "title": "Check a figure at the source",
+              "accessURL": "https://a856-cityrecord.nyc.gov/"
+            }
+          ],
+          "accrualPeriodicity": "daily",
+          "rights": [
+            "License: No restrictions on use: NYC Administrative Code § 23-502(d) (the Open Data Law, Local Law 11 of 2012)",
+            "Terms of use: https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-216807"
+          ]
+        }
+      ],
+      "provenance": [
+        "BetaNYC modified this data: left some records out and reshaped it. This copy should not be considered the official record. Official record: City Record Online (NYC Department of Citywide Administrative Services), https://data.cityofnewyork.us/d/dg92-zbpx",
+        "Two read-only requests to the dataset's Socrata API on NYC Open Data (https://data.cityofnewyork.us/resource/dg92-zbpx.json) at the moment you ask, one after the other, with an app token when SOCRATA_APP_TOKEN is set: the solicitations still open, soonest deadline first, and the amended and cancelled solicitations posted in the last 400 days (at most 1,000), which are used only to match notices.",
+        "Modified by BetaNYC: For this list, BetaNYC folds an older notice under a newer one when the PIN (8 characters or more), the agency and the title (without the prefix \"Bid Extension:\" or \"Correction:\") all match: the older notice is listed by request_id and dates in the newer one's supersedes, and its full row is available with include_superseded: true. A matched cancellation notice is listed in a separate cancelled list, but a cancellation never takes a solicitation off the list: the solicitation stays listed, with a note naming the cancellation. A notice whose due time is 00:00 (no closing time given) stays listed through the end of its due date, and BetaNYC's labels are added under betanyc_notes. Every row that is listed, in notices or in cancelled, keeps every City field unchanged. The official record is the City Record Online dataset: https://data.cityofnewyork.us/d/dg92-zbpx"
+      ],
+      "page": [
+        {
+          "@type": "Document",
+          "title": "Check a figure at the source",
+          "accessURL": "https://a856-cityrecord.nyc.gov/"
+        }
+      ],
+      "temporal": [
+        {
+          "@type": "PeriodOfTime",
+          "startDate": "2003-01-02"
+        }
+      ],
+      "spatial": {
+        "@type": "Location",
+        "prefLabel": "New York City agencies"
+      },
+      "wasGeneratedBy": [
+        {
+          "@type": "Activity",
+          "label": "filtered"
+        },
+        {
+          "@type": "Activity",
+          "label": "reshaped"
+        }
+      ],
+      "accrualPeriodicity": "daily",
+      "rights": [
+        "License: No restrictions on use: NYC Administrative Code § 23-502(d) (the Open Data Law, Local Law 11 of 2012)",
+        "Credit: Source: NYC Department of Citywide Administrative Services, City Record Online (NYC Open Data dg92-zbpx).",
+        "Terms of use: https://codelibrary.amlegal.com/codes/newyorkcity/latest/NYCadmin/0-0-0-216807"
+      ],
+      "scopeNote": "Known gap: Changes in Personnel listings, about 88% of the dataset, have no notice type, so this list never includes them. Known gap: Notices count as the same solicitation only when the PIN, agency and title all match, so one solicitation can still appear twice under slightly different titles. Amended and cancelled notices are looked for among those posted in the last 400 days. Caveat: The tool returns at most 100 notices per call, soonest deadline first. offset, limit and more_available count notices as NYC Open Data returns them; the answer says how many were folded and how many cancellation notices are listed apart. With include_superseded: true nothing is folded or moved. Caveat: The labels under betanyc_notes (no closing time given, likely placeholder date, extension, correction, cancellation) are BetaNYC's reading of the notice titles and dates, not an official status. Read the notice, or ask the agency, before relying on one. Caveat: A due time of 00:00 means the City Record gives no closing time. Check the notice or the agency for the real time. Caveat: An empty answer means no notice in the dataset matched the query, not that no such notice was published. Check City Record Online or the printed City Record before relying on it. Caveat: City Record Online says questions about the content of a notice go to the agency or contact person named in the notice.",
+      "isReferencedBy": [
         "https://github.com/BetaNYC/nyc-record-mcp/blob/HEAD/WHATS-CHANGED.md#2026-07-06-open-solicitations-due-that-day-were-left-out-in-the-evening"
       ]
     }

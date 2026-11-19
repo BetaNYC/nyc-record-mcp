@@ -1,0 +1,87 @@
+{
+ "key": "$limit=6&$offset=0&$order=due_date ASC,:id&$where=type_of_notice_description='Solicitation' AND (due_date > '<now>' OR due_date = '<today>T00:00:00.000')",
+ "status": 200,
+ "built_from": "Rows of a direct query to dg92-zbpx on 2026-11-18 (the 1,000 newest solicitations), filtered as this query would filter them at asked_at; not recorded through the server. That pull starts at notices posted 2025-10-14, so older amended notices are missing. Contact fields, address_to_request and long descriptions removed.",
+ "body": [
+  {
+   "request_id": "20251223003",
+   "start_date": "2025-12-29T00:00:00.000",
+   "end_date": "2025-12-29T00:00:00.000",
+   "agency_name": "Fire Department",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Services (other than human services)",
+   "short_title": "Emergency Medical Service (EMS) Computer Aided Dispatch (CAD) Software System Maintenance",
+   "selection_method_description": "Sole Source",
+   "section_name": "Procurement",
+   "special_case_reason_description": "Available only from a single source",
+   "pin": "05726Y0572",
+   "due_date": "2026-01-07T00:00:00.000"
+  },
+  {
+   "request_id": "20251112013",
+   "start_date": "2025-11-19T00:00:00.000",
+   "end_date": "2025-11-19T00:00:00.000",
+   "agency_name": "Environmental Protection",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Services (other than human services)",
+   "short_title": "82626B0005-BWS-CFP-106(R) Granular Activated Carbon (GAC) at Croton Filtration Plant",
+   "selection_method_description": "Competitive Sealed Bids",
+   "section_name": "Procurement",
+   "pin": "82626B0005",
+   "due_date": "2026-01-07T10:00:00.000",
+   "other_info_1": "Pre bid conference location - 3701 Jerome Avenue, Bronx, NY 10467. To join via Microsoft TEAMS video, please go to PASSPort RFx Documents and download \u001aNotice to Bidders (E-Bidding)\u001a for information. Mandatory: noDate/Time - 2025-12-03 13:00:00"
+  },
+  {
+   "request_id": "20251210028",
+   "start_date": "2025-12-24T00:00:00.000",
+   "end_date": "2025-12-24T00:00:00.000",
+   "agency_name": "School Construction Authority",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Construction/Construction Services",
+   "short_title": "Flood Elimination & Exterior Masonry",
+   "selection_method_description": "Competitive Sealed Bids",
+   "section_name": "Procurement",
+   "pin": "26-22792D-1",
+   "due_date": "2026-01-07T10:00:00.000"
+  },
+  {
+   "request_id": "20251201007",
+   "start_date": "2025-12-05T00:00:00.000",
+   "end_date": "2025-12-05T00:00:00.000",
+   "agency_name": "Design and Construction",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Construction Related Services",
+   "short_title": "HWPR25KQ - STANDARD PED RAMP UPGRADES, BROOKLYN AND QUEENS",
+   "selection_method_description": "Competitive Sealed Bids",
+   "section_name": "Procurement",
+   "pin": "85026B0028",
+   "due_date": "2026-01-07T11:00:00.000"
+  },
+  {
+   "request_id": "20251118016",
+   "start_date": "2025-11-21T00:00:00.000",
+   "end_date": "2025-11-21T00:00:00.000",
+   "agency_name": "Design and Construction",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Construction Related Services",
+   "short_title": "P-1TREREC Walter Gladwin Recreation Center",
+   "selection_method_description": "Competitive Sealed Bids",
+   "section_name": "Procurement",
+   "pin": "85026B0010",
+   "due_date": "2026-01-07T14:00:00.000"
+  },
+  {
+   "request_id": "20251201010",
+   "start_date": "2025-12-05T00:00:00.000",
+   "end_date": "2025-12-05T00:00:00.000",
+   "agency_name": "Design and Construction",
+   "type_of_notice_description": "Solicitation",
+   "category_description": "Construction Related Services",
+   "short_title": "JOCS_DDC - AGENCY WIDE JOCS CONTRACT BK,QN,SI",
+   "selection_method_description": "Competitive Sealed Bids",
+   "section_name": "Procurement",
+   "pin": "85026B0045",
+   "due_date": "2026-01-07T14:00:00.000"
+  }
+ ]
+}

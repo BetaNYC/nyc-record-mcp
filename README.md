@@ -22,6 +22,10 @@ Optionally, you can set a free [NYC Open Data (Socrata) app token](https://data.
 export SOCRATA_APP_TOKEN="your-app-token"
 ```
 
+The server sends the token in the `X-App-Token` header, as [Socrata recommends](https://dev.socrata.com/docs/app-tokens.html), never in the URL, and never repeats it in an error message.
+
+**How the server asks NYC Open Data.** One request per tool call (two for `get_open_solicitations`, one after the other), only when you ask; no background polling. Each request names the server in its User-Agent (`nyc-record-mcp/<version>`), gives up after 30 seconds (60 for `search_notices`, whose full-text search NYC Open Data can take more than 30 seconds to answer), and is retried at most twice when NYC Open Data is busy (HTTP 429 or a server error), waiting as long as it asks (up to 10 seconds). One tool call spends at most 90 seconds in all, counting every try, wait and request: a try's timeout is cut to what is left, and no retry starts once the 90 seconds are spent. When something fails, the tool says what went wrong and what to try, plus at most 500 characters of what NYC Open Data said.
+
 ---
 
 ## What it does
@@ -35,7 +39,7 @@ Exposes 10 tools over MCP:
 | `get_notices_by_type` | Filter by notice type (Solicitation, Award, Public Hearings, etc.) |
 | `get_procurement_notices` | Recent solicitations, awards, and intent-to-award notices |
 | `get_public_hearings` | Recent public hearings, comment periods, and meetings |
-| `get_open_solicitations` | Active RFPs/RFQs where the deadline has not passed |
+| `get_open_solicitations` | Active RFPs/RFQs whose deadline (date and time, New York) has not passed |
 | `get_notices_by_date_range` | All notices published within a date window |
 | `whats_changed` | What changed in this server, newest first, from [WHATS-CHANGED.md](WHATS-CHANGED.md) (filter by date or tag) |
 | `about_betanyc` | Who built this server, where to report a bug in this server or ask for a new feature, and BetaNYC's links |
@@ -45,6 +49,18 @@ Exposes 10 tools over MCP:
 
 ## Tools reference
 
+Every City Record tool answers with two text blocks. The first, `content[0].text`, is JSON and nothing else, so a program can `JSON.parse` it: `showing` (how many notices are in this answer), `offset`, `more_available` (whether more notices match after these), `how_to_get_more` (when more match: call again with the next `offset`), `note` (when your `limit` was lowered), the `notices`, and a `source` object. The last block is one line naming the source, its publisher, the time it was fetched from NYC Open Data, and a link to the dataset:
+
+```
+Source: City Record Online (NYC Department of Citywide Administrative Services). Fetched from the source for this answer at 2026-11-18 13:24 EST (New York time). Link: https://data.cityofnewyork.us/d/dg92-zbpx
+```
+
+> **Breaking change in 1.3.0 for programs that read the answers.** Up to 1.2.0, `content[0].text` was a bare JSON list of notices. From 1.3.0 it is a JSON object, and the notices are in its `notices` field. Change `JSON.parse(text)` to `JSON.parse(text).notices`. The Source line is a separate, last text block, so do not join the blocks before parsing. [CHANGELOG.md](CHANGELOG.md) has the old and new shapes.
+
+`limit` is a whole number of at least 1; a larger number than the tool's maximum (100, or 200 for a date range) is lowered to the maximum, and the answer's `note` says so. `offset` is a whole number of at least 0. Anything else is refused with a plain message, and nothing is sent to NYC Open Data.
+
+Every tool only reads, and says so to your AI app with MCP tool annotations (`readOnlyHint: true`). The seven City Record tools query NYC Open Data at the time you ask (`openWorldHint: true`); the three shared tools read files that ship with the package.
+
 ### `search_notices`
 
 Full-text search across notice titles, descriptions, and agency names.
@@ -52,7 +68,8 @@ Full-text search across notice titles, descriptions, and agency names.
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `query` | string | yes | — | Search term |
-| `limit` | number | no | 25 | Max results (max 100) |
+| `limit` | integer | no | 25 | Max results (1 to 100; more is lowered to 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 search_notices("affordable housing")
@@ -63,12 +80,13 @@ search_notices("cybersecurity", limit=50)
 
 ### `get_notices_by_agency`
 
-Get notices from a specific city agency. Accepts partial name matches.
+Get notices from a specific city agency. Accepts partial name matches. A `%` or `_` in the name is passed to NYC Open Data's `like` match as typed, where it matches any text or any one character.
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `agency_name` | string | yes | — | Agency name or partial name |
-| `limit` | number | no | 25 | Max results (max 100) |
+| `limit` | integer | no | 25 | Max results (1 to 100; more is lowered to 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_notices_by_agency("DCAS")
@@ -85,7 +103,8 @@ Filter notices by type.
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `notice_type` | string | yes | — | One of: Solicitation, Award, Intent to Award, Intent to Negotiate, Public Hearings, Public Comment, Meeting, Notice, Vendor List, Sale |
-| `limit` | number | no | 25 | Max results (max 100) |
+| `limit` | integer | no | 25 | Max results (1 to 100; more is lowered to 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_notices_by_type("Solicitation")
@@ -101,7 +120,8 @@ Returns recent solicitations, awards, intent-to-award, and vendor list notices �
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `limit` | number | no | 25 | Max results (max 100) |
+| `limit` | integer | no | 25 | Max results (1 to 100; more is lowered to 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_procurement_notices()
@@ -116,7 +136,8 @@ Returns recent public hearings, public comment periods, agency meetings, and gen
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `limit` | number | no | 25 | Max results (max 100) |
+| `limit` | integer | no | 25 | Max results (1 to 100; more is lowered to 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_public_hearings()
@@ -126,11 +147,29 @@ get_public_hearings()
 
 ### `get_open_solicitations`
 
-Returns active solicitations where the due date has not yet passed, sorted by soonest deadline first.
+Returns active solicitations whose due date and time, in New York, has not yet passed, sorted by soonest deadline first. A solicitation due at 10:00 today is gone from the list at 10:00.
+
+**BetaNYC modified this list, so it is not the official record.** The official record is the [City Record Online dataset](https://data.cityofnewyork.us/d/dg92-zbpx). BetaNYC arranges the list. It folds an older extended or corrected notice under the newest notice for the same solicitation; the older one is then listed only by its request id and dates, in the newer one's `supersedes`, and its full row comes back with `include_superseded: true`. It lists matched cancellation notices apart, but a cancellation never takes a solicitation off the list. And it keeps 00:00 due dates through their day. Every row that is listed, in `notices` or in `cancelled`, keeps every City field unchanged. `about_data` says this for this tool, from its own entry in [DATA-SOURCES.json](DATA-SOURCES.json) (`open-solicitations`). Each answer's Source line says it too, in the same words: "BetaNYC modified this data: left some records out and reshaped it. This copy should not be considered the official record. … Official record: City Record Online …". The `source` object carries `changed_by_betanyc`. With `include_superseded: true` nothing is folded or moved, and the line says so. The other six City Record tools are not modified. Each returns one page of the City's notices exactly as NYC Open Data sends them, in the order the query asks for (newest first), with BetaNYC's own fields beside them.
+
+BetaNYC adds three things to this list. They are BetaNYC's reading of the City's titles and dates, not an official status, and they sit apart from the City's data: every listed row keeps all its City fields exactly as published, and BetaNYC's labels are under its `betanyc_notes`.
+
+- **No closing time given.** A due time of 00:00 means the City Record has no closing time for that notice (none was entered). Such a notice stays on the list through the end of its due date, with a note saying so. Check the notice or the agency for the real closing time.
+- **Placeholder dates.** A due date more than a year away (2099-12-31, 2039 and so on) usually stands for an open-ended or long-term solicitation. The notice stays listed, its `due_date` unchanged, with a note saying the date looks like a placeholder.
+- **Amended, extended and cancelled notices.** A change to a solicitation is posted as a new notice, with a title starting exactly "Bid Extension:", "Correction:" or "Cancellation:" (the only forms in the real data; "Bid Extension -" and other spellings are not read as amendments). Each notice's `betanyc_notes.notice_kind` says which (`original`, `extension`, `correction`, `cancellation`). When an extension, correction or repeat is clearly the same solicitation as an older notice, only the newest is listed, and its `supersedes` names the older ones (request id, posted date, due date). If the newest notice gives an earlier due date than the older ones, a note says so. **A cancellation never takes a solicitation off the list.** An agency can re-bid under the same PIN, agency and title and then cancel the old round, so a solicitation with a matching cancellation stays listed, with a note naming the cancellation notice (request id and posting date). A matched cancellation notice on the page is listed under `cancelled`, as the City's full row, with a note naming what it matches. To find amendments on other pages or past their due date, the tool makes one extra request (amended and cancelled solicitations posted in the last 400 days, at most 1,000). If that request fails, the list still comes back, with a note that amendments could not be checked.
+
+Limits of this reading:
+
+- Notices count as the same solicitation only on a strong match: the same PIN (at least 8 characters, because short PINs such as 3434 are reused for unrelated notices), the same agency, and the same title once the prefix is removed. Anything less is shown, not folded. So the list can still show the same solicitation twice, under slightly different titles.
+- When the two newest notices for a solicitation were posted the same day, the tool cannot tell which came last, so both are listed with a note.
+- A cancellation that matches no other notice stays in `notices`, with a note that it is a cancellation.
+- `offset`, `limit` and `more_available` count notices as NYC Open Data returns them. The answer says how many were folded (`folded_into_newer_notice`) and how many are under `cancelled`, so `showing` can be smaller than `limit` even when more are available. `include_superseded: true` folds and moves nothing: every notice on the page is in `notices`, each labeled.
+- `other_info_1` sometimes holds a date and time: that is the pre-bid meeting, not the deadline.
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `limit` | number | no | 25 | Max results (max 100) |
+| `limit` | integer | no | 25 | Max results (1 to 100; more is lowered to 100) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
+| `include_superseded` | boolean | no | false | List every notice, folded ones included, each labeled |
 
 ```
 get_open_solicitations()
@@ -141,13 +180,14 @@ get_open_solicitations(limit=50)
 
 ### `get_notices_by_date_range`
 
-Get all City Record notices published within a date range.
+Get all City Record notices published within a date range. Both dates must be real calendar dates (`2026-02-31` is refused), and the start must be on or before the end.
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `start_date` | string | yes | — | Start date, YYYY-MM-DD |
 | `end_date` | string | yes | — | End date, YYYY-MM-DD |
-| `limit` | number | no | 50 | Max results (max 200) |
+| `limit` | integer | no | 50 | Max results (1 to 200; more is lowered to 200) |
+| `offset` | integer | no | 0 | Skip this many notices, for the next page |
 
 ```
 get_notices_by_date_range("2026-05-01", "2026-05-19")
@@ -247,11 +287,19 @@ npm run build
 npm start
 ```
 
-Run the test suite (builds first, then runs the Node test runner against `test/*.test.mjs`):
+Run the test suite (builds first, then runs the Node test runner against `test/*.test.mjs`). It is offline: every test mocks the network, and it is what CI runs.
 
 ```bash
 npm test
 ```
+
+Live tests ask NYC Open Data, one small request per tool, and live in `test/live/`. They are never part of `npm test` or CI:
+
+```bash
+npm run test:live
+```
+
+The evaluation set, `eval/questions.json`, holds 13 realistic questions with answers found first by querying the dataset directly. `npm run eval` replays them offline from `eval/fixtures/` and writes `eval/results.json`; `npm run eval -- --record` asks NYC Open Data for any missing fixture (delete `eval/fixtures/` to re-record them all; the answers then change as the dataset grows). Results on 2026-11-18: 11 of 13. Q12 (a bid with an extension) and Q13 (a due date with no closing time) were added for the open-solicitation labels; their fixtures were built by hand from rows of a direct query on 2026-11-18, not recorded through the server (labeled `fixture` in the results), and each question fixes its own moment (`asked_at`). Before they were added the score was 9 of 11. Q02, a several-word keyword search, failed because NYC Open Data did not answer it within 60 seconds. Q03 ("which open solicitation closes soonest?") was first scored a pass, but its expected answer had closed at 10:00 that morning, before the question was asked at about 13:35; the fair score was 9 of 11 then too. Now that `get_open_solicitations` compares the time as well as the date, Q03 has no recording of the corrected query. Recording one needs a live request to NYC Open Data, which was not authorized for this PR, and no fixture was built by hand for it, so Q03 fails offline (its entry in `eval/results.json` says why). To record it: `npm run eval -- --record`, then set `asked_at` in `eval/questions.json` to the time it prints. The replay fixes the server's clock at the moment the questions were asked (`asked_at` in `eval/questions.json`).
 
 ---
 
