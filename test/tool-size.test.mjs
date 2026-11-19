@@ -12,7 +12,8 @@
 // Measured 16,104 characters.
 // Raised on purpose 2026-11-18 (review of #33): each City Record tool's limit is advertised as
 // an integer with a minimum and a maximum, says a larger number is lowered, and the answer guide
-// names the two text blocks. Measured 16,517 characters with shared module 1.5.1.
+// names the two text blocks. Measured 16,517 characters with shared module 1.5.1; 16,876 after
+// the open-solicitation labels (include_superseded, the description naming betanyc_notes).
 import test from "node:test";
 import assert from "node:assert/strict";
 import { TOOLS, SERVER_INSTRUCTIONS, ANSWER_GUIDE } from "../dist/tools.js";

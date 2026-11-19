@@ -1,5 +1,5 @@
 {
- "key": "$limit=1001&$order=start_date DESC,:id&$select=request_id,start_date,due_date,pin,agency_name,short_title&$where=type_of_notice_description='Solicitation' AND start_date >= '2025-04-21' AND (short_title like 'Bid Extension:%' OR short_title like 'Correction:%' OR short_title like 'Cancel%')",
+ "key": "$limit=1001&$order=start_date DESC,:id&$select=request_id,start_date,due_date,pin,agency_name,short_title&$where=type_of_notice_description='Solicitation' AND start_date >= '2025-04-21' AND (short_title like 'Bid Extension:%' OR short_title like 'Correction:%' OR short_title like 'Cancellation:%')",
  "status": 200,
  "built_from": "Rows of a direct query to dg92-zbpx on 2026-11-18 (the 1,000 newest solicitations), filtered as this query would filter them at asked_at; not recorded through the server. That pull starts at notices posted 2025-10-14, so older amended notices are missing. Contact fields, address_to_request and long descriptions removed.",
  "body": [

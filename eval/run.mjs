@@ -99,9 +99,13 @@ function invariants(r, body, text) {
   const bad = [];
   if (body.source?.source !== "City Record Online") bad.push("source name");
   if (body.source?.publisher !== "NYC Department of Citywide Administrative Services") bad.push("publisher");
-  if (body.source?.source_url !== SOURCE_URL || !text.endsWith(`Link: ${SOURCE_URL}`)) bad.push("link");
+  if (body.source?.source_url !== SOURCE_URL || !text.endsWith(SOURCE_URL)) bad.push("link");
   if (body.source?.as_of_kind !== "retrieved" || !body.source?.as_of) bad.push("as-of");
-  if (!/(^|\. )Source: City Record Online /.test(text.split("\n").at(-1))) bad.push("Source line last");
+  // The last line is the Source line: "Source: City Record Online …", or, for the open list
+  // (BetaNYC's arrangement), "BetaNYC modified this data: … Official record: City Record Online …".
+  const last = text.split("\n").at(-1);
+  const modified = body.source?.changed_by_betanyc?.kind === "modified-by-betanyc";
+  if (modified ? !/^BetaNYC modified this data: .* Official record: City Record Online /.test(last) : !/^Source: City Record Online /.test(last)) bad.push("Source line last");
   if (body.showing !== body.notices?.length) bad.push("showing");
   return bad;
 }
@@ -116,12 +120,16 @@ export async function runEval() {
     let body = null;
     if (!r.isError) body = JSON.parse(r.content[0].text);
     const failed = missing.size
-      ? [...missing].map((k) => `no recorded fixture for ${k} (run npm run eval -- --record)`)
+      ? [...missing].map((k) => `no recorded fixture for ${k}`)
       : q.checks.filter((c) => !check(c, r, body, text)).map((c) => JSON.stringify(c));
     const broken = invariants(r, body, text);
     results.push({
       id: q.id, q: q.q, pass: failed.length === 0 && broken.length === 0, failed_checks: failed, failed_invariants: broken,
       ...(r.isError && !missing.size ? { answer_error: text.slice(0, 300) } : {}),
+      ...(missing.size
+        ? { why: "No recorded fixture for this query. Recording one needs a live request to NYC Open Data, which was not authorized for this PR, and no fixture was built by hand. Record it with: npm run eval -- --record (then set asked_at in eval/questions.json to the time it prints)." }
+        : {}),
+      ...(q.fixture ? { fixture: q.fixture } : {}),
     });
   }
   return results;

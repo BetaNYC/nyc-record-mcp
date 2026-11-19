@@ -13,8 +13,8 @@ import { assertEveryToolExplained, BETANYC_INSTRUCTIONS, SHARED_MODULE_VERSION }
 const DS_TEXT = readFileSync(new URL("../DATA-SOURCES.json", import.meta.url), "utf8");
 const NAMES = TOOLS.map((t) => t.name);
 
-test("shared module 1.5.1", () => {
-  assert.equal(SHARED_MODULE_VERSION, "1.5.1");
+test("shared module 1.5.2", () => {
+  assert.equal(SHARED_MODULE_VERSION, "1.5.2");
 });
 
 test("every tool says where its data comes from, so a new tool cannot ship unexplained", () => {
@@ -77,11 +77,11 @@ test("about_data says BetaNYC modified get_open_solicitations, and the other six
   assert.deepEqual(s.changed_by_betanyc.steps, ["filtered", "reshaped"]);
   for (const words of [
     /folds an older notice under a newer one when the PIN \(8 characters or more\), the agency and the title .* all match/,
-    /moves a matched cancellation, with the notices it cancels, to a separate cancelled list/,
-    /keeps a notice whose due time is 00:00 \(no closing time given\) listed through the end of its due date/,
-    /adds its own labels under betanyc_notes/,
-    /Every City field in every row is passed through unchanged/,
-    /every row can be seen with include_superseded: true/,
+    /the older notice is listed by request_id and dates in the newer one's supersedes, and its full row is available with include_superseded: true/,
+    /A matched cancellation notice is listed in a separate cancelled list, but a cancellation never takes a solicitation off the list/,
+    /A notice whose due time is 00:00 \(no closing time given\) stays listed through the end of its due date/,
+    /BetaNYC's labels are added under betanyc_notes/,
+    /Every row that is listed, in notices or in cancelled, keeps every City field unchanged/,
     /The official record is the City Record Online dataset: https:\/\/data\.cityofnewyork\.us\/d\/dg92-zbpx/,
   ]) assert.match(s.changed_by_betanyc.detail, words);
   const text = open.content[0].text;

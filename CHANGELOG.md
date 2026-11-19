@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - unreleased
 
 Adds `about_data`, the third tool BetaNYC adds to each of its MCP servers, and
-`DATA-SOURCES.json`, the file it answers from. Moves to BetaNYC's shared module 1.5.1
+`DATA-SOURCES.json`, the file it answers from. Moves to BetaNYC's shared module 1.5.2
 (`src/betanyc-tools.ts`; `scripts/whats_changed.py`, `scripts/mcp_shared/data-sources.schema.json`,
 `scripts/tests/catalog_validate.py` are 1.4.1; all copied unchanged), whose answer to "is this data official?"
 names the source, its publisher and a link: "Publisher: NYC Department of Citywide
@@ -31,6 +31,16 @@ How to update your code:
 
     notices = JSON.parse(result.content[0].text).notices   // was: JSON.parse(result.content[0].text)
     // Do not join the text blocks before parsing: the Source line is its own, last block.
+
+Also for `get_open_solicitations` only:
+
+- By default `notices` can hold fewer rows than the City sent: an older extended or corrected
+  notice is folded under the newest notice for the same solicitation (named by request_id and
+  dates in its `betanyc_notes.supersedes`), and a matched cancellation notice is listed under
+  `cancelled`. `city_notices_on_this_page` gives the City's count; `include_superseded: true`
+  returns every row.
+- Each notice gains a `betanyc_notes` key (BetaNYC's labels). All of the City's own fields are
+  unchanged. Code that copies every key of a notice should skip `betanyc_notes`.
 
 ### Added
 
@@ -62,7 +72,7 @@ How to update your code:
 
 ### Changed
 
-- `src/betanyc-tools.ts` is the workspace's shared module 1.5.1 (was 1.2.4), and
+- `src/betanyc-tools.ts` is the workspace's shared module 1.5.2 (was 1.2.4), and
   `scripts/whats_changed.py` and `scripts/mcp_shared/data-sources.schema.json` are 1.4.1, all
   copied in unchanged. Never edit the copies. Module 1.5.0 adds the helpers below for the
   server's own tools (#21, #28). Module 1.5.1 (BetaNYC/betanyc-ai-workspace#1702, commit
@@ -73,7 +83,13 @@ How to update your code:
   object gains `retrieved_at` (and `as_of_kind: "source"` when a live answer carries the
   data's own date, which this server's answers do not); source links with a username or
   password, and control characters in names, are refused; `toolError` scrubs more encoded
-  forms of a secret and ignores secrets under 8 characters.
+  forms of a secret and ignores secrets under 8 characters. Module 1.5.2 (commit `bbc1671`;
+  raw file sha256 `bcc117e7…2b33`, 125,208 bytes; the stamp hash on line 2, `eb29cbfb…`, is a
+  different number by design): `toolError` drops stack-frame lines from the caller's message and
+  caps it at 1,000 characters; `errorSummary` gives the first plain line of an unknown error
+  (used for every error this server did not write itself); `provenance()` takes
+  `changedByBetanyc` and then says "BetaNYC modified this data: …" in about_data's words, which
+  `get_open_solicitations` uses.
 - Every tool carries MCP `annotations`: `readOnlyHint: true`, a `title`, and `openWorldHint`
   (`true` for the seven City Record tools, which query NYC Open Data live; `false` for the
   three shared tools, which read files in the package). Set with the shared `annotateTools`.
@@ -158,13 +174,16 @@ From the review of epic #33.
   - A due date more than 366 days ahead gets a note that it looks like a placeholder for an
     open-ended or long-term solicitation. The row is still listed, `due_date` unchanged.
   - Amended notices are new rows. Each notice gets `notice_kind` from its title prefix
-    (`extension` "Bid Extension:", `correction` "Correction:", `cancellation` "Cancel…",
-    else `original`). Notices with the same PIN (8 characters or more), agency and title
-    without the prefix are one solicitation: only the newest by posting date is listed, with
-    `supersedes`; if the newest is a cancellation, the solicitation goes to a separate
-    `cancelled` list. When the two newest were posted the same day nothing is folded and both
-    get a note (in the real data a cancellation and its original were posted the same day, and
-    the request_id order would have made the original look current). One extra request per
+    (`extension` "Bid Extension:", `correction` "Correction:", `cancellation` "Cancellation:",
+    exactly as written in the data, else `original`). Notices with the same PIN (8 characters
+    or more), agency and title without the prefix are one solicitation: the newest extension,
+    correction or original by posting date is listed, with `supersedes`, and a note when it
+    gives an earlier due date than the older ones. When the two newest were posted the same day
+    nothing is folded and both get a note. A cancellation never takes a solicitation off the
+    list (review of #33: an agency can re-bid under the same PIN and title and then cancel the
+    old round): the solicitation stays listed with a note naming each matching cancellation,
+    and a matched cancellation notice on the page is listed under `cancelled` as the City's
+    full row. With `include_superseded: true` nothing is folded or moved. One extra request per
     call (amended and cancelled solicitations posted in the last 400 days, at most 1,000, inside
     the same 90-second budget) finds amendments on other pages; if it fails, the list comes back
     with a note. New `include_superseded` lists every notice, labeled. New answer fields:
@@ -181,9 +200,17 @@ From the review of epic #33.
   says exactly what they do (one page of the City's rows as sent, in the order the query asks
   for, plus BetaNYC's own separate fields; nothing dropped, folded, re-sorted or rewritten).
   The open-solicitations correction moved to the new entry. `data.json` rebuilt.
-- `get_open_solicitations` answers match: the Source line starts "BetaNYC arranged these
-  notices …; the official record is the City Record Online dataset.", and `source` adds
-  `figures_official: false` and `changed_by_betanyc` (read from `DATA-SOURCES.json` at start).
+- `get_open_solicitations` answers match: the Source line comes from the shared `provenance()`
+  with `changedByBetanyc`, so it says, as `about_data` does, "BetaNYC modified this data: left
+  some records out and reshaped it. This copy should not be considered the official record. …
+  Official record: City Record Online …" (the steps are read from `DATA-SOURCES.json` at
+  start), and `source` carries `changed_by_betanyc`. With `include_superseded: true` it says
+  only what was done: every notice listed as sent, labels added, nothing folded or moved.
+- `ANSWER_GUIDE` no longer says all seven tools give the notices exactly as published: six do;
+  `get_open_solicitations` is BetaNYC's arrangement, each listed row keeping the City's fields.
+- A bad answer to the amended-notice check (for example `[null]`) no longer fails the call:
+  rows that do not look like notices are skipped and counted, and the folding runs in a guarded
+  step (`arrangeOpenList`) that falls back to the page alone with a plain note.
 - README: a `%` or `_` in an agency name is passed to the `like` match as typed, where it acts
   as a wildcard (no escape is used: the Socrata docs this repo cites do not give one).
 - The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
@@ -202,7 +229,7 @@ From the review of epic #33.
 - `test/about-data.test.mjs`: every listed tool has a source (`assertEveryToolExplained`,
   which also fails on an unknown tool); the topic in the description; the source's publisher,
   link, official and live status, unchanged figures, error route and corrections; every tool
-  name as a topic; a bad topic and an unknown key; the server instructions; module 1.5.1.
+  name as a topic; a bad topic and an unknown key; the server instructions; module 1.5.2.
 - `test/betanyc-tools.test.mjs`: three shared tools, read-only with an output schema;
   `about_data` over stdio answers with lab@beta.nyc and passes the SDK client's output-schema
   check, and the server's instructions name `about_data`; `npm pack --dry-run` lists
@@ -238,11 +265,14 @@ From the review of epic #33.
 - `test/open-solicitations.test.mjs` also covers the labels and folding, from real rows in
   `test/fixtures/solicitations.json` (contact fields removed; rows derived from a real one are
   marked): 00:00 kept through its due day and on daylight-saving days; placeholders; an
-  extension and a correction folded; a cancellation moved to `cancelled`, including one due
-  later than its original and one found only by the extra query; same-day pairs left
-  unfolded; reused short PINs, another agency or another title never folded;
-  `include_superseded`; the extra query failing, cut at 1,000, skipped when the budget is spent;
-  paging after folding; the City's fields unchanged.
+  extension and a correction folded; a cancellation never removing a solicitation (including
+  the reviewer's case: an old round, a re-bid, then a cancellation a day later), the
+  cancellation notice listed under `cancelled` as the full row; same-day pairs; reused short
+  PINs and the 8-character boundary (7 does not fold, 8 does); another agency or title never
+  folded; only the exact prefixes; the folded current row's fields unchanged; a note when the
+  newest due date is earlier; `include_superseded` folding and moving nothing; the extra query
+  failing, returning `[null]` or bad rows, cut at 1,000, skipped when the budget is spent; a
+  folding failure falling back to the page; paging after folding; the City's fields unchanged.
 - `test/about-data.test.mjs`: `about_data` says BetaNYC modified `get_open_solicitations` (the
   plain words of the detail, and the "modified" answer) and says the other six are not.
   `test/answers.test.mjs`: the open list's Source line and `source` say so too, and the six

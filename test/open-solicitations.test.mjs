@@ -11,8 +11,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { clock, nyNow, nyToday } from "../dist/city-record.js";
-import { callTool } from "../dist/tools.js";
-import { NOTE_NO_TIME, NOTE_PLACEHOLDER, NOTE_CANCEL_UNMATCHED, noticeKind, matchKey } from "../dist/solicitations.js";
+import { callTool, arrangeOpenList } from "../dist/tools.js";
+import { NOTE_NO_TIME, NOTE_PLACEHOLDER, NOTE_CANCEL_UNMATCHED, noticeKind, matchKey, foldOpenSolicitations } from "../dist/solicitations.js";
 
 const REAL = JSON.parse(readFileSync(new URL("./fixtures/solicitations.json", import.meta.url), "utf8")).rows;
 const row = (id) => {
@@ -43,7 +43,7 @@ function mockDataset(t, rows, { amendments = "ok", mainTakesMs = 0 } = {}) {
       const since = p.get("$where").match(/start_date >= '([^']+)'/)[1];
       const fields = p.get("$select").split(",");
       const found = exists
-        .filter((r) => ["Bid Extension:", "Correction:", "Cancel"].some((x) => r.short_title.startsWith(x)) && r.start_date >= since)
+        .filter((r) => ["Bid Extension:", "Correction:", "Cancellation:"].some((x) => r.short_title.startsWith(x)) && r.start_date >= since)
         .sort((a, b) => (a.start_date < b.start_date ? 1 : a.start_date > b.start_date ? -1 : a.request_id < b.request_id ? -1 : 1))
         .slice(0, Number(p.get("$limit")))
         .map((r) => Object.fromEntries(fields.filter((f) => f in r).map((f) => [f, r[f]])));
@@ -166,15 +166,29 @@ test("a due date more than 366 days ahead is labeled a placeholder, and kept as 
 
 // ---------------------------------------------------------------- Fix C: amended and cancelled notices
 
-test("titles are classified by their prefix only", () => {
+test("only the three prefixes seen in the real data count, exactly as written", () => {
   assert.equal(noticeKind("Bid Extension: New Elevator Maintenance"), "extension");
   assert.equal(noticeKind("Correction: Jacobi Building 1 Roof 2"), "correction");
   assert.equal(noticeKind("Cancellation: ACS - Sauces, Seasonings, Spices"), "cancellation");
-  assert.equal(noticeKind("Correction: Cancellation: X"), "cancellation");
   assert.equal(noticeKind("New Elevator Maintenance and Repair Service"), "original");
+  // Forms that are NOT in the 1,000 real rows are not read as amendments.
+  for (const t of ["Bid Extension - New Elevator", "BID EXTENSION: X", "Bid extension: X", "Cancelled: X", "Cancel: X", "CANCELLATION: X", " Correction: X", "Correction - X"]) {
+    assert.equal(noticeKind(t), "original", t);
+  }
   const doc = row("20260429002");
   assert.equal(doc.agency_name, "Correction", "the Department of Correction: an agency, not a prefix");
   assert.equal(noticeKind(doc.short_title), "original");
+});
+
+test("a \"Bid Extension -\" title does not fold into the original", async (t) => {
+  // DERIVED from the real Bid Extension 20260227028: the same notice with "Bid Extension -".
+  const ext = { ...row("20260227028"), short_title: "Bid Extension - New Elevator Maintenance and Repair Service" };
+  const orig = { ...ext, request_id: "20260206999", start_date: "2026-02-13T00:00:00.000", short_title: "New Elevator Maintenance and Repair Service", due_date: "2026-03-20T11:30:00.000" };
+  fixClock(t, "2026-03-10T12:00:00-04:00");
+  mockDataset(t, [orig, ext]);
+  const body = await call();
+  assert.equal(body.notices.length, 2);
+  assert.equal(body.folded_into_newer_notice, 0);
 });
 
 test("an extension folds its original, and the later deadline is the one listed", async (t) => {
@@ -188,14 +202,30 @@ test("an extension folds its original, and the later deadline is the one listed"
   mockDataset(t, [orig, ext]);
   const body = await call();
   assert.deepEqual(ids(body), [ext.request_id]);
-  assert.equal(body.notices[0].due_date, "2026-04-20T11:30:00.000");
-  assert.deepEqual(body.notices[0].betanyc_notes.supersedes, [
+  // The folded-into (current) row keeps every City field, due_date included, exactly.
+  const { betanyc_notes, ...fields } = body.notices[0];
+  assert.deepEqual(fields, ext);
+  assert.deepEqual(betanyc_notes.supersedes, [
     { request_id: orig.request_id, notice_kind: "original", start_date: orig.start_date, due_date: orig.due_date },
   ]);
-  assert.equal(body.notices[0].betanyc_notes.notice_kind, "extension");
+  assert.equal(betanyc_notes.notice_kind, "extension");
+  assert.ok(!betanyc_notes.notes.some((x) => /Earlier notices .* later due date/.test(x)), "the newest due date is the later one");
   assert.equal(body.folded_into_newer_notice, 1);
   assert.equal(body.city_notices_on_this_page, 2);
-  assert.match(body.paging_note, /1 were folded .* so 1 are in notices\. Call again with include_superseded: true to list all 2/);
+  assert.match(body.paging_note, /1 older notice\(s\) were folded .* so 1 are in notices\. A cancellation never takes a solicitation off the list\. Call again with include_superseded: true to list all 2/);
+});
+
+test("the PIN must be at least 8 characters: 7 does not fold, 8 does", async (t) => {
+  // DERIVED from the real Venture Forward pair (80126D0002), with the PIN cut to 7 and to 8.
+  for (const [pin, foldsInto] of [["80126D0", null], ["80126D00", "20251223006"]]) {
+    fixClock(t, "2026-01-05T10:00:00-05:00");
+    mockDataset(t, [{ ...row("20251212006"), pin }, { ...row("20251223006"), pin }]);
+    const body = await call();
+    assert.equal(body.folded_into_newer_notice, foldsInto ? 1 : 0, `PIN ${pin}`);
+    if (foldsInto) assert.deepEqual(ids(body), [foldsInto], `PIN ${pin}`);
+    else assert.deepEqual(ids(body).sort(), ["20251212006", "20251223006"], `PIN ${pin}`);
+    t.mock.restoreAll();
+  }
 });
 
 test("a correction is folded into the newer notice for the same solicitation", async (t) => {
@@ -207,34 +237,65 @@ test("a correction is folded into the newer notice for the same solicitation", a
   assert.deepEqual(body.notices[0].betanyc_notes.supersedes.map((s) => [s.request_id, s.notice_kind]), [["20251212006", "correction"]]);
 });
 
-test("a cancellation moves the solicitation to cancelled, even with a later due date than the original", async (t) => {
-  // Real: the Cancellation 20260609061 (due 2026-08-19) and its original 20260616056 (due
-  // 2026-07-08). DERIVED: the cancellation posted a day after the original (really the same day).
+test("when the newest notice gives an earlier due date, the current row says so (JISH)", async (t) => {
+  // Real: JISH (81622P0004), 2039-12-30 in the two older notices, 2026-12-31 in the newest.
+  fixClock(t, "2026-11-18T13:35:00-05:00");
+  mockDataset(t, [row("20260408021"), row("20260128026"), row("20251007002")]);
+  const body = await call();
+  assert.deepEqual(ids(body), ["20260408021"]);
+  assert.equal(body.notices[0].due_date, "2026-12-31T23:59:00.000");
+  assert.ok(body.notices[0].betanyc_notes.notes.some((x) => /^Earlier notices for this solicitation gave a different, later due date \(2039-12-30T23:59:00\.000 in request 20260128026; 2039-12-30T23:59:00\.000 in request 20251007002\)/.test(x)));
+});
+
+// ---- Cancellations never take a solicitation off the list (review of #33).
+
+test("the reviewer's case: old round, re-bid, then a cancellation a day later; the re-bid stays listed", async (t) => {
+  // DERIVED from the real truck-chassis pair (PIN 85726B0044): an old round, a re-bid of the same
+  // PIN, agency and title, and a "Cancellation:" notice posted the day after the re-bid.
+  const rebid = row("20260616056"); // posted 2026-06-16, due 2026-07-08
+  const old = { ...rebid, request_id: "20260301999", start_date: "2026-03-05T00:00:00.000", end_date: "2026-03-05T00:00:00.000", due_date: "2026-07-01T10:30:00.000" };
+  const cancel = { ...row("20260609061"), start_date: "2026-06-17T00:00:00.000" }; // due 2026-08-19
+  fixClock(t, "2026-06-20T12:00:00-04:00");
+  mockDataset(t, [old, rebid, cancel]);
+  const body = await call();
+  assert.deepEqual(ids(body), [rebid.request_id], "the re-bid is in notices; the old round is folded under it");
+  const n = body.notices[0].betanyc_notes;
+  assert.deepEqual(n.supersedes.map((x) => x.request_id), [old.request_id]);
+  assert.ok(n.notes.some((x) => x === `A cancellation notice matches this solicitation (request ${cancel.request_id}, posted 2026-06-17): same PIN, agency and title. It may be cancelled, or the cancellation may refer to an earlier round. Read both notices or ask the agency.`), JSON.stringify(n.notes));
+  assert.deepEqual(n.matching_cancellations.map((x) => x.request_id), [cancel.request_id]);
+  // The cancellation notice itself is under cancelled: the City's full row, unchanged, plus a note.
+  assert.equal(body.cancelled.length, 1);
+  const { betanyc_notes, ...fields } = body.cancelled[0];
+  assert.deepEqual(fields, cancel);
+  assert.deepEqual(betanyc_notes.matches.map((x) => x.request_id).sort(), [old.request_id, rebid.request_id].sort());
+  assert.ok(betanyc_notes.notes.some((x) => /^This cancellation notice matches .*None of them is taken off the list/.test(x)));
+});
+
+test("a cancellation with a later due date than the original never hides it", async (t) => {
+  // Real rows 20260609061 (Cancellation, due 2026-08-19) and 20260616056 (due 2026-07-08).
+  // DERIVED: the cancellation posted a day after the original (really the same day).
   const cancel = { ...row("20260609061"), start_date: "2026-06-17T00:00:00.000" };
   const orig = row("20260616056");
   fixClock(t, "2026-06-20T12:00:00-04:00");
   mockDataset(t, [orig, cancel]);
   const body = await call();
-  assert.deepEqual(ids(body), [], "not presented as open");
-  assert.equal(body.cancelled.length, 1);
-  const c = body.cancelled[0];
-  assert.deepEqual([c.request_id, c.agency_name, c.cancellation_posted], [cancel.request_id, cancel.agency_name, "2026-06-17T00:00:00.000"]);
-  assert.match(c.short_title, /^Cancellation: 85726B0044/);
-  assert.deepEqual(c.cancels.map((x) => x.request_id), [orig.request_id]);
-  assert.match(body.paging_note, /0 were folded .* and 2 are listed under cancelled, so 0 are in notices/);
+  assert.deepEqual(ids(body), [orig.request_id]);
+  assert.ok(body.notices[0].betanyc_notes.notes.some((x) => /^A cancellation notice matches this solicitation/.test(x)));
+  assert.deepEqual(body.cancelled.map((c) => c.request_id), [cancel.request_id]);
+  assert.match(body.paging_note, /0 older notice\(s\) were folded .* and 1 matched cancellation notice\(s\) are listed under cancelled, so 1 are in notices/);
 });
 
-test("a cancellation and its original posted the same day are both listed, with a note", async (t) => {
-  // Real: exactly as published. The request_id order would make the original "newest".
+test("a cancellation and its original posted the same day: the original stays, with a note", async (t) => {
+  // Real: exactly as published (the truck-chassis pair, PIN 85726B0044, both 2026-06-16).
   fixClock(t, "2026-06-20T12:00:00-04:00");
   mockDataset(t, [row("20260616056"), row("20260609061")]);
   const body = await call();
-  assert.deepEqual(ids(body).sort(), ["20260609061", "20260616056"]);
-  for (const n of body.notices) assert.ok(n.betanyc_notes.notes.some((x) => /posted the same day/.test(x)), n.request_id);
-  assert.equal(body.cancelled, undefined);
+  assert.deepEqual(ids(body), ["20260616056"]);
+  assert.ok(body.notices[0].betanyc_notes.notes.some((x) => /posted 2026-06-16, the same day as this notice/.test(x)));
+  assert.deepEqual(body.cancelled.map((c) => c.request_id), ["20260609061"]);
 });
 
-test("a cancellation found only by the extra query cancels the row on this page", async (t) => {
+test("a cancellation found only by the extra query adds a note; the row stays listed", async (t) => {
   // Real: the Cancellation 20260710019 (posted 2026-07-16, due 2026-09-03). DERIVED: its original,
   // still open on 2026-09-05 (due 2026-09-10), while the cancellation is past its due date.
   const cancel = row("20260710019");
@@ -244,8 +305,20 @@ test("a cancellation found only by the extra query cancels the row on this page"
   const calls = mockDataset(t, [orig, cancel]);
   const body = await call();
   assert.equal(calls.length, 2, "the main query and one extra query");
-  assert.deepEqual(ids(body), []);
-  assert.deepEqual(body.cancelled.map((c) => [c.request_id, c.cancels.map((x) => x.request_id)]), [[cancel.request_id, [orig.request_id]]]);
+  assert.deepEqual(ids(body), [orig.request_id]);
+  assert.ok(body.notices[0].betanyc_notes.notes.some((x) => x.startsWith(`A cancellation notice matches this solicitation (request ${cancel.request_id}, posted 2026-07-16)`)));
+  assert.equal(body.cancelled, undefined, "the cancellation is not on this page, so it is named, not listed");
+});
+
+test("an earlier cancellation is named on a later notice, which stays listed", async (t) => {
+  // DERIVED: a cancellation of an old round, then a new notice with the same PIN, agency and title.
+  const cancel = { ...row("20260609061"), start_date: "2026-06-10T00:00:00.000" };
+  const rebid = { ...row("20260616056"), due_date: "2026-07-20T11:00:00.000" };
+  fixClock(t, "2026-06-20T12:00:00-04:00");
+  mockDataset(t, [rebid, cancel]);
+  const body = await call();
+  assert.deepEqual(ids(body), [rebid.request_id]);
+  assert.ok(body.notices[0].betanyc_notes.notes.some((x) => /^An earlier cancellation notice matches this solicitation .* so it may be a new round/.test(x)));
 });
 
 test("a cancellation with no match is listed, with its kind and a note", async (t) => {
@@ -289,12 +362,30 @@ test("the same PIN with a different agency, or a different title, does not fold"
 test("include_superseded: true lists every notice, each labeled", async (t) => {
   fixClock(t, "2026-01-05T10:00:00-05:00");
   mockDataset(t, [row("20251212006"), row("20251223006")]);
-  const body = await call({ include_superseded: true });
+  const r = await callTool("get_open_solicitations", { include_superseded: true });
+  const body = JSON.parse(r.content[0].text);
   assert.deepEqual(ids(body).sort(), ["20251212006", "20251223006"]);
   assert.equal(notesOf(body, "20251212006").superseded_by.request_id, "20251223006");
-  assert.ok(notesOf(body, "20251212006").notes.some((x) => /^Folded by default/.test(x)));
+  assert.ok(notesOf(body, "20251212006").notes.some((x) => /^Without include_superseded this notice is folded/.test(x)));
   assert.equal(notesOf(body, "20251223006").supersedes[0].request_id, "20251212006");
   assert.equal(body.folded_into_newer_notice, 0);
+  // Nothing is folded or moved in this mode, and the answer's lines do not say otherwise.
+  const line = r.content.at(-1).text;
+  assert.match(line, /^BetaNYC modified this data: listed every notice on this page as NYC Open Data sent it, kept due times of 00:00 listed through their day and added labels under betanyc_notes; nothing was folded or moved\. /);
+  assert.doesNotMatch(line, /left some records out|folded,|listed apart/);
+  assert.match(body.paging_note, /include_superseded is on, so nothing was folded or moved/);
+});
+
+test("include_superseded: true moves no cancellation notice", async (t) => {
+  // The reviewer's shape (derived from PIN 85726B0044 rows, as above).
+  const rebid = row("20260616056");
+  const cancel = { ...row("20260609061"), start_date: "2026-06-17T00:00:00.000" };
+  fixClock(t, "2026-06-20T12:00:00-04:00");
+  mockDataset(t, [rebid, cancel]);
+  const body = await call({ include_superseded: true });
+  assert.deepEqual(ids(body).sort(), [cancel.request_id, rebid.request_id].sort());
+  assert.equal(body.cancelled, undefined);
+  assert.ok(notesOf(body, rebid.request_id).notes.some((x) => /^A cancellation notice matches this solicitation/.test(x)));
 });
 
 test("when the extra query fails, the list still comes back, with a plain note", async (t) => {
@@ -306,6 +397,39 @@ test("when the extra query fails, the list still comes back, with a plain note",
     assert.deepEqual(ids(body), ["20251223006"], "rows on the same page still fold");
     t.mock.restoreAll();
   }
+});
+
+test("a bad answer to the extra query ([null], bad rows) never fails the call", async (t) => {
+  const bad = [[null], [1, "x", []], [{ request_id: 5 }], [{ request_id: "1", start_date: "2026-01-01T00:00:00.000", due_date: "x", agency_name: "Y", short_title: "Correction: Z", pin: 12345678 }]];
+  for (const rows of bad) {
+    fixClock(t, "2026-01-05T10:00:00-05:00");
+    mockDataset(t, [row("20251212006"), row("20251223006")], { amendments: new Response(JSON.stringify(rows), { status: 200 }) });
+    const r = await callTool("get_open_solicitations", {});
+    assert.ok(!r.isError, `${JSON.stringify(rows)}: ${r.content[0].text}`);
+    const body = JSON.parse(r.content[0].text);
+    assert.deepEqual(ids(body), ["20251223006"], JSON.stringify(rows));
+    assert.match(body.amendment_check, /did not look like a notice; (it was|they were) skipped/, JSON.stringify(rows));
+    t.mock.restoreAll();
+  }
+});
+
+test("a failure while folding falls back to the page, with a plain note and no stack lines", async () => {
+  const page = { notices: [row("20251212006"), row("20251223006")], offset: 0, more: false, amendments: [] };
+  const opts = { now: new Date("2026-01-05T15:00:00Z"), includeSuperseded: false };
+  let calls = 0;
+  const flaky = (rows, amendments, o) => {
+    calls++;
+    if (amendments !== null) throw new TypeError("Cannot read properties of null (reading 'pin')\n    at matchKey (file:///x/solicitations.js:1:1)");
+    return foldOpenSolicitations(rows, amendments, o);
+  };
+  const out = arrangeOpenList(page, opts, flaky);
+  assert.equal(calls, 2);
+  assert.deepEqual(out.folded.notices.map((n) => n.request_id), ["20251223006"], "the page still folds on its own");
+  assert.equal(out.amendmentNote, "Amended, extended and cancelled notices could not be checked this time (Cannot read properties of null (reading 'pin')). Notices on other pages or past their due date were not checked, so a notice here may have a newer deadline or a cancellation notice.");
+  const broken = () => { throw new Error("no"); };
+  const last = arrangeOpenList(page, opts, broken);
+  assert.deepEqual(last.folded.notices, page.notices, "the City's rows, as sent");
+  assert.match(last.amendmentNote, /labels could not be added either \(no\)/);
 });
 
 test("both requests share one 90-second budget, and the extra one is skipped when it is spent", async (t) => {
@@ -327,7 +451,7 @@ test("the extra query asks only what matching needs, and is skipped for an empty
   assert.equal(
     extra.get("$where"),
     "type_of_notice_description='Solicitation' AND start_date >= '2024-12-01' AND " +
-      "(short_title like 'Bid Extension:%' OR short_title like 'Correction:%' OR short_title like 'Cancel%')"
+      "(short_title like 'Bid Extension:%' OR short_title like 'Correction:%' OR short_title like 'Cancellation:%')"
   );
   t.mock.restoreAll();
   fixClock(t, "2026-01-05T10:00:00-05:00");

@@ -6,6 +6,7 @@ import {
   UpstreamError,
   SOURCE,
   type NoticePage,
+  type OpenSolicitationsPage,
   searchNotices,
   getNoticesByAgency,
   getNoticesByType,
@@ -14,7 +15,17 @@ import {
   getOpenSolicitations,
   getNoticesByDateRange,
 } from "./city-record.js";
-import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools, isRealDate, provenance, toolError } from "./betanyc-tools.js";
+import {
+  BETANYC_INSTRUCTIONS,
+  annotateTools,
+  createBetanycTools,
+  errorSummary,
+  isRealDate,
+  provenance,
+  toolError,
+  whatWasDone,
+  type ChangedByBetanyc,
+} from "./betanyc-tools.js";
 import { PACKAGE_VERSION } from "./version.js";
 import { foldOpenSolicitations, type Folded } from "./solicitations.js";
 import { readFileSync } from "node:fs";
@@ -39,8 +50,8 @@ export const betanyc = createBetanycTools({
 });
 
 /**
- * get_open_solicitations is the one tool whose answers BetaNYC modifies (it folds, moves
- * cancellations and adds labels), so DATA-SOURCES.json describes it in its own entry,
+ * get_open_solicitations is the one tool whose answers BetaNYC modifies (it folds older amended
+ * notices, lists matched cancellation notices apart and adds labels), so DATA-SOURCES.json describes it in its own entry,
  * "open-solicitations", with changes.changed true. Its answers repeat that entry's changes, read
  * here from the same file so the two cannot disagree. Throws at startup if the entry is missing.
  */
@@ -54,11 +65,22 @@ export const OPEN_SOLICITATIONS_CHANGES: { changed: true; steps: string[]; detai
   return { changed: true, steps: [...ch.steps], detail: ch.detail };
 })();
 
-/** Said before the Source line of a get_open_solicitations answer, so it never reads like the
- * untouched record. */
-export const OPEN_SOLICITATIONS_LINE =
-  "BetaNYC arranged these notices (folded, cancellations listed apart, labels in betanyc_notes; see about_data); " +
-  "the official record is the City Record Online dataset. ";
+/**
+ * What a get_open_solicitations answer says BetaNYC did, through the shared provenance()
+ * (module 1.5.2), so its Source line reads "BetaNYC modified this data: … This copy should not
+ * be considered the official record. … Official record: City Record Online …, <link>", the same
+ * kind as about_data gives. By default the words are about_data's own (whatWasDone of the
+ * entry's steps). With include_superseded nothing is folded or moved, so the line says only
+ * what was done.
+ */
+export function openSolicitationsChange(includeSuperseded: boolean): ChangedByBetanyc {
+  return {
+    kind: "modified-by-betanyc",
+    detail: includeSuperseded
+      ? "listed every notice on this page as NYC Open Data sent it, kept due times of 00:00 listed through their day and added labels under betanyc_notes; nothing was folded or moved"
+      : whatWasDone(OPEN_SOLICITATIONS_CHANGES.steps),
+  };
+}
 
 /** The server's MCP instructions: what it covers, then the shared module's own instructions
  * (call about_data, about_betanyc and whats_changed). */
@@ -66,8 +88,8 @@ export const OPEN_SOLICITATIONS_LINE =
  * description (#32). The size-budget test (test/tool-size.test.mjs) guards the total. */
 export const ANSWER_GUIDE =
   "Every City Record tool answers with two text blocks. The first is JSON: showing, more_available and, when more " +
-  "notices match, how_to_get_more (call again with that offset), the notices exactly as NYC Open Data publishes them, " +
-  "and source. The last is a Source line with the dataset link and the time it was fetched; cite that line. " +
+  "notices match, how_to_get_more (call again with that offset), the notices, and source. Six tools give the notices " +
+  "exactly as published; get_open_solicitations is BetaNYC's arrangement, not the official record. The last block is the Source line with the link and the time it was fetched; cite that line. " +
   "An empty answer means no notice in the dataset matched, not that none was published. " +
   "About 88% of notices are Changes in Personnel listings with no notice type: keyword, agency and date " +
   "searches can be mostly those, and the type tools never return them. search_notices is a full-text " +
@@ -180,7 +202,7 @@ const DOMAIN_TOOLS: Tool[] = [
     name: "get_open_solicitations",
     description:
       "Get active solicitations (RFPs, RFQs, IFBs) whose due date and time, in New York, has not yet passed. Sorted by due date ascending — soonest deadlines first. " +
-      "BetaNYC labels each notice in betanyc_notes (no closing time given, placeholder date, extension, correction, cancellation) and folds amended notices into the newest one; cancelled ones are listed under cancelled.",
+      "BetaNYC labels notices in betanyc_notes (no closing time, placeholder date, extension, correction, cancellation) and folds older amended notices into the newest; matched cancellation notices go under cancelled, the solicitation stays listed.",
     inputSchema: {
       type: "object",
       properties: {
@@ -308,7 +330,11 @@ function useLimit(asked: number | undefined, dflt: number, max: number): { limit
  * with the link and the time it was fetched (shared provenance(), kind "live").
  */
 function answer(page: NoticePage, use: { limit: number; note?: string }, open?: OpenExtras) {
-  const p = provenance({ ...SOURCE, kind: "live" });
+  const p = provenance({
+    ...SOURCE,
+    kind: "live",
+    ...(open ? { changedByBetanyc: openSolicitationsChange(open.includeSuperseded) } : {}),
+  });
   // offset, limit and more_available count notices as NYC Open Data returns them, so paging
   // stays right when some of them are folded (get_open_solicitations).
   const cityRows = page.notices.length;
@@ -324,21 +350,18 @@ function answer(page: NoticePage, use: { limit: number; note?: string }, open?: 
     ...(use.note ? { note: use.note } : {}),
     ...(open ? openSummary(open, cityRows) : {}),
     notices: listed,
-    // For the open list, the source object says what about_data says: BetaNYC modified this
-    // list, so these figures are not the official record (same field names as about_data).
-    source: open
-      ? { ...p.provenance, figures_official: false, changed_by_betanyc: OPEN_SOLICITATIONS_CHANGES }
-      : p.provenance,
+    // For the open list, provenance() adds changed_by_betanyc (kind and detail).
+    source: p.provenance,
   };
   return {
     content: [
       { type: "text" as const, text: JSON.stringify(body, null, 2) },
-      { type: "text" as const, text: open ? OPEN_SOLICITATIONS_LINE + p.text : p.text },
+      { type: "text" as const, text: p.text },
     ],
   };
 }
 
-interface OpenExtras {
+export interface OpenExtras {
   folded: Folded;
   includeSuperseded: boolean;
   amendmentNote?: string;
@@ -354,11 +377,11 @@ function openSummary(open: OpenExtras, cityRows: number) {
     ...(cancelled.length ? { cancelled } : {}),
     paging_note:
       `offset, limit and more_available count notices as NYC Open Data returns them: ${cityRows} on this page. ` +
-      (folded || movedToCancelled
-        ? `${folded} were folded into a newer notice for the same solicitation (see supersedes) and ${movedToCancelled} are listed under cancelled, so ${listedCount} are in notices. Call again with include_superseded: true to list all ${cityRows}, each labeled. `
-        : open.includeSuperseded
-          ? "include_superseded is on, so every one is listed. "
-          : "None were folded. ") +
+      (open.includeSuperseded
+        ? "include_superseded is on, so nothing was folded or moved: every one is in notices, labeled. "
+        : folded || movedToCancelled
+          ? `${folded} older notice(s) were folded under a newer notice for the same solicitation (named by request_id and dates in its supersedes) and ${movedToCancelled} matched cancellation notice(s) are listed under cancelled, so ${listedCount} are in notices. A cancellation never takes a solicitation off the list. Call again with include_superseded: true to list all ${cityRows}, each labeled. `
+          : "None were folded or moved. ") +
       "The labels in betanyc_notes are BetaNYC's reading of the titles and dates, not an official status.",
     ...(open.amendmentNote ? { amendment_check: open.amendmentNote } : {}),
   };
@@ -406,8 +429,7 @@ export async function callTool(name: string, args: unknown) {
         const now = new Date(clock.now());
         const page = await getOpenSolicitations(use.limit, offset, now);
         const includeSuperseded = include_superseded ?? false;
-        const folded = foldOpenSolicitations(page.notices, page.amendments, { now, includeSuperseded });
-        return answer(page, use, { folded, includeSuperseded, amendmentNote: page.amendmentNote });
+        return answer(page, use, arrangeOpenList(page, { now, includeSuperseded }));
       }
       case "get_notices_by_date_range": {
         const { start_date, end_date, limit, offset } = parseToolArgs("get_notices_by_date_range", args);
@@ -419,7 +441,37 @@ export async function callTool(name: string, args: unknown) {
     }
   } catch (err) {
     if (err instanceof UpstreamError) return toolError(err.message, { upstreamBody: err.body, secrets });
-    const message = err instanceof Error ? err.message : String(err);
-    return toolError(message, { secrets });
+    // Our own argument messages are one plain line; anything else is cut to its first plain line.
+    return toolError(errorSummary(err, 1000), { secrets });
+  }
+}
+
+/**
+ * Fold and label the open list, guarded: the amended-notice check is extra, so a failure in it,
+ * or in folding against it, must never fail the call. On any error the page is folded on its own
+ * (no amendments) with a plain note; if even that fails, the City's rows are listed as sent, with
+ * a note. `fold` is a parameter only so a test can make it fail.
+ */
+export function arrangeOpenList(
+  page: OpenSolicitationsPage,
+  opts: { now: Date; includeSuperseded: boolean },
+  fold: typeof foldOpenSolicitations = foldOpenSolicitations
+): OpenExtras {
+  const base = { includeSuperseded: opts.includeSuperseded };
+  try {
+    return { ...base, folded: fold(page.notices, page.amendments, opts), amendmentNote: page.amendmentNote };
+  } catch (err) {
+    const note =
+      `Amended, extended and cancelled notices could not be checked this time (${errorSummary(err, 200).replace(/\.$/, "")}). ` +
+      "Notices on other pages or past their due date were not checked, so a notice here may have a newer deadline or a cancellation notice.";
+    try {
+      return { ...base, folded: fold(page.notices, null, opts), amendmentNote: note };
+    } catch (err2) {
+      return {
+        ...base,
+        folded: { notices: page.notices as unknown as Folded["notices"], cancelled: [], folded: 0, movedToCancelled: 0 },
+        amendmentNote: `${note} BetaNYC's labels could not be added either (${errorSummary(err2, 200).replace(/\.$/, "")}); the notices are listed as NYC Open Data sent them.`,
+      };
+    }
   }
 }

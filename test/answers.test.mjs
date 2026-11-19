@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { TOOLS, callTool, parseToolArgs, OPEN_SOLICITATIONS_LINE, OPEN_SOLICITATIONS_CHANGES } from "../dist/tools.js";
+import { TOOLS, callTool, parseToolArgs, OPEN_SOLICITATIONS_CHANGES, ANSWER_GUIDE, betanyc } from "../dist/tools.js";
 import { SOURCE } from "../dist/city-record.js";
 
 const FIXTURE = Array.from({ length: 500 }, (_, i) => ({
@@ -65,11 +65,13 @@ test("every City Record tool names the source, links it and says when it was fet
     assert.equal(body.source.as_of_kind, "retrieved", name);
     const asOf = Date.parse(body.source.as_of);
     assert.ok(asOf >= before - 1000 && asOf <= Date.now() + 1000, `${name}: as_of is the time of the call`);
-    const prefix = name === "get_open_solicitations" ? OPEN_SOLICITATIONS_LINE : "";
-    assert.ok(line.startsWith(`${prefix}Source: City Record Online (NYC Department of Citywide Administrative Services). `), `${name}: ${line}`);
+    const head = name === "get_open_solicitations"
+      ? "BetaNYC modified this data: left some records out and reshaped it. This copy should not be considered the official record. "
+      : "Source: City Record Online (NYC Department of Citywide Administrative Services). ";
+    assert.ok(line.startsWith(head), `${name}: ${line}`);
     assert.equal(body.source.retrieved_at, body.source.as_of, name);
     assert.match(line, /\. Fetched from the source for this answer at \d{4}-\d{2}-\d{2} \d{2}:\d{2} E[SD]T \(New York time\)\. /, name);
-    assert.ok(line.endsWith("Link: https://data.cityofnewyork.us/d/dg92-zbpx"), name);
+    assert.ok(line.endsWith("https://data.cityofnewyork.us/d/dg92-zbpx"), name);
   }
 });
 
@@ -123,7 +125,7 @@ test("every City Record tool's first text block is JSON alone, and the Source li
     let body;
     assert.doesNotThrow(() => (body = JSON.parse(r.content[0].text)), `${name}: content[0].text is not JSON`);
     for (const key of ["showing", "offset", "more_available", "notices", "source"]) assert.ok(key in body, `${name}: ${key}`);
-    assert.match(r.content.at(-1).text, /^(BetaNYC arranged these notices .*)?Source: City Record Online .*Link: https:\/\/data\.cityofnewyork\.us\/d\/dg92-zbpx$/, name);
+    assert.match(r.content.at(-1).text, /^(Source: City Record Online .*Link:|BetaNYC modified this data: .* Official record: City Record Online \(NYC Department of Citywide Administrative Services\),) https:\/\/data\.cityofnewyork\.us\/d\/dg92-zbpx$/, name);
   }
 });
 
@@ -197,7 +199,7 @@ test("get_notices_by_date_range refuses impossible dates and a start after the e
 // Review of #33: get_open_solicitations' answer must not read like the untouched record. Its
 // source object and Source line say what about_data says for it (DATA-SOURCES.json
 // "open-solicitations"); the other six tools keep the plain source.
-test("get_open_solicitations says BetaNYC arranged the notices; the other six do not", async (t) => {
+test("get_open_solicitations says BetaNYC modified the data, in about_data's words; the other six do not", async (t) => {
   mockDataset(t);
   const ds = JSON.parse(readFileSync(new URL("../DATA-SOURCES.json", import.meta.url), "utf8")).sources;
   const entry = ds.find((s) => s.id === "open-solicitations");
@@ -206,12 +208,13 @@ test("get_open_solicitations says BetaNYC arranged the notices; the other six do
     const r = await callTool(name, args);
     const { body, line } = parse(r);
     if (name === "get_open_solicitations") {
-      assert.equal(body.source.figures_official, false);
-      assert.deepEqual(body.source.changed_by_betanyc, entry.changes);
-      assert.match(line, /^BetaNYC arranged these notices .*; the official record is the City Record Online dataset\. Source: City Record Online /);
+      assert.deepEqual(body.source.changed_by_betanyc, { kind: "modified-by-betanyc", detail: "left some records out and reshaped it" });
+      assert.match(line, /^BetaNYC modified this data: left some records out and reshaped it\. This copy should not be considered the official record\. Fetched from the source for this answer at .*\. Official record: City Record Online \(NYC Department of Citywide Administrative Services\), https:\/\/data\.cityofnewyork\.us\/d\/dg92-zbpx$/);
+      // The same words about_data gives for this tool.
+      const about = betanyc.call("about_data", { topic: "get_open_solicitations" }).content[0].text;
+      assert.ok(about.includes("BetaNYC modified this data: left some records out and reshaped it. This copy should not be considered the official record."));
     } else {
       assert.equal(body.source.changed_by_betanyc, undefined, name);
-      assert.equal(body.source.figures_official, undefined, name);
       assert.match(line, /^Source: City Record Online /, name);
     }
   }
@@ -232,4 +235,11 @@ test("the six unchanged tools pass the City's rows through untouched, in the ord
     const { body } = parse(await callTool(name, { ...CALLS[name], limit: 30, offset: 7 }));
     assert.deepEqual(body.notices, FIXTURE.slice(7, 37), name);
   }
+});
+
+// Review of #33: the answer guide must not tell the model that every tool gives the notices
+// exactly as NYC Open Data publishes them; the open list is BetaNYC's arrangement.
+test("the answer guide says which tools give the notices as published, and that the open list is arranged", () => {
+  assert.doesNotMatch(ANSWER_GUIDE, /the notices exactly as NYC Open Data publishes them, and source/);
+  assert.match(ANSWER_GUIDE, /Six tools give the notices exactly as published; get_open_solicitations is BetaNYC's arrangement, not the official record/);
 });

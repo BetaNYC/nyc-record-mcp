@@ -1,4 +1,5 @@
 import { PACKAGE_VERSION } from "./version.js";
+import { errorSummary } from "./betanyc-tools.js";
 
 const BASE_URL = "https://data.cityofnewyork.us";
 const DATASET_ID = "dg92-zbpx";
@@ -290,15 +291,25 @@ export const AMENDMENT_LIMIT = 1000;
 /** Only the fields matching needs (src/solicitations.ts). */
 const AMENDMENT_FIELDS = "request_id,start_date,due_date,pin,agency_name,short_title";
 
-/** The extra query's $where: solicitations posted in the last 400 days whose title starts with an
- * amendment prefix (the prefixes counted in src/solicitations.ts), in the code's existing
+/** The extra query's $where: solicitations posted in the last 400 days whose title starts with one
+ * of the three amendment prefixes seen in the data (src/solicitations.ts), in the code's existing
  * `like 'text%'` form. */
 export function amendmentsWhere(now: Date): string {
   const since = nyToday(new Date(now.getTime() - AMENDMENT_LOOKBACK_DAYS * 86_400_000));
   return (
     `type_of_notice_description='Solicitation' AND start_date >= '${since}' AND ` +
-    `(short_title like 'Bid Extension:%' OR short_title like 'Correction:%' OR short_title like 'Cancel%')`
+    `(short_title like 'Bid Extension:%' OR short_title like 'Correction:%' OR short_title like 'Cancellation:%')`
   );
+}
+
+const AMENDMENT_TEXT_FIELDS = ["request_id", "start_date", "due_date", "agency_name", "short_title"] as const;
+
+/** A row from the extra query that matching can use: a plain object whose matching fields are text
+ * (pin may be missing; a short or missing PIN simply never matches). */
+function isAmendmentRow(r: unknown): r is CityRecordNotice {
+  if (r === null || typeof r !== "object" || Array.isArray(r)) return false;
+  const o = r as Record<string, unknown>;
+  return AMENDMENT_TEXT_FIELDS.every((k) => typeof o[k] === "string") && (o.pin === undefined || typeof o.pin === "string");
 }
 
 export interface OpenSolicitationsPage extends NoticePage {
@@ -334,19 +345,21 @@ export async function getOpenSolicitations(
       deadline
     );
     const cut = rows.length > AMENDMENT_LIMIT;
-    return {
-      ...main,
-      amendments: rows.slice(0, AMENDMENT_LIMIT),
-      ...(cut
-        ? { amendmentNote: `More than ${AMENDMENT_LIMIT} amended or cancelled solicitations were posted in the last ${AMENDMENT_LOOKBACK_DAYS} days; only the newest ${AMENDMENT_LIMIT} were checked against this list.` }
-        : {}),
-    };
+    // Keep only rows that look like notices: an object whose matching fields are text. Anything
+    // else ([null], numbers, a pin that is a number) is skipped and counted, never trusted.
+    const usable = rows.slice(0, AMENDMENT_LIMIT).filter(isAmendmentRow);
+    const skipped = Math.min(rows.length, AMENDMENT_LIMIT) - usable.length;
+    const notes = [
+      cut ? `More than ${AMENDMENT_LIMIT} amended or cancelled solicitations were posted in the last ${AMENDMENT_LOOKBACK_DAYS} days; only the newest ${AMENDMENT_LIMIT} were checked against this list.` : "",
+      skipped ? `The amended-notice check returned ${skipped} entr${skipped === 1 ? "y" : "ies"} that did not look like a notice; ${skipped === 1 ? "it was" : "they were"} skipped.` : "",
+    ].filter(Boolean);
+    return { ...main, amendments: usable, ...(notes.length ? { amendmentNote: notes.join(" ") } : {}) };
   } catch (err) {
-    const why = err instanceof UpstreamError ? ` (${err.message.split(". ")[0]}.)` : "";
+    const why = errorSummary(err, 200).replace(/\.$/, "");
     return {
       ...main,
       amendments: null,
-      amendmentNote: `Amended, extended and cancelled notices could not be checked this time${why} The list is shown as NYC Open Data returned it; a notice here may have a newer deadline or be cancelled.`,
+      amendmentNote: `Amended, extended and cancelled notices could not be checked this time (${why}). Notices on other pages or past their due date were not checked, so a notice here may have a newer deadline or a cancellation notice.`,
     };
   }
 }

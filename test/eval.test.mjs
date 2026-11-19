@@ -20,3 +20,18 @@ test("the offline replay matches the recorded results", async () => {
   const recorded = read("../eval/results.json").results;
   assert.deepEqual(now.map((r) => [r.id, r.pass]), recorded.map((r) => [r.id, r.pass]));
 });
+
+// Review of #33: a failing question says exactly why, and hand-built fixtures say so.
+test("the results say why Q03 fails and how to record it, and label the hand-built fixtures", async () => {
+  const { runEval } = await import("../eval/run.mjs");
+  const now = Object.fromEntries((await runEval()).map((r) => [r.id, r]));
+  const recorded = Object.fromEntries(read("../eval/results.json").results.map((r) => [r.id, r]));
+  for (const r of [now.Q03, recorded.Q03]) {
+    assert.equal(r.pass, false);
+    assert.match(r.why, /needs a live request to NYC Open Data, which was not authorized/);
+    assert.match(r.why, /npm run eval -- --record/);
+  }
+  for (const id of ["Q12", "Q13"]) {
+    for (const r of [now[id], recorded[id]]) assert.match(r.fixture, /^hand-built from rows of a direct query on 2026-11-18/, id);
+  }
+});
