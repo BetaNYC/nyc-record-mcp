@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { callTool, parseToolArgs } from "../dist/tools.js";
+import { TOOLS, callTool, parseToolArgs } from "../dist/tools.js";
 import { SOURCE } from "../dist/city-record.js";
 
 const FIXTURE = Array.from({ length: 500 }, (_, i) => ({
@@ -30,11 +30,9 @@ function mockDataset(t, rows = FIXTURE) {
   return calls;
 }
 
-/** The JSON body and the closing source line of an answer. */
+/** The JSON body (the first text block) and the Source line (the last) of an answer. */
 function parse(r) {
-  const text = r.content[0].text;
-  const cut = text.lastIndexOf("\n\nSource: ");
-  return { body: JSON.parse(text.slice(0, cut)), line: text.slice(cut + 2) };
+  return { body: JSON.parse(r.content[0].text), line: r.content.at(-1).text };
 }
 
 const CALLS = {
@@ -113,10 +111,84 @@ test("an empty answer shows 0 and nothing more", async (t) => {
   assert.deepEqual([body.showing, body.more_available, body.notices], [0, false, []]);
 });
 
-test("limits stay capped and offset must be a whole number from 0", () => {
-  assert.throws(() => parseToolArgs("search_notices", { query: "x", limit: 101 }));
-  assert.throws(() => parseToolArgs("get_notices_by_date_range", { start_date: "2026-01-01", end_date: "2026-01-02", limit: 201 }));
-  assert.throws(() => parseToolArgs("search_notices", { query: "x", offset: -1 }));
-  assert.throws(() => parseToolArgs("search_notices", { query: "x", offset: 2.5 }));
+// Review of #33: the first text block must stay valid JSON for programs that parse it. PR #37
+// had put the Source line in the same block, so JSON.parse(content[0].text) failed.
+test("every City Record tool's first text block is JSON alone, and the Source line is last", async (t) => {
+  mockDataset(t);
+  for (const [name, args] of Object.entries(CALLS)) {
+    const r = await callTool(name, args);
+    assert.ok(!r.isError, name);
+    assert.equal(r.content.length, 2, name);
+    let body;
+    assert.doesNotThrow(() => (body = JSON.parse(r.content[0].text)), `${name}: content[0].text is not JSON`);
+    for (const key of ["showing", "offset", "more_available", "notices", "source"]) assert.ok(key in body, `${name}: ${key}`);
+    assert.match(r.content.at(-1).text, /^Source: City Record Online .*Link: https:\/\/data\.cityofnewyork\.us\/d\/dg92-zbpx$/, name);
+  }
+});
+
+// Review of #33: limit 0 said "call again with offset 0" forever, and -3 or 2.5 went to NYC
+// Open Data as bad queries.
+test("limit must be a whole number of at least 1, and nothing is sent otherwise", async (t) => {
+  const calls = mockDataset(t);
+  for (const limit of [0, -3, 2.5, Number.NaN, "10"]) {
+    const r = await callTool("search_notices", { query: "parks", limit });
+    assert.equal(r.isError, true, `limit ${limit}`);
+    assert.match(r.content[0].text, /limit: (must be a whole number of at least 1|Expected number)/, `limit ${limit}`);
+  }
+  assert.equal(calls.length, 0, "no request for a bad limit");
+});
+
+test("a whole limit above the maximum is lowered to it, and the answer says so", async (t) => {
+  const calls = mockDataset(t);
+  const { body } = parse(await callTool("get_public_hearings", { limit: 500 }));
+  assert.equal(calls[0].get("$limit"), "101");
+  assert.equal(body.showing, 100);
+  assert.match(body.note, /limit 500 .*lowered to 100/);
+  assert.match(body.how_to_get_more, /offset 100 .*limit, 100/);
+  const range = parse(await callTool("get_notices_by_date_range", { start_date: "2026-11-01", end_date: "2026-11-30", limit: 1000 })).body;
+  assert.equal(calls[1].get("$limit"), "201");
+  assert.match(range.note, /lowered to 200/);
+  const exact = parse(await callTool("get_public_hearings", { limit: 100 })).body;
+  assert.equal(exact.note, undefined, "no note when nothing was lowered");
+});
+
+test("offset must be a whole number of at least 0", async (t) => {
+  const calls = mockDataset(t);
+  for (const offset of [-1, 2.5]) {
+    const r = await callTool("get_public_hearings", { offset });
+    assert.equal(r.isError, true, `offset ${offset}`);
+    assert.match(r.content[0].text, /offset: must be a whole number of at least 0/);
+  }
+  assert.equal(calls.length, 0);
   assert.deepEqual(parseToolArgs("search_notices", { query: "x", offset: 50 }), { query: "x", offset: 50 });
+});
+
+test("the advertised schema says limit is an integer from 1 to the tool's maximum", () => {
+  for (const tool of TOOLS.slice(0, 7)) {
+    const { limit, offset } = tool.inputSchema.properties;
+    const max = tool.name === "get_notices_by_date_range" ? 200 : 100;
+    assert.deepEqual([limit.type, limit.minimum, limit.maximum], ["integer", 1, max], tool.name);
+    assert.deepEqual([offset.type, offset.minimum], ["integer", 0], tool.name);
+  }
+});
+
+// Review of #33: 2026-02-31 passed the format check, and a start after the end silently
+// returned nothing.
+test("get_notices_by_date_range refuses impossible dates and a start after the end", async (t) => {
+  const calls = mockDataset(t);
+  const bad = [
+    [{ start_date: "2026-02-31", end_date: "2026-03-31" }, /start_date: is not a real date on the calendar/],
+    [{ start_date: "2026-02-01", end_date: "2026-02-29" }, /end_date: is not a real date on the calendar/],
+    [{ start_date: "2026-13-01", end_date: "2026-12-31" }, /start_date: is not a real date/],
+    [{ start_date: "2026-03-01", end_date: "2026-02-01" }, /start_date: 2026-03-01 is after end_date 2026-02-01; the start must be on or before the end/],
+  ];
+  for (const [args, re] of bad) {
+    const r = await callTool("get_notices_by_date_range", args);
+    assert.equal(r.isError, true, JSON.stringify(args));
+    assert.match(r.content[0].text, re);
+  }
+  assert.equal(calls.length, 0, "nothing sent for a bad date");
+  for (const args of [{ start_date: "2028-02-29", end_date: "2028-02-29" }, { start_date: "2026-01-31", end_date: "2026-02-01" }]) {
+    assert.ok(!(await callTool("get_notices_by_date_range", args)).isError, JSON.stringify(args));
+  }
 });

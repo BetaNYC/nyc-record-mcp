@@ -48,9 +48,39 @@ export function soqlString(value: string): string {
   return value.replace(/'/g, "''");
 }
 
+/**
+ * The clock and the wait every tool call uses. Tests replace `now` and `sleep` (for example with
+ * `t.mock.method(clock, "now", ...)`) to fix "now" or to run the retry budget without waiting.
+ */
+export const clock = {
+  now: (): number => Date.now(),
+  sleep: (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms)),
+};
+
 /** Today's date (YYYY-MM-DD) in America/New_York, regardless of host timezone. */
-export function nyToday(now: Date = new Date()): string {
+export function nyToday(now: Date = new Date(clock.now())): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(now);
+}
+
+const NY_PARTS = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hourCycle: "h23",
+});
+
+/**
+ * The date and time in New York as a floating timestamp, the form the dataset uses for
+ * due_date ("2026-11-18T10:00:00.000": New York wall-clock time, no zone). Daylight saving is
+ * the time zone database's job, so 2:30 a.m. on a spring-forward day never appears.
+ */
+export function nyNow(now: Date = new Date(clock.now())): string {
+  const p = Object.fromEntries(NY_PARTS.formatToParts(now).map((x) => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}.000`;
 }
 
 // Polite requests to NYC Open Data (issue #22). One query per tool call, no background
@@ -59,7 +89,8 @@ export function nyToday(now: Date = new Date()): string {
 // (Socrata throttles with 429: https://dev.socrata.com/docs/response-codes.html).
 // The optional app token goes in the X-App-Token header, which Socrata calls "the preferred
 // method" for SODA 2.x (https://dev.socrata.com/docs/app-tokens.html), never in the URL (#26).
-// ponytail: no per-host gate or cache; add them if one tool call ever makes more than one request.
+// There is no per-host request gate and no cache: add them if one tool call ever makes more
+// than one request.
 export const USER_AGENT = `nyc-record-mcp/${PACKAGE_VERSION} (+https://github.com/BetaNYC/nyc-record-mcp)`;
 export const REQUEST_TIMEOUT_MS = 30_000;
 /** Full-text search ($q) gets longer, with a written reason: on 2026-11-18, $q queries on this
@@ -69,6 +100,10 @@ export const REQUEST_TIMEOUT_MS = 30_000;
 export const SEARCH_TIMEOUT_MS = 60_000;
 export const MAX_RETRIES = 2;
 const MAX_WAIT_MS = 10_000;
+/** The most time one tool call may spend on NYC Open Data, across every try and wait. Without
+ * it, search_notices could take about 200 s (three 60 s tries plus waits). A try's timeout is
+ * cut to what is left of this, and no retry starts once it is spent. */
+export const CALL_BUDGET_MS = 90_000;
 
 /** A failure talking to NYC Open Data: `message` is a plain sentence saying what to try, `body`
  * is what the API said (Socrata puts the useful diagnostic, e.g. malformed SoQL, there). */
@@ -96,6 +131,28 @@ function failure(status: number): string {
   return `NYC Open Data answered with HTTP ${status}. Try again, or check the dataset at https://data.cityofnewyork.us/d/${DATASET_ID}.`;
 }
 
+const NOT_A_LIST = `NYC Open Data answered, but not with the list of notices this server expects. Try again in a minute; if it keeps happening, check the dataset at https://data.cityofnewyork.us/d/${DATASET_ID}.`;
+
+function timedOut(seconds: number, budget: boolean): string {
+  const what = budget
+    ? `did not answer within this call's ${seconds}-second limit (counting every try)`
+    : `did not answer within ${seconds} seconds`;
+  return `NYC Open Data ${what}. Try again in a minute, or narrow the question: a shorter search, or get_notices_by_agency, get_notices_by_type or get_notices_by_date_range, which are faster than a full-text search.`;
+}
+
+/** Read a 200 answer: it must be JSON and a list. Anything else is a plain UpstreamError. */
+async function readRows(res: Response): Promise<CityRecordNotice[]> {
+  const text = await res.text();
+  let rows: unknown;
+  try {
+    rows = JSON.parse(text);
+  } catch {
+    throw new UpstreamError(`${NOT_A_LIST} (The answer was not JSON.)`, text);
+  }
+  if (!Array.isArray(rows)) throw new UpstreamError(`${NOT_A_LIST} (The answer was JSON, but not a list.)`, text);
+  return rows as CityRecordNotice[];
+}
+
 async function sodaFetch(params: Record<string, string>, timeoutMs = REQUEST_TIMEOUT_MS): Promise<CityRecordNotice[]> {
   const url = new URL(`${BASE_URL}/resource/${DATASET_ID}.json`);
   for (const [key, value] of Object.entries(params)) {
@@ -104,22 +161,30 @@ async function sodaFetch(params: Record<string, string>, timeoutMs = REQUEST_TIM
   const headers: Record<string, string> = { Accept: "application/json", "User-Agent": USER_AGENT };
   const appToken = process.env.SOCRATA_APP_TOKEN;
   if (appToken) headers["X-App-Token"] = appToken;
+  const deadline = clock.now() + CALL_BUDGET_MS;
 
   for (let attempt = 1; ; attempt++) {
+    const left = deadline - clock.now();
+    const budgetBound = left < timeoutMs;
     let res: Response;
     try {
-      res = await fetch(url.toString(), { headers, signal: AbortSignal.timeout(timeoutMs) });
+      // The signal also bounds reading the body, so a body that stalls is a timeout too.
+      res = await fetch(url.toString(), { headers, signal: AbortSignal.timeout(Math.max(1, Math.min(timeoutMs, left))) });
+      if (res.ok) return await readRows(res);
     } catch (err) {
+      if (err instanceof UpstreamError) throw err;
       if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {
-        throw new UpstreamError(`NYC Open Data did not answer within ${timeoutMs / 1000} seconds. Try again in a minute, or narrow the question: a shorter search, or get_notices_by_agency, get_notices_by_type or get_notices_by_date_range, which are faster than a full-text search.`);
+        throw new UpstreamError(timedOut((budgetBound ? CALL_BUDGET_MS : timeoutMs) / 1000, budgetBound));
       }
       throw new UpstreamError("Could not reach NYC Open Data (a network error, not an answer from the API). Check the connection and try again.");
     }
-    if (res.ok) return res.json() as Promise<CityRecordNotice[]>;
     if (attempt <= MAX_RETRIES && (res.status === 429 || res.status >= 500)) {
-      await res.body?.cancel().catch(() => {});
-      await new Promise((r) => setTimeout(r, retryWaitMs(res.headers.get("retry-after"), attempt)));
-      continue;
+      const wait = retryWaitMs(res.headers.get("retry-after"), attempt);
+      if (clock.now() + wait < deadline) {
+        await res.body?.cancel().catch(() => {});
+        await clock.sleep(wait);
+        continue;
+      }
     }
     const body = await res.text().catch(() => "");
     throw new UpstreamError(failure(res.status), body);
@@ -168,6 +233,8 @@ export function searchNotices(query: string, limit = 25, offset = 0): Promise<No
 
 export function getNoticesByAgency(agencyName: string, limit = 25, offset = 0): Promise<NoticePage> {
   // SoQL `like` uses a literal `%` wildcard (https://dev.socrata.com/docs/functions/like.html).
+  // A `%` or `_` typed in the agency name also acts as a wildcard: the Socrata docs this repo
+  // cites give no escape for them, so they are passed through (README says so).
   // Build the SoQL value unencoded; URLSearchParams performs the single
   // URL-encoding pass. Single quotes are escaped by doubling per SQL rules.
   const escaped = soqlString(agencyName);
@@ -202,12 +269,12 @@ export function getPublicHearings(limit = 25, offset = 0): Promise<NoticePage> {
   );
 }
 
-export function getOpenSolicitations(limit = 25, offset = 0): Promise<NoticePage> {
-  // Use the New York calendar date, not UTC: between 8pm and midnight ET the
-  // UTC date is already "tomorrow", which would wrongly drop same-day deadlines.
-  const today = nyToday();
+export function getOpenSolicitations(limit = 25, offset = 0, now: Date = new Date(clock.now())): Promise<NoticePage> {
+  // Compare with the date AND time in New York, in due_date's own floating form: a deadline
+  // earlier today has passed (comparing with the bare date counted it as open all day), and
+  // New York time, not UTC, so the evening and daylight saving come out right.
   return page(
-    { where: `type_of_notice_description='Solicitation' AND due_date >= '${today}'`, order: "due_date ASC" },
+    { where: `type_of_notice_description='Solicitation' AND due_date > '${nyNow(now)}'`, order: "due_date ASC" },
     limit,
     offset
   );

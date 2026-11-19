@@ -2,9 +2,11 @@
   "_readme": [
     "Fixed question set for nyc-record-mcp, written 2026-11-18 before scoring. Each expected answer was found first with an independent SoQL query to NYC Open Data dataset dg92-zbpx (not through this server), on 2026-11-18.",
     "Run: npm run eval (offline, replays eval/fixtures/). npm run eval -- --record re-asks NYC Open Data live and rewrites the fixtures; then the answers below may no longer hold, because the dataset grows every day.",
-    "Checks on the answer's JSON body: `field` [path, value] (a dotted path equals a value), `top` {index, field: value...} (the notice at that index has these values), `any` {field: value...} (some notice has all of them), `all_prefix` [field, prefix] (every notice's field starts with it), `all_in` [field, [values]] (every notice's field is one of them), `count` [field, value, n] (exactly n notices have field = value), `error` regex (the answer is isError and its text matches).",
+    "Checks on the answer's JSON body: `field` [path, value] (a dotted path equals a value), `top` {index, field: value...} (the notice at that index has these values), `any` {field: value...} (some notice has all of them), `all_prefix` [field, prefix] (every notice's field starts with it), `all_in` [field, [values]] (every notice's field is one of them), `count` [field, value, n] (exactly n notices have field = value), `error` regex (the answer is isError and its text matches), `all_after_now` field (every notice's field, a floating New York timestamp, is later than the run's \"now\").",
+    "asked_at is the moment the questions were asked (the fixtures were recorded about then). The offline replay fixes the server's clock there, so get_open_solicitations asks for what was open at that moment. --record fixes the clock at the start of the run instead and prints the asked_at to put here. Fixture keys write that moment as <now> (and its date as <today>).",
     "Invariants on every non-error answer: the source block names City Record Online, the NYC Department of Citywide Administrative Services and https://data.cityofnewyork.us/d/dg92-zbpx, with as_of_kind retrieved, and the text ends with that Link line; showing equals the number of notices."
   ],
+  "asked_at": "2026-11-18T13:35:00-05:00",
   "questions": [
     {
       "id": "Q01",
@@ -32,10 +34,10 @@
       "tool": "get_open_solicitations",
       "args": { "limit": 2 },
       "checks": [
-        { "top": { "index": 0, "request_id": "20260929029", "agency_name": "Environmental Protection", "due_date": "2026-11-18T10:00:00.000" } },
+        { "all_after_now": "due_date" },
         { "all_in": ["type_of_notice_description", ["Solicitation"]] }
       ],
-      "note": "As of 2026-11-18 in New York. The fixture key replaces the date with <today>, so the replay holds on any day."
+      "note": "Corrected 2026-11-18 (#33 review). The first expected answer, 20260929029 (Environmental Protection, due 2026-11-18 10:00), was wrong: asked at about 13:35 New York time, it had closed. So had the other two notices in that recording, 20260421016 (due 10:30) and 20260625055 (due 11:00); the recording is kept in eval/fixtures/7c70934e11376ab1.json, but the corrected query no longer uses it. The true answer, the first solicitation due after 13:35 that day, was never recorded, so the check no longer names a notice: every notice in the answer must be due after the time asked. Q03 fails offline until someone runs npm run eval -- --record and updates asked_at."
     },
     {
       "id": "Q04",

@@ -7,25 +7,35 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { callTool } from "../dist/tools.js";
-import { nyToday } from "../dist/city-record.js";
+import { clock, nyNow, nyToday } from "../dist/city-record.js";
 
 const here = (p) => new URL(p, import.meta.url);
 const RECORD = process.argv.includes("--record");
-const { questions } = JSON.parse(readFileSync(here("questions.json"), "utf8"));
+const { questions, asked_at } = JSON.parse(readFileSync(here("questions.json"), "utf8"));
 const SOURCE_URL = "https://data.cityofnewyork.us/d/dg92-zbpx";
 
-/** A request's fixture key: its query parameters, sorted, with today's date as <today>. */
+// The server's clock is fixed for the whole run: at asked_at for the offline replay, so
+// "open now" means open when the questions were asked, and at the start of a --record run.
+const NOW = RECORD ? Date.now() : Date.parse(asked_at);
+if (!Number.isFinite(NOW)) throw new Error(`questions.json asked_at is not a date: ${asked_at}`);
+clock.now = () => NOW;
+
+/** A request's fixture key: its query parameters, sorted, with the run's moment in New York
+ * as <now> and its date as <today>. */
 export function fixtureKey(url) {
-  const today = nyToday();
+  const now = nyNow(new Date(NOW));
+  const today = nyToday(new Date(NOW));
   return [...new URL(url).searchParams].sort(([a], [b]) => (a < b ? -1 : 1))
-    .map(([k, v]) => `${k}=${v.split(today).join("<today>")}`).join("&");
+    .map(([k, v]) => `${k}=${v.split(now).join("<now>").split(today).join("<today>")}`).join("&");
 }
 const fixturePath = (key) => here(`fixtures/${createHash("sha256").update(key).digest("hex").slice(0, 16)}.json`);
 
 const realFetch = globalThis.fetch;
+const missing = new Set();
 globalThis.fetch = async (url, init) => {
   const key = fixtureKey(String(url));
   const path = fixturePath(key);
+  if (!RECORD && !existsSync(path)) missing.add(key);
   if (RECORD && !existsSync(path)) {
     await new Promise((r) => setTimeout(r, 2000)); // polite: 2 s between live requests
     mkdirSync(here("fixtures/"), { recursive: true });
@@ -59,6 +69,7 @@ function check(c, r, body, text) {
   if (c.all_prefix) return body.notices.every((n) => String(n[c.all_prefix[0]] ?? "").startsWith(c.all_prefix[1]));
   if (c.all_in) return body.notices.every((n) => c.all_in[1].includes(n[c.all_in[0]]));
   if (c.count) return body.notices.filter((n) => n[c.count[0]] === c.count[1]).length === c.count[2];
+  if (c.all_after_now) return body.notices.every((n) => String(n[c.all_after_now] ?? "") > nyNow(new Date(NOW)));
   throw new Error(`unknown check ${JSON.stringify(c)}`);
 }
 
@@ -69,6 +80,7 @@ function invariants(r, body, text) {
   if (body.source?.publisher !== "NYC Department of Citywide Administrative Services") bad.push("publisher");
   if (body.source?.source_url !== SOURCE_URL || !text.endsWith(`Link: ${SOURCE_URL}`)) bad.push("link");
   if (body.source?.as_of_kind !== "retrieved" || !body.source?.as_of) bad.push("as-of");
+  if (!text.split("\n").at(-1).startsWith("Source: ")) bad.push("Source line last");
   if (body.showing !== body.notices?.length) bad.push("showing");
   return bad;
 }
@@ -76,15 +88,18 @@ function invariants(r, body, text) {
 export async function runEval() {
   const results = [];
   for (const q of questions) {
+    missing.clear();
     const r = await callTool(q.tool, q.args);
     const text = r.content.map((c) => c.text).join("\n");
     let body = null;
-    if (!r.isError) body = JSON.parse(text.slice(0, text.lastIndexOf("\n\nSource: ")));
-    const failed = q.checks.filter((c) => !check(c, r, body, text)).map((c) => JSON.stringify(c));
+    if (!r.isError) body = JSON.parse(r.content[0].text);
+    const failed = missing.size
+      ? [...missing].map((k) => `no recorded fixture for ${k} (run npm run eval -- --record)`)
+      : q.checks.filter((c) => !check(c, r, body, text)).map((c) => JSON.stringify(c));
     const broken = invariants(r, body, text);
     results.push({
       id: q.id, q: q.q, pass: failed.length === 0 && broken.length === 0, failed_checks: failed, failed_invariants: broken,
-      ...(r.isError ? { answer_error: text.slice(0, 300) } : {}),
+      ...(r.isError && !missing.size ? { answer_error: text.slice(0, 300) } : {}),
     });
   }
   return results;
@@ -95,8 +110,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const passed = results.filter((r) => r.pass).length;
   for (const r of results) console.log(`${r.pass ? "PASS" : "FAIL"} ${r.id} ${r.q}${r.pass ? "" : ` ${[...r.failed_checks, ...r.failed_invariants].join("; ")}`}`);
   console.log(`${passed} of ${results.length} passed (${RECORD ? "live, fixtures recorded" : "offline, from fixtures"})`);
+  if (RECORD) console.log(`Set "asked_at" in eval/questions.json to ${new Date(NOW).toISOString()} so the replay asks at the same moment.`);
   writeFileSync(here("results.json"), JSON.stringify({
-    run_at: new Date().toISOString(), mode: RECORD ? "live" : "offline", passed, total: results.length, results,
+    run_at: new Date().toISOString(), mode: RECORD ? "live" : "offline", asked_at: new Date(NOW).toISOString(),
+    passed, total: results.length, results,
   }, null, 2) + "\n");
   process.exit(passed === results.length ? 0 : 1);
 }

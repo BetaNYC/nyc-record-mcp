@@ -2,7 +2,7 @@
 // Offline: every test mocks globalThis.fetch.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { USER_AGENT, REQUEST_TIMEOUT_MS, retryWaitMs } from "../dist/city-record.js";
+import { USER_AGENT, REQUEST_TIMEOUT_MS, CALL_BUDGET_MS, clock, retryWaitMs } from "../dist/city-record.js";
 import { callTool } from "../dist/tools.js";
 import { PACKAGE_VERSION } from "../dist/version.js";
 
@@ -131,4 +131,71 @@ test("retryWaitMs honors Retry-After seconds and dates, capped at 10 s", () => {
   assert.equal(retryWaitMs(null, 1), 1000);
   assert.equal(retryWaitMs(null, 2), 2000);
   assert.equal(retryWaitMs("soon", 1), 1000);
+});
+
+// Review of #33: a 200 that was not a JSON list, or a body that timed out while being read,
+// surfaced a raw JavaScript error (the body was parsed outside the try).
+test("a 200 that is not JSON is a plain upstream error", async (t) => {
+  mockFetch(t, [{ body: "<html>Service temporarily unavailable</html>" }]);
+  const r = await callTool("get_public_hearings", {});
+  assert.equal(r.isError, true);
+  assert.match(text(r), /^Error: NYC Open Data answered, but not with the list of notices this server expects\. Try again .*\(The answer was not JSON\.\)/);
+  assert.doesNotMatch(text(r), /SyntaxError|Unexpected token|JSON\.parse/);
+});
+
+test("a 200 that is a JSON object, not a list, is a plain upstream error", async (t) => {
+  mockFetch(t, [{ body: '{"error":true,"message":"query timed out"}' }]);
+  const r = await callTool("search_notices", { query: "parks" });
+  assert.equal(r.isError, true);
+  assert.match(text(r), /^Error: NYC Open Data answered, but not with the list of notices .*\(The answer was JSON, but not a list\.\)/);
+  assert.match(text(r), /The source said: \{"error":true/);
+  assert.doesNotMatch(text(r), /is not a function|Cannot read prop|TypeError/);
+});
+
+test("a timeout while reading the body is the plain timeout sentence", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => {
+    const stalled = new ReadableStream({
+      pull(c) {
+        c.error(new DOMException("The operation was aborted due to timeout", "TimeoutError"));
+      },
+    });
+    return new Response(stalled, { status: 200, headers: { "content-type": "application/json" } });
+  });
+  const r = await callTool("get_public_hearings", {});
+  assert.equal(r.isError, true);
+  assert.match(text(r), /^Error: NYC Open Data did not answer within 30 seconds\. Try again/);
+});
+
+// Review of #33: three 60-second tries plus waits could hold one search_notices call for about
+// 200 seconds. Now the whole call has 90 seconds. A fake clock: each request "takes" 59 s.
+test("no retry starts once the call's 90-second budget is spent", async (t) => {
+  let now = 1_000_000;
+  t.mock.method(clock, "now", () => now);
+  t.mock.method(clock, "sleep", async (ms) => void (now += ms));
+  const starts = [];
+  t.mock.method(globalThis, "fetch", async () => {
+    starts.push(now - 1_000_000);
+    now += 59_000;
+    return new Response("busy", { status: 503, headers: { "retry-after": "10" } });
+  });
+  const r = await callTool("search_notices", { query: "City Environmental Quality Review Fee" });
+  assert.equal(CALL_BUDGET_MS, 90_000);
+  assert.deepEqual(starts, [0, 69_000], "a second try at 69 s; no third try, which would start at 138 s");
+  assert.equal(r.isError, true);
+  assert.match(text(r), /HTTP 503/);
+});
+
+test("a try is cut to what is left of the budget, and says so when that runs out", async (t) => {
+  let now = 0;
+  t.mock.method(clock, "now", () => now);
+  t.mock.method(clock, "sleep", async (ms) => void (now += ms));
+  const queue = [
+    () => ((now += 55_000), new Response("busy", { status: 503, headers: { "retry-after": "0" } })),
+    () => { now += 35_000; throw new DOMException("timed out", "TimeoutError"); },
+  ];
+  t.mock.method(globalThis, "fetch", async () => queue.shift()());
+  const r = await callTool("search_notices", { query: "parks" });
+  assert.equal(queue.length, 0, "two tries");
+  assert.equal(r.isError, true);
+  assert.match(text(r), /^Error: NYC Open Data did not answer within this call's 90-second limit \(counting every try\)\. Try again/);
 });

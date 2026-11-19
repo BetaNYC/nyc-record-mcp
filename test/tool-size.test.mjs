@@ -10,12 +10,15 @@
 // Raised on purpose 2026-11-18 (#32): the answer guide shared by the seven City Record tools,
 // said once in the instructions (the type list is no longer repeated in a description).
 // Measured 16,104 characters.
+// Raised on purpose 2026-11-18 (review of #33): each City Record tool's limit is advertised as
+// an integer with a minimum and a maximum, says a larger number is lowered, and the answer guide
+// names the two text blocks. Measured 16,517 characters with shared module 1.5.1.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { TOOLS, SERVER_INSTRUCTIONS, ANSWER_GUIDE } from "../dist/tools.js";
 import { toolListSize } from "../dist/betanyc-tools.js";
 
-const BUDGET_CHARS = 16_500;
+const BUDGET_CHARS = 17_000;
 
 test("tool definitions plus server instructions stay within the size budget", () => {
   const size = toolListSize(TOOLS, SERVER_INSTRUCTIONS);

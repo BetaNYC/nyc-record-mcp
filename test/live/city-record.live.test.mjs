@@ -21,7 +21,7 @@ for (const [name, args] of Object.entries(CALLS)) {
     const r = await callTool(name, args);
     const text = r.content[0].text;
     assert.ok(!r.isError, text);
-    const body = JSON.parse(text.slice(0, text.lastIndexOf("\n\nSource: ")));
+    const body = JSON.parse(text);
     assert.ok(body.notices.length > 0, "some notices");
     assert.equal(body.showing, body.notices.length);
     assert.equal(typeof body.more_available, "boolean");
@@ -31,6 +31,6 @@ for (const [name, args] of Object.entries(CALLS)) {
       assert.equal(typeof n.agency_name, "string");
     }
     assert.equal(body.source.as_of_kind, "retrieved");
-    assert.ok(text.endsWith("Link: https://data.cityofnewyork.us/d/dg92-zbpx"));
+    assert.ok(r.content.at(-1).text.endsWith("Link: https://data.cityofnewyork.us/d/dg92-zbpx"));
   });
 }

@@ -15,6 +15,23 @@ names the source, its publisher and a link: "Publisher: NYC Department of Citywi
 Administrative Services. BetaNYC did not modify it. Source: City Record Online, …".
 Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 
+### Breaking
+
+The seven City Record tools answer in a new shape. A program that parses the answer text must
+change; an AI app reading the answer needs nothing.
+
+- Old shape (1.2.0 and earlier): one text block, and `content[0].text` was a bare JSON list:
+  `[{"request_id": "…", "agency_name": "…", …}, …]`.
+- New shape (1.3.0): two text blocks. `content[0].text` is a JSON object, and nothing else:
+  `{"showing": 25, "offset": 0, "more_available": true, "how_to_get_more": "…", "notices": [{…}, …], "source": {…}}`
+  (`how_to_get_more` only when more match, `note` only when `limit` was lowered). The last
+  block is the human-readable `Source: …` line.
+
+How to update your code:
+
+    notices = JSON.parse(result.content[0].text).notices   // was: JSON.parse(result.content[0].text)
+    // Do not join the text blocks before parsing: the Source line is its own, last block.
+
 ### Added
 
 - `about_data`: where the data comes from (publisher, link, official or not, how it is
@@ -73,12 +90,14 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 - Answers (#23, #24, #25): every City Record tool now answers with a JSON object instead of a
   bare array: `showing`, `offset`, `more_available`, `how_to_get_more` (when more match),
   `notices`, and `source` (the shared `provenance()` object: source, publisher, link, the
-  time it was fetched, `as_of_kind: "retrieved"`), followed by the shared one-line source
-  block. The server asks NYC Open Data for one row more than `limit` to tell whether more
+  time it was fetched, `as_of_kind: "retrieved"`, `retrieved_at`). The shared one-line Source
+  line is a second text block, always last, so `content[0].text` stays valid JSON (see
+  Breaking). The server asks NYC Open Data for one row more than `limit` to tell whether more
   match, without a second count query.
 - New optional `offset` parameter (integer, 0 or more) on all seven City Record tools, sent
   as `$offset`; the order gains `:id` as a tie-breaker so pages are stable, as Socrata
-  advises. Limits are unchanged (default 25, or 50 for a date range; at most 100, or 200).
+  advises. Defaults and maximums are unchanged (default 25, or 50 for a date range; at most
+  100, or 200).
 - `DATA-SOURCES.json`: the limit caveat says the answer reports more matches and `offset`
   gets them; `data.json` rebuilt.
 - `search_notices` waits up to 60 seconds instead of 30 (#22, with the written reason in
@@ -93,9 +112,43 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 - Evaluation set (#27): `eval/questions.json`, 11 questions with answers found first by direct
   queries to the dataset on 2026-11-18, replayed offline from `eval/fixtures/` by
   `npm run eval` (`-- --record` to record missing fixtures live). Results in
-  `eval/results.json`: 10 of 11; Q02 fails because NYC Open Data did not answer that
-  full-text search within 60 seconds (the recorded fixture is the timeout).
+  `eval/results.json`: 9 of 11. Q02 fails because NYC Open Data did not answer that
+  full-text search within 60 seconds (the recorded fixture is the timeout). Q03 was first
+  scored a pass, wrongly: its expected answer had closed at 10:00, before the 13:35 run, so
+  the fair score was 9 of 11. Its expected answer is corrected (every notice must be due
+  after the time asked); the corrected query was never recorded, so Q03 fails offline until
+  it is recorded live. The replay fixes the server's clock at `asked_at` in
+  `eval/questions.json`, and fixture keys write that moment as `<now>`.
 - Live tests (#29): `test/live/`, run only by `npm run test:live`, never by `npm test` or CI.
+- One tool call spends at most 90 seconds on NYC Open Data, across every try and wait
+  (`CALL_BUDGET_MS`): a try's timeout is cut to what is left, and no retry starts once it is
+  spent. Before, `search_notices` could take about 200 seconds (three 60-second tries plus
+  waits).
+- `limit` is a whole number of at least 1, advertised as `type: integer`, `minimum: 1`,
+  `maximum` 100 (200 for a date range). A whole number above the maximum is lowered to it and
+  the answer's `note` says so; before, it was refused. `offset` must be a whole number of at
+  least 0.
+
+### Fixed
+
+From the review of epic #33.
+
+- `get_open_solicitations` counted a deadline from earlier the same day as open, because it
+  compared `due_date` with the bare date. It now compares with the date and time in New York,
+  in the dataset's floating-timestamp form (`due_date > '2026-11-18T13:35:00.000'`), so a
+  solicitation due at 10:00 leaves the list at 10:00. The clock can be fixed in tests
+  (`clock` in `src/city-record.ts`). The tool description says "due date and time, in New
+  York, has not yet passed".
+- `limit: 0` answered "call again with offset 0" forever, and `limit: -3` or `2.5` went to
+  NYC Open Data as bad queries. Each is now refused with a plain sentence, before any request.
+- A 200 answer that was not JSON, a JSON object instead of a list, or a body that timed out
+  while being read came back as a raw JavaScript error. The body is now read inside the
+  request's error handling and checked to be a list; each case is a plain upstream error.
+- `get_notices_by_date_range` accepted impossible dates such as `2026-02-31`, and a start
+  after the end silently found nothing. Both are refused with a plain sentence.
+- A comment in `src/city-record.ts` began with a stray tag; reworded.
+- README: a `%` or `_` in an agency name is passed to the `like` match as typed, where it acts
+  as a wildcard (no escape is used: the Socrata docs this repo cites do not give one).
 - The server lists 10 tools instead of 9; `about_data`'s description lists this server's topic.
 - `package.json` `files` adds `DATA-SOURCES.json` and `data.json`.
 - README: `about_data` in the tool table and the shared tools section. The "Data source"
@@ -135,6 +188,18 @@ Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
   limits stay capped and `offset` must be a whole number from 0.
 - `test/tool-size.test.mjs`: budget raised to 16,000 for the `offset` parameter (measured
   15,606), with a dated note.
+- `test/open-solicitations.test.mjs` (new): with a fixed clock, a deadline one hour ago is
+  left out and one an hour ahead kept; New York time in the evening; across the spring and
+  fall daylight-saving changes.
+- `test/answers.test.mjs`: `JSON.parse(content[0].text)` works for every City Record tool
+  and the Source line is the last block; `limit` 0, -3, 2.5 refused with nothing sent, above
+  the maximum lowered with a note; `offset` -1 and 2.5 refused; the advertised limit schema;
+  impossible dates and a start after the end refused.
+- `test/upstream.test.mjs`: a 200 that is not JSON, a JSON object, and a body that times out
+  are plain errors; with a fake clock, no retry starts after 90 seconds, and a try cut short by
+  the budget says so.
+- `test/tool-size.test.mjs`: budget raised to 17,000 (measured 16,517) for the limit schema
+  and the two-block answer guide, with a dated note.
 - `test/eval.test.mjs`: at least 10 questions, unique ids, each with checks; the offline
   replay gives the same pass/fail per question as `eval/results.json` (#27).
 - `test/stdout.test.mjs`: starts the built server, sends initialize, tools/list and two tool

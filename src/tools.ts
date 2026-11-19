@@ -13,7 +13,7 @@ import {
   getOpenSolicitations,
   getNoticesByDateRange,
 } from "./city-record.js";
-import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools, provenance, toolError } from "./betanyc-tools.js";
+import { BETANYC_INSTRUCTIONS, annotateTools, createBetanycTools, isRealDate, provenance, toolError } from "./betanyc-tools.js";
 import { PACKAGE_VERSION } from "./version.js";
 
 /**
@@ -40,9 +40,9 @@ export const betanyc = createBetanycTools({
 /** Guidance shared by all seven City Record tools, said once here rather than in each
  * description (#32). The size-budget test (test/tool-size.test.mjs) guards the total. */
 export const ANSWER_GUIDE =
-  "Every City Record tool answers with JSON: showing, more_available and, when more notices match, " +
-  "how_to_get_more (call again with that offset), then the notices exactly as NYC Open Data publishes them, " +
-  "and a closing Source line with the dataset link and the time it was fetched; cite that line. " +
+  "Every City Record tool answers with two text blocks. The first is JSON: showing, more_available and, when more " +
+  "notices match, how_to_get_more (call again with that offset), the notices exactly as NYC Open Data publishes them, " +
+  "and source. The last is a Source line with the dataset link and the time it was fetched; cite that line. " +
   "An empty answer means no notice in the dataset matched, not that none was published. " +
   "About 88% of notices are Changes in Personnel listings with no notice type: keyword, agency and date " +
   "searches can be mostly those, and the type tools never return them. search_notices is a full-text " +
@@ -54,12 +54,25 @@ export const SERVER_INSTRUCTIONS =
   ANSWER_GUIDE +
   BETANYC_INSTRUCTIONS;
 
+const DATE_FORMAT = /^\d{4}-\d{2}-\d{2}$/;
 const isoDate = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "must be a date in YYYY-MM-DD format");
+  .regex(DATE_FORMAT, "must be a date in YYYY-MM-DD format")
+  // Only for a well-formed date, so "Jan 1" gets one message, not two.
+  .refine((s) => !DATE_FORMAT.test(s) || isRealDate(s), "is not a real date on the calendar (check the month and the day)");
 
 /** The paging parameter every City Record tool takes (#25). */
 const OFFSET_PROP = { type: "integer", minimum: 0, description: "Notices to skip, for the next page (default 0)" };
+
+/** Each tool's most notices per answer. A bigger whole number is lowered to it, and the answer says so. */
+const MAX_LIMIT = { default: 100, get_notices_by_date_range: 200 } as const;
+const limitProp = (dflt: number, max: number) => ({
+  type: "integer",
+  minimum: 1,
+  maximum: max,
+  description: `Max results (default ${dflt}; more than ${max} is lowered to ${max})`,
+});
+const LIMIT_PROP = limitProp(25, MAX_LIMIT.default);
 
 /** The server's own tools. Each one sends a live query to NYC Open Data, so openWorldHint is true. */
 const DOMAIN_TOOLS: Tool[] = [
@@ -71,7 +84,7 @@ const DOMAIN_TOOLS: Tool[] = [
       type: "object",
       properties: {
         query: { type: "string", description: "Search term" },
-        limit: { type: "number", description: "Max results (default 25, max 100)" },
+        limit: LIMIT_PROP,
         offset: OFFSET_PROP,
       },
       required: ["query"],
@@ -86,7 +99,7 @@ const DOMAIN_TOOLS: Tool[] = [
       type: "object",
       properties: {
         agency_name: { type: "string", description: "Agency name or partial name, e.g. 'DCAS', 'Parks'" },
-        limit: { type: "number", description: "Max results (default 25, max 100)" },
+        limit: LIMIT_PROP,
         offset: OFFSET_PROP,
       },
       required: ["agency_name"],
@@ -105,7 +118,7 @@ const DOMAIN_TOOLS: Tool[] = [
           enum: [...NOTICE_TYPES],
           description: "Notice type",
         },
-        limit: { type: "number", description: "Max results (default 25, max 100)" },
+        limit: LIMIT_PROP,
         offset: OFFSET_PROP,
       },
       required: ["notice_type"],
@@ -119,7 +132,7 @@ const DOMAIN_TOOLS: Tool[] = [
     inputSchema: {
       type: "object",
       properties: {
-        limit: { type: "number", description: "Max results (default 25, max 100)" },
+        limit: LIMIT_PROP,
         offset: OFFSET_PROP,
       },
       additionalProperties: false,
@@ -132,7 +145,7 @@ const DOMAIN_TOOLS: Tool[] = [
     inputSchema: {
       type: "object",
       properties: {
-        limit: { type: "number", description: "Max results (default 25, max 100)" },
+        limit: LIMIT_PROP,
         offset: OFFSET_PROP,
       },
       additionalProperties: false,
@@ -141,11 +154,11 @@ const DOMAIN_TOOLS: Tool[] = [
   {
     name: "get_open_solicitations",
     description:
-      "Get active solicitations (RFPs, RFQs, IFBs) where the due date has not yet passed. Sorted by due date ascending — soonest deadlines first.",
+      "Get active solicitations (RFPs, RFQs, IFBs) whose due date and time, in New York, has not yet passed. Sorted by due date ascending — soonest deadlines first.",
     inputSchema: {
       type: "object",
       properties: {
-        limit: { type: "number", description: "Max results (default 25, max 100)" },
+        limit: LIMIT_PROP,
         offset: OFFSET_PROP,
       },
       additionalProperties: false,
@@ -159,7 +172,7 @@ const DOMAIN_TOOLS: Tool[] = [
       properties: {
         start_date: { type: "string", description: "Start date, YYYY-MM-DD" },
         end_date: { type: "string", description: "End date, YYYY-MM-DD" },
-        limit: { type: "number", description: "Max results (default 50, max 200)" },
+        limit: limitProp(50, MAX_LIMIT.get_notices_by_date_range),
         offset: OFFSET_PROP,
       },
       required: ["start_date", "end_date"],
@@ -188,37 +201,38 @@ export const TOOLS: Tool[] = annotateTools(
  * and the tool answered a different question with real, plausible data — see
  * issue #10. Strict turns that into a loud failure.
  */
-const offset = z.number().int().min(0).optional();
+const offset = z
+  .number()
+  .int("must be a whole number of at least 0")
+  .min(0, "must be a whole number of at least 0")
+  .optional();
+/** A whole number of at least 1. Above the tool's maximum is allowed here and lowered in callTool. */
+const limit = z
+  .number()
+  .int("must be a whole number of at least 1")
+  .min(1, "must be a whole number of at least 1")
+  .optional();
 
 export const SCHEMAS = {
-  search_notices: z
-    .object({ query: z.string(), limit: z.number().max(100).optional(), offset })
-    .strict(),
-  get_notices_by_agency: z
-    .object({ agency_name: z.string(), limit: z.number().max(100).optional(), offset })
-    .strict(),
-  get_notices_by_type: z
-    .object({
-      notice_type: z.enum(NOTICE_TYPES),
-      limit: z.number().max(100).optional(),
-      offset,
-    })
-    .strict(),
-  get_procurement_notices: z
-    .object({ limit: z.number().max(100).optional(), offset })
-    .strict(),
-  get_public_hearings: z.object({ limit: z.number().max(100).optional(), offset }).strict(),
-  get_open_solicitations: z
-    .object({ limit: z.number().max(100).optional(), offset })
-    .strict(),
+  search_notices: z.object({ query: z.string(), limit, offset }).strict(),
+  get_notices_by_agency: z.object({ agency_name: z.string(), limit, offset }).strict(),
+  get_notices_by_type: z.object({ notice_type: z.enum(NOTICE_TYPES), limit, offset }).strict(),
+  get_procurement_notices: z.object({ limit, offset }).strict(),
+  get_public_hearings: z.object({ limit, offset }).strict(),
+  get_open_solicitations: z.object({ limit, offset }).strict(),
   get_notices_by_date_range: z
-    .object({
-      start_date: isoDate,
-      end_date: isoDate,
-      limit: z.number().max(200).optional(),
-      offset,
-    })
-    .strict(),
+    .object({ start_date: isoDate, end_date: isoDate, limit, offset })
+    .strict()
+    .superRefine((v, ctx) => {
+      // Only when both are real dates: a malformed one already has its own message.
+      if (isRealDate(v.start_date) && isRealDate(v.end_date) && v.start_date > v.end_date) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["start_date"],
+          message: `${v.start_date} is after end_date ${v.end_date}; the start must be on or before the end`,
+        });
+      }
+    }),
 } satisfies Record<string, z.ZodTypeAny>;
 
 export type ToolName = keyof typeof SCHEMAS;
@@ -252,12 +266,21 @@ export function parseToolArgs<K extends ToolName>(
   throw new Error(`${name} could not use its arguments. ${problems.join("; ")}. Fix the value and try again.`);
 }
 
+/** The limit a call uses: the one asked for (or the default), lowered to the tool's maximum,
+ * with a sentence saying so when it was lowered. */
+function useLimit(asked: number | undefined, dflt: number, max: number): { limit: number; note?: string } {
+  const n = asked ?? dflt;
+  if (n <= max) return { limit: n };
+  return { limit: max, note: `limit ${n} is more than this tool returns at once, so it was lowered to ${max}.` };
+}
+
 /**
- * The text block every domain tool answers with (#23, #24, #25): how many notices are shown,
- * whether more match and how to get them, the notices, and the source with its link and the
- * time it was fetched (shared provenance(), kind "live": every answer is a live query).
+ * What every domain tool answers with (#23, #24, #25), as two text blocks. The first is JSON
+ * alone, so a program can JSON.parse it: how many notices are shown, whether more match and how
+ * to get them, the notices, and the source object. The last is the human-readable Source line
+ * with the link and the time it was fetched (shared provenance(), kind "live").
  */
-function answer(page: NoticePage, limit: number) {
+function answer(page: NoticePage, use: { limit: number; note?: string }) {
   const p = provenance({ ...SOURCE, kind: "live" });
   const n = page.notices.length;
   const next = page.offset + n;
@@ -266,18 +289,25 @@ function answer(page: NoticePage, limit: number) {
     offset: page.offset,
     more_available: page.more,
     ...(page.more
-      ? { how_to_get_more: `Call again with offset ${next} (and the same limit, ${limit}) for the next notices, or narrow the search.` }
+      ? { how_to_get_more: `Call again with offset ${next} (and the same limit, ${use.limit}) for the next notices, or narrow the search.` }
       : {}),
+    ...(use.note ? { note: use.note } : {}),
     notices: page.notices,
     source: p.provenance,
   };
-  return { content: [{ type: "text" as const, text: `${JSON.stringify(body, null, 2)}\n\n${p.text}` }] };
+  return {
+    content: [
+      { type: "text" as const, text: JSON.stringify(body, null, 2) },
+      { type: "text" as const, text: p.text },
+    ],
+  };
 }
 
 /**
  * Run one tool call: the shared tools, then the seven City Record tools. Every failure comes
- * back as an isError result with a plain sentence (shared toolError: stack lines dropped,
- * upstream body cut to 500 characters, the app token redacted), never as a thrown error.
+ * back as an isError result with a plain sentence (shared toolError: stack lines dropped from
+ * the upstream body, which is cut to 500 characters; the app token redacted everywhere), never
+ * as a thrown error.
  */
 export async function callTool(name: string, args: unknown) {
   if (betanyc.handles(name)) return betanyc.call(name, args);
@@ -286,31 +316,38 @@ export async function callTool(name: string, args: unknown) {
     switch (name) {
       case "search_notices": {
         const { query, limit, offset } = parseToolArgs("search_notices", args);
-        return answer(await searchNotices(query, limit ?? 25, offset), limit ?? 25);
+        const use = useLimit(limit, 25, MAX_LIMIT.default);
+        return answer(await searchNotices(query, use.limit, offset), use);
       }
       case "get_notices_by_agency": {
         const { agency_name, limit, offset } = parseToolArgs("get_notices_by_agency", args);
-        return answer(await getNoticesByAgency(agency_name, limit ?? 25, offset), limit ?? 25);
+        const use = useLimit(limit, 25, MAX_LIMIT.default);
+        return answer(await getNoticesByAgency(agency_name, use.limit, offset), use);
       }
       case "get_notices_by_type": {
         const { notice_type, limit, offset } = parseToolArgs("get_notices_by_type", args);
-        return answer(await getNoticesByType(notice_type, limit ?? 25, offset), limit ?? 25);
+        const use = useLimit(limit, 25, MAX_LIMIT.default);
+        return answer(await getNoticesByType(notice_type, use.limit, offset), use);
       }
       case "get_procurement_notices": {
         const { limit, offset } = parseToolArgs("get_procurement_notices", args);
-        return answer(await getProcurementNotices(limit ?? 25, offset), limit ?? 25);
+        const use = useLimit(limit, 25, MAX_LIMIT.default);
+        return answer(await getProcurementNotices(use.limit, offset), use);
       }
       case "get_public_hearings": {
         const { limit, offset } = parseToolArgs("get_public_hearings", args);
-        return answer(await getPublicHearings(limit ?? 25, offset), limit ?? 25);
+        const use = useLimit(limit, 25, MAX_LIMIT.default);
+        return answer(await getPublicHearings(use.limit, offset), use);
       }
       case "get_open_solicitations": {
         const { limit, offset } = parseToolArgs("get_open_solicitations", args);
-        return answer(await getOpenSolicitations(limit ?? 25, offset), limit ?? 25);
+        const use = useLimit(limit, 25, MAX_LIMIT.default);
+        return answer(await getOpenSolicitations(use.limit, offset), use);
       }
       case "get_notices_by_date_range": {
         const { start_date, end_date, limit, offset } = parseToolArgs("get_notices_by_date_range", args);
-        return answer(await getNoticesByDateRange(start_date, end_date, limit ?? 50, offset), limit ?? 50);
+        const use = useLimit(limit, 50, MAX_LIMIT.get_notices_by_date_range);
+        return answer(await getNoticesByDateRange(start_date, end_date, use.limit, offset), use);
       }
       default:
         return toolError(`Unknown tool: ${name}. This server's tools are: ${TOOLS.map((t) => t.name).join(", ")}.`);

@@ -1,7 +1,8 @@
 {
-  "run_at": "2026-11-18T18:35:56.764Z",
+  "run_at": "2026-11-19T03:12:00.170Z",
   "mode": "offline",
-  "passed": 10,
+  "asked_at": "2026-11-18T18:35:00.000Z",
+  "passed": 9,
   "total": 11,
   "results": [
     {
@@ -24,8 +25,10 @@
     {
       "id": "Q03",
       "q": "Which open City solicitation closes soonest?",
-      "pass": true,
-      "failed_checks": [],
+      "pass": false,
+      "failed_checks": [
+        "no recorded fixture for $limit=3&$offset=0&$order=due_date ASC,:id&$where=type_of_notice_description='Solicitation' AND due_date > '<now>' (run npm run eval -- --record)"
+      ],
       "failed_invariants": []
     },
     {
