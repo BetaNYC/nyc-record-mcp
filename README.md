@@ -55,7 +55,7 @@ Every City Record tool answers with two text blocks. The first, `content[0].text
 Source: City Record Online (NYC Department of Citywide Administrative Services). Fetched from the source for this answer at 2026-11-18 13:24 EST (New York time). Link: https://data.cityofnewyork.us/d/dg92-zbpx
 ```
 
-> **Breaking change in 1.3.0 for programs that read the answers.** Up to 1.2.0, `content[0].text` was a bare JSON list of notices. From 1.3.0 it is a JSON object, and the notices are in its `notices` field. Change `JSON.parse(text)` to `JSON.parse(text).notices`. The Source line is a separate, last text block, so do not join the blocks before parsing. [CHANGELOG.md](CHANGELOG.md) has the old and new shapes.
+> **Breaking change in 2.0.0 for programs that read the answers.** Up to 1.2.0, `content[0].text` was a bare JSON list of notices. From 2.0.0 it is a JSON object, and the notices are in its `notices` field. Change `JSON.parse(text)` to `JSON.parse(text).notices`. The Source line is a separate, last text block, so do not join the blocks before parsing. [CHANGELOG.md](CHANGELOG.md) has the old and new shapes, and the other breaking changes in 2.0.0 (the open-solicitation list, the stricter `limit`, `offset` and date checks, and the error text).
 
 `limit` is a whole number of at least 1; a larger number than the tool's maximum (100, or 200 for a date range) is lowered to the maximum, and the answer's `note` says so. `offset` is a whole number of at least 0. Anything else is refused with a plain message, and nothing is sent to NYC Open Data.
 

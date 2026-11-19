@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - unreleased
+## [2.0.0] - 2026-11-19
+
+Prepared as 1.3.0 (PRs #19, #20 and #34 to #39) and released as 2.0.0, because it changes
+what callers get back: see Breaking changes.
 
 Adds `about_data`, the third tool BetaNYC adds to each of its MCP servers, and
 `DATA-SOURCES.json`, the file it answers from. Moves to BetaNYC's shared module 1.5.2
@@ -15,14 +18,43 @@ names the source, its publisher and a link: "Publisher: NYC Department of Citywi
 Administrative Services. BetaNYC did not modify it. Source: City Record Online, …".
 Part of BetaNYC/betanyc-ai-workspace#1655 and #1672 (epic #1652).
 
-### Breaking
+### Breaking changes
+
+What a caller must do differently, compared with 1.2.0:
+
+1. **Answer shape (all seven City Record tools).** `content[0].text` is now a JSON object, not
+   a bare list, and the Source line is a second text block, always last. Read the notices with
+   `JSON.parse(result.content[0].text).notices`, and do not join the blocks before parsing.
+   Details below.
+2. **`get_open_solicitations` is BetaNYC's arrangement, not the official record.** By default
+   an older extended or corrected notice is folded under the newest one, and a matched
+   cancellation notice moves to `cancelled`, so `notices` can hold fewer rows than the City sent.
+   Count the City's rows with `city_notices_on_this_page`; ask for every row with
+   `include_superseded: true`; cite the official record (City Record Online) named in the
+   Source line, which now begins "BetaNYC modified this data".
+3. **Each open-solicitation notice gains a `betanyc_notes` key.** The City's own fields are
+   unchanged. Code that copies or compares every key of a notice should skip `betanyc_notes`.
+4. **`get_open_solicitations` uses the time, not only the date.** A solicitation due earlier
+   today is no longer listed; one whose due time is 00:00 (no time entered) stays listed through
+   its due day. Do not expect the same list as 1.2.0 for the same day.
+5. **Arguments that used to be sent are now refused.** `limit` must be a whole number of at
+   least 1 (`0`, `-3` and `2.5` are refused; above the maximum is lowered, with a `note`, where
+   1.2.0 refused it). `offset` must be a whole number of at least 0.
+   `get_notices_by_date_range` refuses a date that does not exist (`2026-02-31`) and a start
+   after the end, where 1.2.0 answered with an empty list. Send whole numbers and real dates,
+   and check `isError`.
+6. **Error text.** A bad value now gets one plain sentence instead of zod's JSON list of
+   issues, and an API error carries up to 500 characters of NYC Open Data's answer (was 300).
+   Do not parse error text; check `isError`.
+
+#### The answer shape (item 1)
 
 The seven City Record tools answer in a new shape. A program that parses the answer text must
 change; an AI app reading the answer needs nothing.
 
 - Old shape (1.2.0 and earlier): one text block, and `content[0].text` was a bare JSON list:
   `[{"request_id": "…", "agency_name": "…", …}, …]`.
-- New shape (1.3.0): two text blocks. `content[0].text` is a JSON object, and nothing else:
+- New shape (2.0.0): two text blocks. `content[0].text` is a JSON object, and nothing else:
   `{"showing": 25, "offset": 0, "more_available": true, "how_to_get_more": "…", "notices": [{…}, …], "source": {…}}`
   (`how_to_get_more` only when more match, `note` only when `limit` was lowered). The last
   block is the human-readable `Source: …` line.
@@ -32,7 +64,7 @@ How to update your code:
     notices = JSON.parse(result.content[0].text).notices   // was: JSON.parse(result.content[0].text)
     // Do not join the text blocks before parsing: the Source line is its own, last block.
 
-Also for `get_open_solicitations` only:
+#### `get_open_solicitations` (items 2 and 3)
 
 - By default `notices` can hold fewer rows than the City sent: an older extended or corrected
   notice is folded under the newest notice for the same solicitation (named by request_id and
